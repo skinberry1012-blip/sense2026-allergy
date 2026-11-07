@@ -1,0 +1,117 @@
+/* 서비스 워커 — 화면 파일을 저장해 두어 인터넷이 끊겨도 앱이 열려요.
+   ※ 파일을 고쳐서 다시 올릴 때는 아래 VERSION 숫자를 하나 올려 주세요. (예: v1 → v2)
+   ※ 학생 기록은 여기 저장되지 않아요 (기록은 각 기기의 LocalStorage에만). */
+const VERSION = 'v8-newart';
+const CACHE = 'allergy-shield-' + VERSION;
+const FILES = [
+  './',
+  './index.html',
+  './manifest.json',
+  './css/lab.css',
+  './css/style.css',
+  './css/theme.css',
+  './data/holidays.js',
+  './data/lab-items.js',
+  './data/rules.js',
+  './icons/apple-touch-icon.png',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './js/app.js',
+  './js/card.js',
+  './js/core.js',
+  './js/lab.js',
+  './js/qr.js',
+  './js/sfx.js',
+  './assets/bg/bg_cafeteria.png',
+  './assets/bg/bg_entrance.png',
+  './assets/bg/bg_home.png',
+  './assets/bg/bg_lab.png',
+  './assets/bg/bg_playground.png',
+  './assets/card/bg_certificate.jpg',
+  './assets/card/bg_lab.jpg',
+  './assets/card/bg_playground.jpg',
+  './assets/char/nyang_cheer.png',
+  './assets/char/nyang_cheer_t.png',
+  './assets/char/nyang_explain.png',
+  './assets/char/nyang_explain_t.png',
+  './assets/char/nyang_hello.png',
+  './assets/char/nyang_hello_t.png',
+  './assets/char/nyang_idle.png',
+  './assets/char/nyang_idle_t.png',
+  './assets/char/nyang_scan.png',
+  './assets/char/nyang_scan_nolight.png',
+  './assets/char/nyang_scan_nolight_t.png',
+  './assets/char/nyang_scan_t.png',
+  './assets/char/nyang_symptom.png',
+  './assets/char/nyang_symptom_t.png',
+  './assets/char/nyang_welcome.png',
+  './assets/char/nyang_welcome_t.png',
+  './assets/char/nyang_wonder.png',
+  './assets/char/nyang_wonder_t.png',
+  './assets/char/nyang_worry.png',
+  './assets/char/nyang_worry_t.png',
+  './assets/char/staff_base.png',
+  './assets/char/staff_base_t.png',
+  './assets/char/staff_cheer.png',
+  './assets/char/staff_cheer_t.png',
+  './assets/char/staff_guide.png',
+  './assets/char/staff_guide_t.png',
+  './assets/char/staff_heart.png',
+  './assets/char/staff_heart_t.png',
+  './assets/char/staff_hello.png',
+  './assets/char/staff_hello_t.png',
+  './assets/char/staff_thumb.png',
+  './assets/char/staff_thumb_t.png',
+  './assets/cope/ambulance.png',
+  './assets/cope/avoid.png',
+  './assets/cope/call119.png',
+  './assets/cope/clinic.png',
+  './assets/cope/epipen.png',
+  './assets/cope/tell.png',
+  './assets/item/drug.png',
+  './assets/item/dust.png',
+  './assets/item/egg.png',
+  './assets/item/flour.png',
+  './assets/item/insect.png',
+  './assets/item/lotion.png',
+  './assets/item/mite.png',
+  './assets/item/peanut.png',
+  './assets/item/pet.png',
+  './assets/item/pollen.png',
+  './assets/item/shrimp.png',
+  './assets/item/sun.png',
+  './assets/medal/medal_blue.png',
+  './assets/medal/medal_coral.png',
+  './assets/medal/medal_green.png',
+  './assets/medal/trophy.png',
+  './assets/sym/breath.png',
+  './assets/sym/cough.png',
+  './assets/sym/dizzy.png',
+  './assets/sym/eye.png',
+  './assets/sym/hives.png',
+  './assets/sym/nose.png',
+  './assets/sym/rash.png',
+  './assets/sym/stomach.png',
+  './assets/sym/swelling.png'
+];
+
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+});
+/* 화면(HTML)은 인터넷 먼저 → 실패하면 저장본 / 나머지 파일은 저장본 먼저 */
+self.addEventListener('fetch', e => {
+  const req = e.request;
+  if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
+  if (req.mode === 'navigate') {
+    e.respondWith(fetch(req).then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put('./index.html', copy)); return r; })
+      .catch(() => caches.match('./index.html')));
+    return;
+  }
+  e.respondWith(caches.match(req, { ignoreSearch: true }).then(hit => hit || fetch(req).then(r => {
+    if (r.ok) { const copy = r.clone(); caches.open(CACHE).then(c => c.put(req, copy)); }
+    return r;
+  })));
+});

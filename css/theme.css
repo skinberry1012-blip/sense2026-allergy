@@ -1,0 +1,91 @@
+/* =========================================================
+   theme.css — 2026-11 팀 결정 디자인 (맨 마지막에 불러와 style.css 위에 덮어써요)
+   색: 남색 · 하늘 · 노랑 · 코랄 · 크림 (분홍 없음) · 글꼴: 주아(제목·버튼) + 고운돋움(본문)
+   부품: 버튼 A 픽셀 블록 · 말풍선 B 픽셀 · 안내판 B · 발바닥 무늬 줄이기
+   ========================================================= */
+:root {
+  --navy:#1E2A5A; --sky:#BFE0FA; --sky-l:#E9F2FC; --cream-2:#FFF8EE; --paper:#FFFDF5;
+  --coral:#EE8A6E; --coral-d:#C9573A; --muted:#4A5578;
+  --font-head:"Jua","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;
+  --font-body:"Gowun Dodum","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;
+  /* 팀 변수 다시 정하기: 분홍 → 코랄 · 보라 → 남색 */
+  --pink:#E0663F; --pink-d:#C9573A; --pink-l:#F6D2C4; --pink-bg:#FFF4EE;
+  --ink:#1E2A5A; --purple:#1E2A5A; --yellow:#F5C842; --cream:#FFF8EE;
+  --blue:#2F4DA8; --blue-d:#1E2A5A; --green:#2F7A4F; --red:#C9573A; --orange:#E0663F;
+  --font:var(--font-body);
+}
+body { font-family:var(--font-body); color:var(--navy); background:#F6E6D2; }
+body.tablet { background:#1E2A5A; }
+
+/* 제목·버튼은 주아 */
+h1, h2, h3, .title-banner, .btn, .bubble, .sub-pill, .tg-title, .tg-tab, .tg-h, .tg-go, .tg-reset, .pop-head, .md-title, .ribbon, .ribbon-line, .box-tag, .countbox, .tabs button, .q { font-family:var(--font-head); font-weight:400 !important; letter-spacing:0; }
+b, strong { font-weight:700; }
+
+/* ---------- 버튼 A: 픽셀 블록 ---------- */
+.btn { border-radius:0 !important; border:0 !important; outline:0 !important; background:var(--yellow); color:var(--navy);
+  box-shadow:0 -4px 0 var(--navy),0 4px 0 var(--navy),-4px 0 0 var(--navy),4px 0 0 var(--navy),0 9px 0 var(--navy) !important; margin:6px 6px 12px; }
+.btn.pink, .btn.blue.pulse, .btn.big.pink { background:var(--yellow); color:var(--navy); }
+.btn.blue { background:var(--blue); color:#fff; }
+.btn.green { background:var(--green); color:#fff; }
+.btn.red { background:var(--coral); color:#fff; }
+.btn.white, .btn.outline { background:var(--paper); color:var(--navy); }
+.btn em { color:var(--coral-d); } .btn.blue em, .btn.red em, .btn.green em { color:var(--yellow); }
+.btn:disabled, .btn.pink:disabled { background:#E8E1D3 !important; color:#8A93AE !important; }
+.btn.mini { background:var(--paper); color:var(--navy); box-shadow:0 -2px 0 var(--navy),0 2px 0 var(--navy),-2px 0 0 var(--navy),2px 0 0 var(--navy) !important; margin:2px; }
+.pulse { animation:pxbeat2 1.6s ease-in-out infinite; } @keyframes pxbeat2 { 50% { transform:scale(1.04); } }
+
+/* ---------- 제목 띠 → 안내판 B ---------- */
+.title-banner { background:var(--sky) !important; color:var(--navy) !important; border:0 !important; outline:0 !important; border-radius:0 !important;
+  box-shadow:0 0 0 10px var(--blue),0 -14px 0 0 var(--navy),0 14px 0 0 var(--navy),-14px 0 0 0 var(--navy),14px 0 0 0 var(--navy) !important; margin:14px; }
+.title-banner em, .title-banner b, .title-banner.pinkline b { color:var(--coral-d) !important; }
+
+/* ---------- 말풍선 → 픽셀 말풍선 B ---------- */
+.bubble { border:0 !important; border-radius:0 !important; background:#fff; color:var(--navy);
+  box-shadow:0 -4px 0 var(--navy),0 4px 0 var(--navy),-4px 0 0 var(--navy),4px 0 0 var(--navy),5px 9px 0 var(--navy) !important; }
+.bubble::before, .bubble::after { display:none !important; }
+.bubble b { color:var(--coral-d); } .bubble mark { background:#FFF3C4; }
+.sub-pill { border-radius:0 !important; border:0 !important; background:var(--paper); box-shadow:0 -3px 0 var(--navy),0 3px 0 var(--navy),-3px 0 0 var(--navy),3px 0 0 var(--navy); }
+.sub-pill em.pk, em.pk { color:var(--coral-d); font-style:normal; }
+
+/* ---------- 배경: 확정 배경 그림 ---------- */
+.sc.outdoor, body.tablet .sc.outdoor { background:linear-gradient(rgba(255,248,238,.78),rgba(255,248,238,.78)), url(../assets/bg/bg_playground.png) center/cover no-repeat !important; }
+.sc.room, body.tablet .sc.room { background:linear-gradient(rgba(255,248,238,.7),rgba(255,248,238,.7)), url(../assets/bg/bg_lab.png) center/cover no-repeat !important; }
+body.tablet .sc.outdoor::before, body.tablet .sc.outdoor::after { content:none !important; }
+.paw { display:none !important; }
+
+/* 상자·카드 */
+.panel, .clipcard, .s44-box, .list-card, .statbox, .resultbox, .selbox, .rules-panel, .tg-panel, .s48-box, .modal { border-radius:0 !important; }
+.modal { box-shadow:0 -5px 0 var(--navy),0 5px 0 var(--navy),-5px 0 0 var(--navy),5px 0 0 var(--navy),8px 14px 0 var(--navy) !important; background:var(--paper); }
+.pop-head { border-radius:0 !important; }
+.pop-head.redbar, .pop-head.orange { background:var(--coral) !important; color:#fff; }
+.box-tag { border-radius:0 !important; background:var(--yellow) !important; color:var(--navy) !important; }
+
+/* 카드 미리보기 비율 (새 카드 1536×1024) */
+.design .thumb { aspect-ratio:3/2 !important; }
+.preview-wrap canvas { aspect-ratio:3/2 !important; object-fit:contain; }
+
+/* 소리 버튼 (학생 화면 오른쪽 위 · 첫 화면 포함) */
+#soundBtn { border:0 !important; border-radius:0 !important; background:var(--paper) !important; width:58px; height:58px; display:flex; align-items:center; justify-content:center; padding:0;
+  box-shadow:0 -4px 0 var(--navy),0 4px 0 var(--navy),-4px 0 0 var(--navy),4px 0 0 var(--navy),4px 7px 0 var(--navy) !important; font-size:0; }
+#soundBtn svg { width:32px; height:32px; }
+#soundBtn[hidden] { display:none !important; }
+#soundBtn.mute { background:#E8E1D3 !important; }
+
+/* 색종이 */
+.confetti i { border-radius:0 !important; }
+
+/* 선생님 설정: 새 칸 */
+.tg-sound { display:flex; flex-direction:row; flex-wrap:wrap; gap:8px 26px; margin:6px 0 4px; }
+.tg-sound > div { display:flex; align-items:center; gap:14px; font-size:18px; }
+.tg-sound b { width:auto; font-family:var(--font-head); font-weight:400; }
+.tg-sound small { display:none; }
+.tg-seg { display:inline-flex; box-shadow:0 -3px 0 var(--navy),0 3px 0 var(--navy),-3px 0 0 var(--navy),3px 0 0 var(--navy); }
+.tg-seg button { border:0; background:#fff; padding:7px 18px; font-family:var(--font-head); font-size:17px; }
+.tg-seg button.on { background:var(--navy); color:#fff; }
+.opt.new { background:var(--coral) !important; color:#fff !important; }
+.tg-wipe { display:flex; align-items:center; gap:12px; margin-top:12px; padding-top:12px; border-top:2px solid #E3D5C2; font-size:14px; color:var(--muted); }
+.tg-reset.danger { color:var(--coral-d) !important; }
+
+/* S44: 새 카드(3:2)가 커져도 아래 버튼이 화면 안에 */
+body.tablet .s44 .preview-wrap { width:700px; margin:0 auto; }
+body.tablet .s44 .s44-center { align-items:center; }
