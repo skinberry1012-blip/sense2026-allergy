@@ -52,6 +52,7 @@ const DateK = {
   override: null, // 테스트용: 주소에 ?today=2026-11-05
   today() {
     if (DateK.override) return DateK.override;
+    if (TestMode.on) { const c = Store.get('challenge', null); if (c) return TestMode.day(c); }
     return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
   },
   parse(s) { const [y, m, d] = s.split('-').map(Number); return new Date(Date.UTC(y, m - 1, d)); },
@@ -64,6 +65,16 @@ const DateK = {
   label(s) { return `${DateK.md(s)} ${DateK.wd(s)}요일`; },
   short(s) { return `${DateK.md(s)}(${DateK.wd(s)})`; },
   nextSchoolDays(from, n = 5) { const out = []; let d = from; while (out.length < n) { d = DateK.add(d, 1); if (DateK.isSchoolDay(d)) out.push(d); } return out; }
+};
+
+/* ---------- 점검 모드 (주소 뒤 ?test): 5일 챌린지를 하루에 5회로 넘겨 보기 ----------
+   약속 카드를 만든 뒤에는 '오늘'이 챌린지 1일째부터 시작하고, [다음 날로]를 누를 때마다 하루씩 넘어가요.
+   학생 화면(?test 없음)은 실제 날짜 그대로예요. */
+const TestMode = {
+  on: false,
+  idx(c) { const s = Store.get('testDay', null); return (s && c && s.first === c.days[0]) ? s.idx : 0; },
+  day(c) { const i = TestMode.idx(c); return i < c.days.length ? c.days[i] : DateK.add(c.days[c.days.length - 1], 1); },
+  next() { const c = Store.get('challenge', null); if (!c) return; Store.set('testDay', { first: c.days[0], idx: Math.min(TestMode.idx(c) + 1, c.days.length) }); }
 };
 
 /* ---------- 고른 수칙 (집 → 학교 → 밖, 각 장소 안에서는 고른 순서) ---------- */
@@ -139,6 +150,7 @@ const Router = {
     fn(app, state.p || {});
     SoundBtn.update(state.s);
     Orient.check();
+    if (TestMode.on && typeof TestBar !== 'undefined') TestBar.update();
   }
 };
 window.addEventListener('popstate', e => {

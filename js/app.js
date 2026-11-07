@@ -444,7 +444,7 @@ Router.screens.S46 = (app, p) => {
     $('#ckList', w).addEventListener('scroll', closeTip);
     onTap($('#ckX', w), () => { playSfx('tap'); Modal.close(); });
     onTap($('#ckClose', w), () => { playSfx('tap'); Modal.close(); });
-    onTap($('#ckSave', w), () => { const c2 = Challenge.get(); c2.log[t] = draft; Store.set('challenge', c2); Challenge.recompute(c2, t); Modal.close(); playSfx('save'); render(); $$('#list .res').forEach((r, i) => { r.style.animationDelay = i * .1 + 's'; replay(r, 'pop'); }); toast('저장했어요!'); });
+    onTap($('#ckSave', w), () => { const c2 = Challenge.get(); c2.log[t] = draft; Store.set('challenge', c2); Challenge.recompute(c2, t); Modal.close(); playSfx('save'); render(); $$('#list .res').forEach((r, i) => { r.style.animationDelay = i * .1 + 's'; replay(r, 'pop'); }); toast('저장했어요!'); if (TestMode.on) TestBar.update(); });
     upd();
   };
   $('#list').addEventListener('click', () => { if (!locked) openCheck(); });
@@ -770,9 +770,34 @@ function seedPreview(view) {
   }
 }
 
+/* ===================== 점검 모드 띠 (?test) ===================== */
+const TestBar = {
+  el: null,
+  update() {
+    if (!TestBar.el) {
+      const b = document.createElement('div'); b.className = 'test-bar';
+      b.style.cssText = 'position:fixed;left:8px;top:8px;z-index:9999;display:flex;gap:8px;align-items:center;padding:6px 10px;border-radius:10px;background:#252E52;color:#fff;font:600 13px/1.3 sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.25)';
+      document.body.appendChild(b); TestBar.el = b;
+      b.addEventListener('click', e => {
+        if (!e.target.closest('[data-tnext]')) return;
+        TestMode.next(); const s = Challenge.status();
+        Router.go(s === 'ended' ? 'S47' : 'S46', {}, { replace: true });
+      });
+    }
+    const c = Challenge.get();
+    if (!c) { TestBar.el.innerHTML = '🧪 점검 모드 · 약속 카드를 만들면 챌린지를 바로 시작해요'; return; }
+    const i = TestMode.idx(c), n = c.days.length, ended = Challenge.status(c) === 'ended';
+    const btn = 'style="border:0;border-radius:8px;padding:4px 10px;background:#FFB199;color:#252E52;font:700 13px sans-serif;cursor:pointer"';
+    TestBar.el.innerHTML = ended
+      ? `🧪 점검 모드 · ${n}회 완료`
+      : `🧪 점검 모드 · ${Math.min(i + 1, n)} / ${n}회째 <button data-tnext ${btn}>다음 날로 ›</button>`;
+  }
+};
+
 /* ===================== 앱 시작 ===================== */
 (function start() {
   const qs = new URLSearchParams(location.search);
+  if (qs.has('test')) TestMode.on = true; // 점검 모드: 체크를 하루씩 바로 넘겨 보기
   if (/^\d{4}-\d{2}-\d{2}$/.test(qs.get('today') || '')) DateK.override = qs.get('today'); // 테스트용 날짜
   /* 1) 교사 링크의 설정을 이 기기에 저장 */
   if (qs.has('mode') || qs.has('board') || qs.has('sound') || qs.has('bgm')) {
