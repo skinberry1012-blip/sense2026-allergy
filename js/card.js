@@ -155,8 +155,8 @@ const MEDAL_COLORS = {
 };
 async function drawMedal(canvas, { color = 'coral', stars = 0, cardNo = '' }) {
   /* 메달 그림: assets/medal/medal_{color}.png (수호냥 리본 메달, 아래 띠는 비어 있음)
-     코드가 얹는 것: 아래 띠 "5일 챌린지 완료!", 메달 아래 별 5칸 · 별 획득 · 고유번호 */
-  const W = 900, H = 1110; canvas.width = W; canvas.height = H;
+     코드가 얹는 것: 아래 띠 "5일 챌린지 완료!" 글자만 */
+  const W = 900, H = 860; canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d');
   if (document.fonts && document.fonts.ready) await document.fonts.ready;
   const M = MEDAL_COLORS[color] ? color : 'coral', img = await loadImg(`assets/medal/medal_${M}.png`);
@@ -167,19 +167,7 @@ async function drawMedal(canvas, { color = 'coral', stars = 0, cardNo = '' }) {
   ctx.font = `400 ${Math.round(mw * 0.075)}px ${HEAD}`;
   ctx.lineWidth = mw * 0.016; ctx.strokeStyle = '#252E52'; ctx.strokeText('5일 챌린지 완료!', X(0.5), Y(0.905), mw * 0.56);
   ctx.fillStyle = '#fff'; ctx.fillText('5일 챌린지 완료!', X(0.5), Y(0.905), mw * 0.56);
-  const py = oy + mh + 18, ph = H - py - 14, pc = MEDAL_COLORS[M].b;
-  ctx.fillStyle = '#fff'; ctx.fillRect(60, py, W - 120, ph);
-  ctx.fillStyle = '#252E52'; [[60, py - 6, W - 120, 6], [60, py + ph, W - 120, 6], [54, py, 6, ph], [W - 60, py, 6, ph]].forEach(r => ctx.fillRect(...r));
-  const r = 30, gap = 78;
-  for (let i = 0; i < 5; i++) {
-    ctx.save(); ctx.translate(W / 2 + (i - 2) * gap, py + ph * 0.3); ctx.beginPath();
-    for (let j = 0; j < 10; j++) { const q = j % 2 ? r * 0.48 : r, an = -Math.PI / 2 + j * Math.PI / 5; ctx.lineTo(Math.cos(an) * q, Math.sin(an) * q); }
-    ctx.closePath(); ctx.lineWidth = 5;
-    ctx.fillStyle = i < stars ? '#F5C842' : '#E8E1D3'; ctx.strokeStyle = '#252E52';
-    ctx.fill(); ctx.stroke(); ctx.restore();
-  }
-  ctx.font = `400 38px ${HEAD}`; ctx.fillStyle = pc; ctx.fillText(`별 획득 ${stars} / 5일`, W / 2, py + ph * 0.64);
-  ctx.font = `700 24px ${FONT}`; ctx.fillStyle = '#252E52'; ctx.fillText(`나의 카드 고유번호 : ${cardNo || 'AL-○○○○○○-○○○○'}`, W / 2, py + ph * 0.86, W - 160);
+  /* 별·고유번호 칸은 넣지 않음 — 메달 그림만 (팀 점검 11/8) */
   ctx.textBaseline = 'alphabetic';
 }
 

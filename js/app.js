@@ -45,7 +45,7 @@ Router.screens.S40 = (app) => {
         <div class="clip"></div>
         <p class="q">1. 이름을 입력해 봐!</p>
         <label class="name-field">
-          <input id="name" type="text" maxlength="12" placeholder="이름 (5글자까지)" autocomplete="off" enterkeyhint="done" aria-label="이름">
+          <input id="name" type="text" maxlength="12" placeholder="이름 (번호도 쓸 수 있어요)" autocomplete="off" enterkeyhint="done" aria-label="이름">
           <span class="count" id="count">0/5</span><span aria-hidden="true">✏️</span>
         </label>
         <p class="preview empty" id="pv">👉 <span><span class="nm" id="pvName">○○</span><span id="pvJosa">의</span> 알레르기 예방 약속카드</span></p>
@@ -54,7 +54,7 @@ Router.screens.S40 = (app) => {
   </div>`;
   const input = $('#name'), make = $('#make');
   let composing = false;
-  const clean = v => v.replace(/[^가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z]/g, '');
+  const clean = v => v.replace(/[^가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9\- ]/g, '').replace(/^ +/, '').replace(/ {2,}/g, ' ');   // 번호·반 번호 허용 (5-3 김건강, 12번)
   const enforce = () => { let v = clean(input.value); if ([...v].length > NAME_MAX) v = [...v].slice(0, NAME_MAX).join(''); if (v !== input.value) input.value = v; };
   const render = () => {
     const n = input.value.trim(), len = [...n].length;
@@ -536,7 +536,6 @@ Router.screens.S48 = (app) => {
   const first = !sessionStorage.getItem('s48Shown');
   app.innerHTML = `
   <div class="sc outdoor s48">
-    <header class="s48-head"><h1 class="title-banner pinkline">오늘 <b>${esc(name)}${josaNeun(name)}</b> 몇 개나 지켰을까?</h1><p class="bubble sm">내가 정한 약속을<br>5일 동안 잘 지켰나요?</p></header>
     <h2 class="title-banner sm s48-tb">🏆 5일 챌린지 <em>완료!</em></h2>
     <p class="sub-pill s48-sub">5일 동안 나의 예방 <em class="pk">약속</em>을 실천했어요!</p>
     <img class="s48-cat ${first ? 'cheer' : 'bob'}" src="${CAT('pinky_03')}" alt="">
@@ -546,9 +545,9 @@ Router.screens.S48 = (app) => {
     <p class="ribbon-line">${line}</p>
     <div class="s48-btns">
       <button class="btn white big" id="del">↻ 새로 도전하기</button>
-      <button class="btn blue big pulse" id="medal">🏅 챌린지 성공 메달 받기 ›</button>
+      ${stars >= 3 ? '<button class="btn blue big pulse" id="medal">🏅 챌린지 성공 메달 받기 ›</button>' : ''}
     </div>
-    <p class="warn">새로 도전하면 지금 기록은 지워져요. 메달을 먼저 저장해 두세요!</p>
+    <p class="warn">${stars >= 3 ? '새로 도전하면 지금 기록은 지워져요. 메달을 먼저 저장해 두세요!' : '별 3일 이상이면 메달을 받을 수 있어요. 다시 도전해 볼까요?'}</p>
   </div>`;
   if (first) { sessionStorage.setItem('s48Shown', '1'); playSfx('fanfare'); confetti(); }
   onTap($('#medal'), () => openMedalModal({ stars }));
@@ -624,7 +623,7 @@ function openDeleteModal() {
     $('#dYes', m).disabled = true; playSfx('delete');
     Store.clearAll(); signatureImg = null; savedCompleteThisSession = false;
     Modal.close();
-    Router.go(Config.get().mode === 'event' ? 'S39' : 'S00', {}, { replace: true });
+    Router.go('S39', {}, { replace: true });   // 새로 도전하기 → 약속 카드 만들기부터 (팀 점검 11/8)
   });
 }
 
@@ -660,7 +659,7 @@ Router.screens.T49 = (app, p) => {
       if (d.mode === 'event' && view === 'lab') view = 'card';
       $$('#views button').forEach(x => { x.classList.toggle('on', x.dataset.v === view); x.disabled = x.dataset.v === 'lab' && d.mode === 'event'; });
       $('#pv').src = pvSrc(); fitFrame();
-      $('#pvcap').textContent = view === 'lab' ? '🔬 수업용 학생은 연구소에서 시작해요. 연구소 학습(S00~S38A)을 마치면 약속 카드로 넘어가요.'
+      $('#pvcap').textContent = view === 'lab' ? '🔬 수업용 학생은 연구소에서 시작해요. 연구소 학습을 마치면 약속 카드로 넘어가요.'
         : d.mode === 'event' ? '✏️ 행사용: 학생은 QR을 찍으면 바로 이 약속 카드 화면에서 시작해요.' : '🛡 수업용: 연구소 학습을 마친 학생이 이 약속 카드 화면으로 와요.';
     } else {
       $('#qr').innerHTML = QR.toSVG(urlOf()); $('#lnk').textContent = urlOf();
@@ -674,8 +673,8 @@ Router.screens.T49 = (app, p) => {
       <div class="tg-col">
         <h3 class="tg-h sky"><i>🖥</i>앱 실행 모드 선택</h3>
         <div class="tg-modes" id="seg">
-          <button data-m="class" class="${d.mode !== 'event' ? 'on' : ''}"><span class="rd"></span><span class="tx"><b>수업용 모드</b>연구소 학습(S00~S38A)을 마친 후<br>예방 약속 카드를 만듭니다.</span><em>📚</em></button>
-          <button data-m="event" class="${d.mode === 'event' ? 'on' : ''}"><span class="rd"></span><span class="tx"><b>행사용 모드</b>학습 과정을 생략하고 '예방 약속 카드<br>만들기(P7)' 화면으로 바로 진입합니다.</span><em>✏️</em></button>
+          <button data-m="class" class="${d.mode !== 'event' ? 'on' : ''}"><span class="rd"></span><span class="tx"><b>수업용 모드</b>연구소 학습을 마친 후<br>예방 약속 카드를 만듭니다.</span><em>📚</em></button>
+          <button data-m="event" class="${d.mode === 'event' ? 'on' : ''}"><span class="rd"></span><span class="tx"><b>행사용 모드</b>학습 과정을 생략하고 '예방 약속 카드<br>만들기' 화면으로 바로 진입합니다.</span><em>✏️</em></button>
         </div>
         <h3 class="tg-h lav"><i>☁</i>결과 공유 게시판 <span class="opt">선택사항</span></h3>
         <p class="tg-label">학생들이 <b>5일 챌린지</b> 메달 이미지를 올릴 패들렛, 띵커벨 보드 주소</p>
@@ -720,7 +719,6 @@ Router.screens.T49 = (app, p) => {
         <button class="tg-mode" id="modeChip"></button>
         <div class="tg-qrbox"><span class="ray l"></span><button class="tg-qr" id="qr" aria-label="QR 크게 보기"></button><span class="ray r"></span></div>
         <p class="tg-hint">⤢ QR 코드를 누르면 전체 화면으로 크게 확대됩니다.</p>
-        <img class="tg-cat2" src="${CAT('pinky_02')}" alt="">
       </div>
       <div class="tg-col">
         <h3 class="tg-h sky"><i>🔗</i>접속 링크 직접 공유</h3>

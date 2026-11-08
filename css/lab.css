@@ -170,7 +170,19 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .cd-front { background:#fff; transform:rotateY(180deg); display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:16px 8px 14px; }
 .cd-front .sym-c { width:164px; height:158px; } .cd-front .sym-c img { height:158px; }
 .cd-front b { font-family:var(--font-head); font-weight:400; font-size:24px; text-align:center; line-height:1.2; word-break:keep-all; }
-.lab-card.seen .cd-back { transform:rotateY(180deg); } .lab-card.seen .cd-front { transform:rotateY(360deg); }
+/* 그림을 먼저 보여 주고, 누르면 증상 이름 (팀 점검 11/8) */
+.lab-card .cd-front { transform:none; }
+.cd-name { min-height:58px; display:flex; align-items:center; justify-content:center; width:100%; border-top:4px dashed var(--sky); padding-top:6px; }
+.cd-name i { font-style:normal; font-size:40px; color:var(--blue); }
+.cd-name em { font-style:normal; display:none; }
+.lab-card.seen .cd-name i { display:none; } .lab-card.seen .cd-name em { display:block; animation:pxpop .35s ease-out; }
+.lab-card.seen .cd-name { border-top-color:transparent; }
+@keyframes pxpop { from { scale:.6; opacity:0; } to { scale:1; opacity:1; } }
+/* 장소 미션 3가지 */
+.px-steps { display:flex; gap:8px; margin-top:8px; }
+.px-steps i { font-style:normal; font-family:var(--font-head); font-size:20px; padding:3px 10px 1px; background:#E8EEF8; color:var(--navy); border:3px solid var(--navy); opacity:.75; }
+.px-steps i.cur { background:var(--yellow); opacity:1; }
+.px-steps i.ok { background:#D8EED8; opacity:1; }
 .lab-card:not(.seen) { animation:cardsoft 2.2s ease-in-out infinite; }
 @keyframes cardsoft { 50% { translate:0 -6px; } }
 .lab-card.sel > span { outline:6px solid var(--yellow); outline-offset:4px; }

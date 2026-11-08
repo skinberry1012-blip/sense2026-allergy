@@ -116,8 +116,7 @@ Router.screens.S00 = (app) => {
   const b = labBoard(app, LAB.bg.entrance, { cls: 'lab-s00' });
   labEl(b, 'lab-sign', [378, 222, 842, 172], `<div><span class="px-tag">냥박사의</span><b><em>알레르기</em> 연구소</b></div>`);
   labChar(b, 'nyang_welcome', 560, { left: -40, bottom: 22 });
-  labChar(b, 'staff_hello', 560, { right: -60, bottom: 22 });
-  const bub = labBubble(b, { x: 455, y: 430, w: 260, fs: 36 }); bub.say('환영해요!', false);
+  labChar(b, 'staff_hello', 470, { right: -10, bottom: 22 });   // 수호냥은 냥박사보다 조금 작게
   const go = labBtn(b, '입장하기 ›', 'left:50%;bottom:64px;transform:translateX(-50%);font-size:52px;padding:20px 64px 16px', 'y shine beat');
   /* 대기 음악: 첫 터치에 작게 시작 → [입장하기] 누르면 멈춤 (선생님 설정 '대기 음악 끄기'면 안 나옴) */
   const cfg = Config.get();
@@ -163,7 +162,11 @@ Object.entries(LAB.places).forEach(([place, d]) => {
   Router.screens[d.scene] = (app, p) => {
     const b = labBoard(app, LAB.bg[place]);
     const found = LabFound.get()[place], n = found.length;
-    labPanel(b, { x: 28, y: 24, sub: `연구 과제 ${d.no} · ${d.name}`, title: '숨은 알레르기 원인 4가지 찾기', fs: 34 });
+    const pan = labPanel(b, { x: 28, y: 24, sub: `연구 과제 ${d.no} · ${d.name}`, title: '숨은 알레르기 원인 4가지 찾기', fs: 34 });
+    /* 장소 미션 3가지 표시 (집 3-1 · 급식실 3-2 · 운동장 3-3) */
+    const PICON = { home: '🏠', school: '🍴', ground: '⚽' };
+    $('div', pan).insertAdjacentHTML('beforeend', `<span class="px-steps">${Object.entries(LAB.places).map(([k, q]) =>
+      `<i class="${k === place ? 'cur' : ''} ${LabFound.count(k) >= 4 ? 'ok' : ''}">${PICON[k]} ${q.name} 3-${q.no}${LabFound.count(k) >= 4 ? ' ✓' : ''}</i>`).join('')}</span>`);
     labEl(b, 'px-chip big', null, `찾은 원인 <b class="lc">${n}</b> / 4`, 'div', 'right:190px;top:26px');
     const hint = labEl(b, 'px-icon y', null, '<svg viewBox="0 0 24 24" fill="none" stroke="#1E2A5A" stroke-width="2.5"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5V16h8v-2.5A6 6 0 0 0 12 3z"/></svg>', 'button', 'right:104px;top:26px');
     hint.setAttribute('aria-label', '힌트');
@@ -312,8 +315,7 @@ Router.screens['S36-3'] = (app) => {
   let sel = null, lockTimer;
   const cards = C.list.map((c, i) => {
     const e = labEl(b, 'lab-card', [36 + i * 222, 150, 196, 290], `
-      <span class="cd-back"><span>?</span></span>
-      <span class="cd-front"><span class="sym-c"><img src="${IMG.sym(c.id)}" alt=""></span><b>${c.label}</b></span>`, 'button');
+      <span class="cd-front"><span class="sym-c"><img src="${IMG.sym(c.id)}" alt=""></span><b class="cd-name"><i>?</i><em>${c.label}</em></b></span>`, 'button');
     e.setAttribute('aria-label', '증상 카드');
     onTap(e, () => pick(c.id));
     return e;
