@@ -183,11 +183,13 @@ img, canvas { max-width:100%; }
 
 /* ---------- S44 ---------- */
 .s44 { flex:1; display:flex; flex-direction:column; }
-.s44-top { display:grid; grid-template-columns:120px 1fr 260px; gap:12px; align-items:center; }
+.s44-top { display:flex; align-items:center; justify-content:center; gap:16px; padding-right:64px; }
+.s44-top .title-banner { flex:0 1 auto; font-size:clamp(20px,2.4vw,32px); }
+.sign-hint { margin-top:10px; text-align:center; font-weight:800; font-size:15px; color:#5a5055; } .sign-hint b { color:#E0663F; }
 .s44-mascot { width:120px; }
 .s44-titles { display:flex; flex-direction:column; gap:10px; min-width:0; }
 .s44-titles .title-banner { align-self:stretch; font-size:clamp(20px,2.6vw,34px); }
-.bubble.sm.s44-bubble { font-size:clamp(12px,1.15vw,15px); padding:10px 12px; }
+.bubble.sm.s44-bubble { flex:none; font-size:clamp(12px,1.15vw,15px); padding:10px 12px; background:#FFF3B8; }
 .steps { list-style:none; display:flex; align-items:center; gap:6px; counter-reset:st; }
 .steps li { counter-increment:st; flex:1; display:flex; align-items:center; gap:8px; background:#fff; border:3px solid #F3DDD6; border-radius:999px; padding:5px 12px 5px 5px; font-weight:900; font-size:clamp(12px,1.25vw,16px); color:#5a5055; white-space:nowrap; }
 .steps li::before { content:counter(st); flex:none; display:grid; place-items:center; width:30px; height:30px; border-radius:50%; background:#FCE1D9; color:var(--pink-d); font-size:15px; }
@@ -532,9 +534,8 @@ body.tablet .rules-bar .btn { font-size:24px; min-height:72px; }
 /* S44 */
 body.tablet .s44 { display:flex; flex-direction:column; padding:14px 24px 14px; }
 body.tablet .s44 > * { position:relative; }
-body.tablet .s44-top { grid-template-columns:150px 1fr 300px; }
-body.tablet .s44-mascot { width:150px; }
-body.tablet .s44-titles .title-banner { font-size:38px; padding:10px 30px; }
+body.tablet .s44-top .title-banner { font-size:34px; padding:10px 30px; }
+body.tablet .sign-hint { font-size:18px; }
 body.tablet .bubble.sm.s44-bubble { font-size:17px; }
 body.tablet .steps li { font-size:19px; }
 body.tablet .s44-grid { grid-template-columns:260px 1fr 340px; }

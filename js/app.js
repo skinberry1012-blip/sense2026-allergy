@@ -202,18 +202,14 @@ Router.screens.S44 = (app) => {
   app.innerHTML = `
   <div class="sc outdoor s44">
     <header class="s44-top">
-      <img class="s44-mascot" src="${CAT('pinky_03')}" alt="">
-      <div class="s44-titles">
-        <h1 class="title-banner">${pawSVG('#fff')} 나만의 알레르기 예방 <em>약속 카드</em> 만들기! ${pawSVG('#fff')}</h1>
-        <ol class="steps" id="steps"><li>카드 디자인 선택</li><li>나의 수호 친구 고르기</li><li>미리보기 확인</li><li>완성하기</li></ol>
-      </div>
+      <h1 class="title-banner">${pawSVG('#fff')} 나만의 알레르기 예방 <em>약속 카드</em> 만들기! ${pawSVG('#fff')}</h1>
       <p class="bubble sm s44-bubble">원하는 디자인과 캐릭터를 선택하고,<br>나만의 약속 카드를 완성해 보세요!</p>
     </header>
     <div class="s44-grid">
       <section class="s44-box s44-designs"><h3 class="box-tag">🗂 카드 디자인 선택</h3><div id="designs"></div></section>
       <section class="s44-box s44-center">
         <div class="preview-wrap" id="pvwrap"><canvas id="pv"></canvas><button class="zoom" id="zoom">🔍 크게 보기</button></div>
-        <button class="btn white sign-btn" id="sign">✍️ 서명하기 (선택)</button>
+        <p class="sign-hint" id="signHint">✍️ 카드의 <b>빨간 동그라미</b>를 누르면 서명할 수 있어요 (선택)</p>
       </section>
       <section class="s44-right">
         <div class="s44-box"><h3 class="box-tag">나의 수호 친구 선택</h3><div class="buddies" id="buddies"></div></div>
@@ -227,14 +223,14 @@ Router.screens.S44 = (app) => {
     </nav>
   </div>`;
   const canvas = $('#pv');
-  const draw = () => drawPromiseCard(canvas, { ...st, name, cardNo: Store.get('cardNo', ''), rules, sigImg: signatureImg, preview: true });
+  const cardDay = () => Store.get('cardDate', '') || DateK.today();
+  let sealAt = null;
+  const draw = () => drawPromiseCard(canvas, { ...st, name, date: cardDay(), rules, sigImg: signatureImg, preview: true }).then(r => { sealAt = r.seal; });
   const render = () => {
-    $$('#steps li').forEach((li, i) => (li.className = i + 1 === st.step ? 'cur' : i + 1 < st.step ? 'done' : ''));
     $('#designs').innerHTML = Object.entries(DESIGNS).map(([k, d]) => `<button class="design ${st.design === k ? 'on' : ''}" data-k="${k}"><span class="radio"></span><span class="thumb" style="background-image:url(${d.bg})"><b>${d.name}<br>디자인</b></span></button>`).join('');
     $('#buddies').innerHTML = Object.entries(BUDDIES).map(([k, n]) => `<button class="buddy ${st.buddy === k ? 'on' : ''}" data-k="${k}"><span class="tick">✓</span><img src="${CAT(k)}" alt=""><span class="bn">${n}</span></button>`).join('');
-    $('#summary').innerHTML = `<h3 class="box-tag">📋 선택한 내용 요약</h3><p><span>카드 디자인</span><b>${DESIGNS[st.design].name}</b></p><p><span><img src="${CAT(st.buddy)}" alt=""> 나의 수호 친구</span><b>${BUDDIES[st.buddy]}</b></p><p><span>예방 수칙</span><b>총 ${rules.length}개</b></p>`;
-    $('#sign').textContent = signatureImg ? '✓ 서명했어요 (다시 쓰기)' : '✍️ 서명하기 (선택)';
-    $('#sign').classList.toggle('signed', !!signatureImg);
+    $('#summary').innerHTML = `<h3 class="box-tag">📋 선택한 내용 요약</h3><p><span>카드 디자인</span><b>${DESIGNS[st.design].name}</b></p><p><span>나의 수호 친구</span><b>${BUDDIES[st.buddy]}</b></p><p><span>예방 수칙</span><b>총 ${rules.length}개</b></p>`;
+    $('#signHint').innerHTML = signatureImg ? '✓ 서명했어요 · <b>빨간 동그라미</b>를 누르면 다시 쓸 수 있어요' : '✍️ 카드의 <b>빨간 동그라미</b>를 누르면 서명할 수 있어요 (선택)';
     draw();
   };
   $('#designs').addEventListener('click', e => { const b = e.target.closest('[data-k]'); if (!b) return; st.design = b.dataset.k; st.step = Math.max(st.step, 2); Store.set('design', st.design); playSfx('tab'); render(); });
@@ -248,8 +244,15 @@ Router.screens.S44 = (app) => {
   };
   onTap($('#zoom'), zoom);
 
-  /* 서명 창 */
-  onTap($('#sign'), () => {
+  /* 서명 창: 미리보기 카드의 빨간 동그라미를 누르면 열림 */
+  const onSeal = e => {
+    if (!sealAt) return false;
+    const r = canvas.getBoundingClientRect(), x = (e.clientX - r.left) * CARD_W / r.width, y = (e.clientY - r.top) * CARD_H / r.height;
+    return Math.hypot(x - sealAt[0], y - sealAt[1]) <= sealAt[2] + 24;
+  };
+  canvas.addEventListener('pointermove', e => { canvas.style.cursor = onSeal(e) ? 'pointer' : ''; });
+  canvas.addEventListener('click', e => { if (onSeal(e)) { playSfx('tap'); openSign(); } });
+  const openSign = () => {
     const m = Modal.open(`
       <div class="pop-head">✍️ 직접 서명하기</div>
       <p class="pop-small">손가락이나 터치펜으로 이름을 써 주세요. 서명은 선택이에요.</p>
@@ -268,7 +271,7 @@ Router.screens.S44 = (app) => {
       signatureImg = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.src = pad.toDataURL('image/png'); });
       Modal.close(); render();
     });
-  });
+  };
 
   onTap($('#redo'), () => Router.go('RULES', { tab: 0 }));
   onTap($('#home'), () => {
@@ -284,7 +287,8 @@ Router.screens.S44 = (app) => {
       Store.set('cardNo', `AL-${t}-${String(Math.floor(1000 + Math.random() * 9000))}`);
     }
     const out = document.createElement('canvas');
-    const res = await drawPromiseCard(out, { ...st, name, cardNo: Store.get('cardNo'), rules, sigImg: signatureImg, preview: false });
+    if (!Store.get('cardDate')) Store.set('cardDate', DateK.today());
+    const res = await drawPromiseCard(out, { ...st, name, date: cardDay(), rules, sigImg: signatureImg, preview: false });
     if (!res.fit) {
       toast('약속이 카드에 다 들어가지 않아요. [다시 꾸미기]에서 약속을 줄이거나 짧게 고쳐 주세요.', 3500); return;
     }

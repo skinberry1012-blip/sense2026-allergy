@@ -90,7 +90,7 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .lab-spot.pulse > i { animation:corner 1.4s ease-in-out infinite; }
 @keyframes corner { 50% { transform:scale(1.25); } }
 .lab-spot.glow { animation:spotglow .6s ease-in-out 5; }
-/* 스캔할 곳 강조 (사용자 요청 11/8): 바닥 빛 + 물건 테두리 빛 + 스캔 줄 + 모서리 크게 */
+/* 스캔할 곳 강조 (사용자 요청 11/8): 바닥 빛 + 퍼지는 물결 + 물건 테두리 빛 + 모서리 크게 */
 .lab-spot.pulse { isolation:isolate; border-radius:22px; animation:spotripple 1.4s ease-out infinite; }
 @keyframes spotripple { 0% { box-shadow:0 0 0 0 rgba(224,102,63,.75); } 100% { box-shadow:0 0 0 30px rgba(224,102,63,0); } }
 .lab-spot.pulse.glow { animation:spotglow .6s ease-in-out 5; }
@@ -100,10 +100,6 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .lab-spot.pulse > img { filter:drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff) drop-shadow(0 0 10px #F5C842);
   animation:spotlift 1.4s ease-in-out infinite; }
 @keyframes spotlift { 50% { translate:0 -6px; } }
-.lab-spot.pulse::after { content:''; position:absolute; left:-8px; right:-8px; height:6px; top:0; pointer-events:none;
-  background:linear-gradient(90deg, rgba(80,220,255,0), #5CE1FF 20%, #fff 50%, #5CE1FF 80%, rgba(80,220,255,0)); box-shadow:0 0 12px #5CE1FF;
-  animation:spotscan 1.8s linear infinite; }
-@keyframes spotscan { 0% { top:0; opacity:0; } 10% { opacity:1; } 90% { opacity:1; } 100% { top:calc(100% - 6px); opacity:0; } }
 .lab-spot.pulse > i { width:34px; height:34px; border-color:#E0663F; filter:drop-shadow(0 0 0 #fff) drop-shadow(0 0 6px #fff); }
 .lab-spot.pulse > .c1 { border-left-width:8px; border-top-width:8px; } .lab-spot.pulse > .c2 { border-right-width:8px; border-top-width:8px; }
 .lab-spot.pulse > .c3 { border-left-width:8px; border-bottom-width:8px; } .lab-spot.pulse > .c4 { border-right-width:8px; border-bottom-width:8px; }
@@ -250,6 +246,6 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 @keyframes breathe { 0%,100% { transform:scale(1,1); } 50% { transform:scale(1.012,.985); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .px-btn.shine::after, .px-btn.beat, .lab-spot.pulse, .lab-spot.pulse > i, .lab-spot.pulse::before, .lab-spot.pulse::after, .lab-spot.pulse > img, .lab-lens.pulse, .mites i, .mites em, .lab-card:not(.seen), .bob, .breathe img { animation:none !important; }
+  .px-btn.shine::after, .px-btn.beat, .lab-spot.pulse, .lab-spot.pulse > i, .lab-spot.pulse::before, .lab-spot.pulse > img, .lab-lens.pulse, .mites i, .mites em, .lab-card:not(.seen), .bob, .breathe img { animation:none !important; }
   .lab-card > span { transition:none; }
 }

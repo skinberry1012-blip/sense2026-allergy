@@ -87,5 +87,5 @@ body.tablet .sc.outdoor::before, body.tablet .sc.outdoor::after { content:none !
 .tg-reset.danger { color:var(--coral-d) !important; }
 
 /* S44: 새 카드(3:2)가 커져도 아래 버튼이 화면 안에 */
-body.tablet .s44 .preview-wrap { width:700px; margin:0 auto; }
+body.tablet .s44 .preview-wrap { width:min(880px,100%); margin:0 auto; cursor:default; }
 body.tablet .s44 .s44-center { align-items:center; }
