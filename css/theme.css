@@ -89,3 +89,18 @@ body.tablet .sc.outdoor::before, body.tablet .sc.outdoor::after { content:none !
 /* S44: 새 카드(3:2)가 커져도 아래 버튼이 화면 안에 */
 body.tablet .s44 .preview-wrap { width:min(880px,100%); margin:0 auto; cursor:default; }
 body.tablet .s44 .s44-center { align-items:center; }
+
+/* ---------- S46 5일 체크 화면 여백 정리 (팀 점검 11/8) ---------- */
+.s46n .s46-bubble, .s46n #todaybox { display:none !important; }
+body.tablet .s46n .s47-tb { top:26px; font-size:34px; }
+body.tablet .s46n .s47-sub { top:104px; font-size:19px; }
+body.tablet .s46n .s47-left { left:40px; top:190px; width:250px; }
+body.tablet .s46n .s47-cat { height:230px; }
+body.tablet .s46n .s47-center { left:320px; top:178px; width:830px; bottom:196px; gap:10px; }
+body.tablet .s46n .s47-center .legend { margin:0; font-size:15px; gap:18px; justify-content:center; }
+body.tablet .s46n .s47-side { right:40px; top:178px; width:370px; bottom:196px; gap:16px; }
+body.tablet .s46n .rule-res .t { font-size:19px; }
+body.tablet .s46n-foot { left:0; right:0; bottom:58px; grid-template-columns:1fr; justify-items:center; }
+body.tablet .s46n-foot .resbar { grid-column:1; width:620px; text-align:center; }
+body.tablet .s46n-foot .resbar .hint { font-size:15px; margin-top:8px; }
+body.tablet .s46n-line { bottom:14px; font-size:14px; }

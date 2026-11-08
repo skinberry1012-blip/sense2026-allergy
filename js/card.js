@@ -93,8 +93,8 @@ async function drawPromiseCard(canvas, { design = 'certificate', buddy = 'pinky_
   ctx.font = `400 ${D.titleSize}px ${HEAD}`; ctx.fillText(CARD_TITLE, tx + tw / 2, ty + th / 2 + 2, tw - 30);
 
   /* 큰 칸 나누기: 왼쪽 수호 친구 · 오른쪽 수칙 */
-  const [bx, by, bw, bh] = D.box, leftW = Math.round(bw * 0.27);
-  const sc = Math.min((leftW - 16) / ch.width, (bh - 20) / ch.height);
+  const [bx, by, bw, bh] = D.box, leftW = Math.round(bw * 0.25);
+  const sc = Math.min((leftW - 40) / ch.width, (bh * 0.72) / ch.height);   // 수호 친구 크기 (사용자 요청: 조금 작게)
   const dw = ch.width * sc, dh = ch.height * sc;
   ctx.save(); ctx.imageSmoothingEnabled = false;
   ctx.drawImage(ch, bx + (leftW - dw) / 2, by + (bh - dh) / 2, dw, dh); ctx.restore();
