@@ -249,3 +249,5 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
   .px-btn.shine::after, .px-btn.beat, .lab-spot.pulse, .lab-spot.pulse > i, .lab-spot.pulse::before, .lab-spot.pulse > img, .lab-lens.pulse, .mites i, .mites em, .lab-card:not(.seen), .bob, .breathe img { animation:none !important; }
   .lab-card > span { transition:none; }
 }
+.lab-deco { pointer-events:none; z-index:2; }
+.lab-deco img { width:100%; height:100%; image-rendering:pixelated; display:block; }

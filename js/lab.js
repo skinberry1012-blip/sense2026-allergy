@@ -184,6 +184,8 @@ Object.entries(LAB.places).forEach(([place, d]) => {
       if (p.just === pt.item) { replay($('.stamp', s), 'stamp-in'); setTimeout(() => playSfx('stamp'), 120); }
       return s;
     });
+    /* 꾸밈 그림 (꽃밭 앞 풀 덤불 등) — 스캔할 곳보다 앞, 누르면 뒤의 물건이 눌림 */
+    ((LAB.deco || {})[place] || []).forEach(([src, x, y, w, h]) => labEl(b, 'lab-deco', [x, y, w, h], `<img src="${src}" alt="" draggable="false">`));
     /* 찾은 원인 칸 */
     const tray = labEl(b, 'lab-tray', [300, 742, 1000, 140]);
     d.points.forEach(pt => {

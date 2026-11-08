@@ -9,6 +9,9 @@
 
 window.LAB = {
   /* 그림 경로 */
+  /* 장소 앞에 얹는 꾸밈 그림 (누를 수 없음): [그림, 왼쪽, 위, 너비, 높이] */
+  deco: { ground: [['assets/bg/deco_bush.png', 1206, 736, 394, 176]] },
+
   bg: { entrance: 'assets/bg/bg_entrance.png', lab: 'assets/bg/bg_lab.png', home: 'assets/bg/bg_home.png', school: 'assets/bg/bg_cafeteria.png', ground: 'assets/bg/bg_playground.png' },
 
   /* S01~S04 이야기 */
@@ -42,7 +45,7 @@ window.LAB = {
     ground: {
       scene: 'S24', name: '운동장', no: 3, done: 'S33',
       points: [
-        { item: 'pollen', img: 'pollen_bed', r: [1316, 596, 266, 140], go: 'S25' },  // 오른쪽 아래 꽃밭 (팀 점검 11/8)
+        { item: 'pollen', r: [1404, 640, 140, 140], go: 'S25' },  // 오른쪽 아래 풀 덤불 위 꽃 한 송이 (팀 점검 11/8)
         { item: 'sun',    r: [1196, 104, 116, 116], go: 'S27' },   // 오른쪽 위 하늘
         { item: 'dust',   r: [255, 610, 130, 130], go: 'S29' },   // 모래밭
         { item: 'insect', r: [560, 470, 110, 110], go: 'S31' }    // 하늘색 미끄럼틀 옆
