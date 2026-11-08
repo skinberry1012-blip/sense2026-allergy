@@ -175,7 +175,7 @@ Object.entries(LAB.places).forEach(([place, d]) => {
       const done = found.includes(pt.item);
       const inner = pt.mite
         ? `<span class="mites">${Array.from({ length: 16 }, (_, k) => `<i style="left:${8 + (k * 37) % 84}%;top:${12 + (k * 53) % 76}%;animation-delay:${(k % 5) * .18}s"></i>`).join('')}<em></em><em></em><em></em></span>`
-        : `<img src="${IMG.item(pt.item)}" alt="">`;
+        : `<img src="${IMG.item(pt.img || pt.item)}" alt="">`;
       const s = labEl(b, 'lab-spot' + (done ? ' done' : ' pulse') + (pt.mite ? ' mite' : ''), pt.r,
         `${inner}${corners()}${done ? '<span class="stamp">발견</span>' : ''}`, 'button');
       s.setAttribute('aria-label', done ? `${LAB.items[pt.item]} 다시 보기` : '스캔하기');

@@ -42,7 +42,7 @@ window.LAB = {
     ground: {
       scene: 'S24', name: '운동장', no: 3, done: 'S33',
       points: [
-        { item: 'pollen', r: [1380, 575, 140, 140], go: 'S25' },  // 오른쪽 아래 꽃밭 (팀 점검 11/8)
+        { item: 'pollen', img: 'pollen_bed', r: [1316, 596, 266, 140], go: 'S25' },  // 오른쪽 아래 꽃밭 (팀 점검 11/8)
         { item: 'sun',    r: [1196, 104, 116, 116], go: 'S27' },   // 오른쪽 위 하늘
         { item: 'dust',   r: [255, 610, 130, 130], go: 'S29' },   // 모래밭
         { item: 'insect', r: [560, 470, 110, 110], go: 'S31' }    // 하늘색 미끄럼틀 옆

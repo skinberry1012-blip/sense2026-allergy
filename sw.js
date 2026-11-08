@@ -32,6 +32,7 @@ const FILES = [
   './assets/card/bg_lab.jpg',
   './assets/card/bg_playground.jpg',
   './assets/char/nyang_cheer.png',
+  './assets/item/pollen_bed.png',
   './assets/char/nyang_cheer_b.png',
   './assets/char/nyang_idle_b.png',
   './assets/char/nyang_idle_blink.png',
