@@ -133,7 +133,7 @@ const Router = {
   go(name, params = {}, opt = {}) {
     const state = { s: name, p: params };
     if (opt.replace) history.replaceState(state, '', location.pathname + location.search);
-    else history.pushState(state, '', location.pathname + location.search);
+    else { history.pushState(state, '', location.pathname + location.search); NavBtns.depth++; }
     Router.render(state);
   },
   guard: null, // 화면을 떠나기 전에 확인할 함수 (true를 돌려주면 뒤로 가기를 막음)
@@ -149,6 +149,7 @@ const Router = {
     Stage.fit();
     fn(app, state.p || {});
     SoundBtn.update(state.s);
+    if (typeof NavBtns !== 'undefined') NavBtns.update(state.s);
     Orient.check();
     if (TestMode.on && typeof TestBar !== 'undefined') TestBar.update();
   }
@@ -163,9 +164,35 @@ window.addEventListener('popstate', e => {
     history.pushState(Router.current, '', location.pathname + location.search);
     return;
   }
-  if (e.state && e.state.s) Router.render(e.state);
+  if (e.state && e.state.s) { NavBtns.depth = Math.max(0, NavBtns.depth - 1); Router.render(e.state); }
 });
 
+/* ---------- 이전 · 처음으로 버튼 (모든 학생 화면 왼쪽 아래, 팀 점검 11/8) ---------- */
+const NavBtns = {
+  el: null,
+  home() { return (typeof Config !== 'undefined' && Config.get().mode === 'event') ? 'S39' : 'S00'; },
+  update(screen) {
+    if (!NavBtns.el) {
+      const w = document.createElement('div'); w.id = 'navBtns';
+      w.innerHTML = '<button type="button" id="navBack" aria-label="이전 화면">‹ 이전</button><button type="button" id="navHome" aria-label="처음 화면">⌂ 처음</button>';
+      $('#stage').appendChild(w); NavBtns.el = w;
+      $('#navBack', w).addEventListener('click', () => {
+        if (typeof playSfx === 'function') playSfx('tap');
+        if (history.state && history.length > 1 && NavBtns.depth > 0) history.back(); else Router.go(NavBtns.home(), {}, { replace: true });
+      });
+      $('#navHome', w).addEventListener('click', () => {
+        if (typeof playSfx === 'function') playSfx('tap');
+        const m = Modal.open(`<div class="pop-head">처음 화면으로 갈까요?</div><p class="pop-body">지금까지 한 연구와 약속 카드 기록은 그대로 남아 있어요.</p>
+          <div class="pop-btns"><button class="btn white" data-autofocus id="nhNo">아니요</button><button class="btn pink" id="nhYes">처음 화면으로</button></div>`);
+        $('#nhNo', m).addEventListener('click', () => Modal.close());
+        $('#nhYes', m).addEventListener('click', () => { Modal.close(); Router.go(NavBtns.home()); });
+      });
+    }
+    const hide = PREVIEW || screen === 'T49' || screen === 'T50' || screen === NavBtns.home();
+    NavBtns.el.hidden = hide;
+  },
+  depth: 0
+};
 /* ---------- 소리 켜기/끄기 버튼 (학생 화면 오른쪽 위, 선생님 설정 제외 · 첫 화면에도 있음: 대기 음악) ---------- */
 const SPK_ON = '<svg viewBox="0 0 24 24" fill="none" stroke="#1E2A5A" stroke-width="2.5"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9a4 4 0 0 1 0 6"/></svg>';
 const SPK_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="#1E2A5A" stroke-width="2.5"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>';
