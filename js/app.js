@@ -647,7 +647,7 @@ Router.screens.T49 = (app, p) => {
     <img class="tg-cat" src="${CAT('pinky_03')}" alt="">
     <h1 class="tg-title">⚙ 냥박사 알레르기 연구소 · <em>선생님 설정</em></h1>
     <p class="tg-sub">✦ 학생들에게 나눠 주기 전, 수업 활용 방식과 결과 공유 방법을 정해 주세요 ✦</p>
-    <button class="tg-close" id="tClose">✕ 닫기</button>
+    <button class="tg-close" id="tClose">▶ 학생 화면 열기</button>
     <nav class="tg-tabs"><button class="tg-tab" data-t="1">⚙ <b>01</b> 기본 설정</button><button class="tg-tab" data-t="2">▦ <b>02</b> 공유 준비 및 QR 코드</button></nav>
     <section class="tg-panel" id="panel"></section>
   </div>`;
@@ -655,7 +655,7 @@ Router.screens.T49 = (app, p) => {
   const pvSrc = () => `index.html${query()}&preview=1&view=${viewName()}`;
   const fitFrame = () => {
     const f = $('#frame'), ifr = $('#pv'); if (!f) return;
-    const W = dev === 'tablet' ? 1600 : 393, H = dev === 'tablet' ? 900 : 852, s = Math.min(f.clientWidth / W, f.clientHeight / H);
+    const W = dev === 'tablet' ? 1600 : 852, H = dev === 'tablet' ? 900 : 393, s = Math.min(f.clientWidth / W, f.clientHeight / H);
     Object.assign(ifr.style, { width: W + 'px', height: H + 'px', transform: `translate(-50%,-50%) scale(${s})` });
   };
   const drawPrev = () => {
@@ -802,6 +802,8 @@ const TestBar = {
   if (qs.has('test')) TestMode.on = true; // 점검 모드: 체크를 하루씩 바로 넘겨 보기
   if (/^\d{4}-\d{2}-\d{2}$/.test(qs.get('today') || '')) DateK.override = qs.get('today'); // 테스트용 날짜
   /* 1) 교사 링크의 설정을 이 기기에 저장 */
+  const fromLink = qs.has('mode') || qs.has('board') || qs.has('sound') || qs.has('bgm');   // QR·공유 링크로 들어온 학생 기기
+  let configured = false; try { configured = localStorage.getItem(CFG_KEY) !== null; } catch (e) {}
   if (qs.has('mode') || qs.has('board') || qs.has('sound') || qs.has('bgm')) {
     const board = qs.get('board') || '';
     Config.set({ mode: qs.get('mode') === 'event' ? 'event' : 'class', board: isHttps(board) ? board : '', bgm: qs.get('bgm') !== 'off' });
@@ -824,7 +826,10 @@ const TestBar = {
   /* 4) 시작 화면 판단 */
   const st = Challenge.status();
   const first = st === 'ended' ? 'S47' : st !== 'none' ? 'S46' : Config.get().mode === 'event' ? 'S39' : 'S00';
-  if (teacher) Router.go('T49', { returnTo: first }, { replace: true });
+  /* 선생님 화면 먼저 (팀 점검 11/8): 주소만으로 연 기기(QR 설정·학생 기록 없음)는 선생님 설정부터.
+     QR·공유 링크로 들어온 학생 기기는 바로 학생 화면. 선생님 기기에서 다시 열 때는 주소 뒤 ?teacher */
+  const teacherFirst = !fromLink && !configured && !Store.hasRecord() && LabFound.total() === 0;
+  if (teacher || teacherFirst) Router.go('T49', { returnTo: first }, { replace: true });
   else Router.go(first, {}, { replace: true });
   /* 5) 오프라인 실행 (https에서만) */
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
