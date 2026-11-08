@@ -216,8 +216,11 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 
 /* ---------- 공통 움직임 ---------- */
 .bob { animation:bob 2.4s ease-in-out infinite; }
+/* 숨쉬기: 그림 움직임이 없는 자세에도 살짝 (발끝 기준으로 위아래) */
+.breathe img { transform-origin:50% 100%; animation:breathe 2.8s ease-in-out infinite; }
+@keyframes breathe { 0%,100% { transform:scale(1,1); } 50% { transform:scale(1.012,.985); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .px-btn.shine::after, .px-btn.beat, .lab-spot.pulse > i, .lab-lens.pulse, .mites i, .mites em, .lab-card:not(.seen), .bob { animation:none !important; }
+  .px-btn.shine::after, .px-btn.beat, .lab-spot.pulse > i, .lab-lens.pulse, .mites i, .mites em, .lab-card:not(.seen), .bob, .breathe img { animation:none !important; }
   .lab-card > span { transition:none; }
 }

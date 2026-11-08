@@ -73,7 +73,9 @@ function labEl(board, cls, r, html = '', tag = 'div', style = '') {
 function labChar(board, key, h, pos, cls = '') {
   const w = Math.round(h * CH_AR);
   const st = Object.entries(pos).map(([k, v]) => `${k}:${v}px`).join(';');
-  return labEl(board, 'lab-char ' + cls, null, `<img src="${IMG.char(key)}" alt="" draggable="false">`, 'div', `${st};width:${w}px;height:${h}px`);
+  const el = labEl(board, 'lab-char ' + cls, null, `<img src="${IMG.char(key)}" alt="" draggable="false">`, 'div', `${st};width:${w}px;height:${h}px`);
+  if (window.Anim) Anim.attach($('img', el), key, el);   // 움직임 (js/anim.js)
+  return el;
 }
 /* 버튼 A (픽셀 블록) */
 function labBtn(board, label, style, cls = 'y', fn) {
@@ -226,7 +228,7 @@ Object.entries(LAB.info).forEach(([key, d]) => {
   Router.screens[key] = (app) => {
     const b = labBoard(app, LAB.bg[d.place], { dim: 'navy' });
     playSfx('open');
-    labChar(b, 'nyang_scan', 560, { left: -120, bottom: 0 });
+    labChar(b, 'nyang_scan', 560, { left: -120, bottom: 0 }, 'no-intro');
     const win = labEl(b, 'lab-result', [600, 26, 950, 848], `
       <div class="rs-light"></div>
       <div class="rs-screen">
