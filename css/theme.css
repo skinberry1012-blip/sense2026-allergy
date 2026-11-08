@@ -113,3 +113,6 @@ body.tablet .s46n-line { bottom:14px; font-size:14px; }
 #navBtns button:active { translate:2px 2px; box-shadow:0 0 0 3px var(--navy), 2px 2px 0 3px rgba(30,42,90,.35); }
 body.tablet #navBtns { position:absolute; left:14px; bottom:14px; gap:12px; }
 body.tablet #navBtns button { font-size:22px; padding:10px 18px 8px; }
+/* S48: 메달 버튼이 없을 때(별 0~2일) 새로 도전하기를 가운데로 */
+.s48-btns.one { display:flex !important; justify-content:center; }
+.s48-btns.one .btn { min-width:440px; }

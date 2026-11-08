@@ -547,7 +547,7 @@ Router.screens.S48 = (app) => {
     <aside class="s48-box"><h3>⭐ 나의 챌린지 결과 ⭐</h3><p class="starn"><span class="bigstar">⭐</span><span>별 획득<br><b>${stars}</b> <small>/ 5일</small></span></p></aside>
     <div class="ribbon ${first ? 'pop' : ''}">축하합니다! 5일 챌린지 완료!</div>
     <p class="ribbon-line">${line}</p>
-    <div class="s48-btns">
+    <div class="s48-btns ${stars >= 3 ? '' : 'one'}">
       <button class="btn white big" id="del">↻ 새로 도전하기</button>
       ${stars >= 3 ? '<button class="btn blue big pulse" id="medal">🏅 챌린지 성공 메달 받기 ›</button>' : ''}
     </div>
