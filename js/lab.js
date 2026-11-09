@@ -424,34 +424,38 @@ Router.screens.S38A = (app) => {
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-quiz' });
   playSfx('open');
   labPanel(b, { y: 20, title: '기억 체크!', center: true, fs: 38 });
-  /* 좌우 구분 (11/9): 왼쪽 = 그림 카드 6장, 오른쪽 = 끼워 넣을 자리 (위 가벼운 · 아래 위급한) */
-  const title = labEl(b, 'quiz-sub', null, '그림을 알맞은 자리에 끼워 보세요!', 'div', 'left:50%;top:138px;transform:translateX(-50%)');
-  const TOP = 214, BOT = 872, PW = 176, PH = 214, GAP = 18;
-  const deck = labEl(b, 'quiz-deck', [60, TOP, 600, BOT - TOP], '<span>그림 카드</span>');
-  /* 섞은 자리: 3칸 × 2줄 */
-  const cells = Q.pieces.map((_, i) => [78 + (i % 3) * (PW + GAP), TOP + (BOT - TOP - (PH * 2 + GAP)) / 2 + Math.floor(i / 3) * (PH + GAP)]);   // 상자 위아래 가운데
+  /* 좌우 구분 (11/9): 왼쪽 = 그림 카드 6장, 오른쪽 = 끼워 넣을 자리 (위 가벼운 · 아래 위급한)
+     여백: 화면 좌우 48 · 아래 36 · 상자 사이 28 / 이름표는 상자 위 테두리에 걸쳐요 */
+  const title = labEl(b, 'quiz-sub', null, '그림을 누르고 자리를 누르거나, 끌어서 넣어 보세요!', 'div', 'left:50%;top:144px;transform:translateX(-50%)');
+  const TOP = 248, BOT = 864, L = 48, R = 1552, DW = 600, G = 28, PW = 164, PH = 210, GAP = 18;
+  const deck = labEl(b, 'quiz-deck', [L, TOP, DW, BOT - TOP], '<span>그림 카드</span>');
+  /* 섞은 자리: 3칸 × 2줄, 상자 한가운데 */
+  const gx0 = L + (DW - (PW * 3 + GAP * 2)) / 2, gy0 = TOP + (BOT - TOP - (PH * 2 + GAP)) / 2;
+  const cells = Q.pieces.map((_, i) => [gx0 + (i % 3) * (PW + GAP), gy0 + Math.floor(i / 3) * (PH + GAP)]);
   for (let i = cells.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [cells[i], cells[j]] = [cells[j], cells[i]]; }
   const trays = cells.map(([x, y]) => labEl(b, 'quiz-tray', [x, y, PW, PH]));
-  /* 빈 칸 */
-  const slots = {}, groupEls = [], SW = PW, SH = PH, GH = (BOT - TOP - 18) / 2;
-  [['light', '가벼운 증상 대처', TOP], ['severe', '위급한 증상 대처', TOP + GH + 18]].forEach(([t, label, gy]) => {
-    groupEls.push(labEl(b, 'quiz-group ' + t, [700, gy, 840, GH], `<span>${label}</span>`));
-    const sy = gy + 82;
+  /* 빈 칸: 묶음 상자 안 위아래 가운데 */
+  const slots = {}, groupEls = [], SW = PW, SH = PH, GX = L + DW + G, GW = R - GX, GH = (BOT - TOP - G) / 2, AG = 70;
+  [['light', '가벼운 증상 대처', TOP], ['severe', '위급한 증상 대처', TOP + GH + G]].forEach(([t, label, gy]) => {
+    groupEls.push(labEl(b, 'quiz-group ' + t, [GX, gy, GW, GH], `<span>${label}</span>`));
+    const sy = gy + (GH - SH) / 2, sx0 = GX + (GW - (SW * 3 + AG * 2)) / 2;
     for (let i = 0; i < 3; i++) {
-      const id = `${t}-${i}`, x = 786 + i * (SW + 70);
+      const id = `${t}-${i}`, x = sx0 + i * (SW + AG);
       slots[id] = labEl(b, 'quiz-slot', [x, sy, SW, SH], `<em>${i + 1}</em>`); slots[id].dataset.id = id;
-      if (i < 2) groupEls.push(labEl(b, 'cope-arrow quiz-arr ' + t, null, '', 'div', `left:${x + SW + 20}px;top:${sy + SH / 2 - 23}px`));
+      if (i < 2) groupEls.push(labEl(b, 'cope-arrow quiz-arr ' + t, null, '', 'div', `left:${x + SW + (AG - 30) / 2}px;top:${sy + SH / 2 - 23}px`));
     }
   });
+  /* 그림마다 보이는 크기 맞추기 (구급차·병원은 조금 크게) */
+  const ISCALE = { avoid: .97, tell: .98, clinic: 1.04, call119: .99, epipen: .96, ambulance: 1.1 };
   const home = {}; let placed = 0, selected = null;
   const pieces = Q.pieces.map((p, i) => {
     const r = [cells[i][0], cells[i][1], PW, PH]; home[p.id] = r;
-    const e = labEl(b, 'quiz-piece', r, `<img src="${IMG.cope(p.img)}" alt="" draggable="false"><b>${p.label}</b>`, 'button');
+    const e = labEl(b, 'quiz-piece', r, `<img src="${IMG.cope(p.img)}" alt="" draggable="false" style="scale:${ISCALE[p.img] || 1}"><b>${p.label}</b>`, 'button');
     e.dataset.id = p.id; e.setAttribute('aria-label', p.label);
     e.style.animationDelay = i * 0.08 + 's'; replay(e, 'pop');
     return e;
   });
-  const ok = labBtn(b, '방패 만들러 가기 ›', 'left:800px;top:832px;transform:translate(-50%,-50%);font-size:36px', 'y beat');   // 다 맞히면 가운데로 모인 대처 칸 아래
+  const ok = labBtn(b, '방패 만들러 가기 ›', 'left:1103px;top:842px;transform:translate(-50%,-50%);font-size:36px', 'y beat');   // 다 맞히면 오른쪽으로 모인 대처 칸 아래
   ok.hidden = true;
 
   const scale = () => b.getBoundingClientRect().width / 1600;
@@ -464,7 +468,7 @@ Router.screens.S38A = (app) => {
   const setR = (e, r) => { e.style.left = r[0] + 'px'; e.style.top = r[1] + 'px'; e.style.width = r[2] + 'px'; e.style.height = r[3] + 'px'; };
   const place = (e, s) => {
     setR(e, [parseFloat(s.style.left), parseFloat(s.style.top), parseFloat(s.style.width), parseFloat(s.style.height)]);
-    e.classList.add('placed'); e.classList.remove('sel'); e.disabled = true;
+    e.classList.add('placed', e.dataset.id.split('-')[0]); e.classList.remove('sel'); e.disabled = true;
     s.classList.add('full', 'ok'); playSfx('check'); replay(e, 'pop'); placed++;
     if (placed === 6) finish();
   };
@@ -505,13 +509,18 @@ Router.screens.S38A = (app) => {
     LabState.quizDone = true; Store.set('labComplete', true);
     setTimeout(() => {
       playSfx('fanfare'); labConfetti();
-      title.textContent = Q.doneText; replay(title, 'pop');
+      title.classList.add('out');   // 칭찬은 냥박사 말풍선이 해요 (11/9)
       /* 다 맞히면 (11/9): 그림 카드 상자는 사라지고, 대처 칸 두 묶음이 가운데로 모여요 */
       [deck, ...trays].forEach(x => x.classList.add('out'));
       const wrap = document.createElement('div'); wrap.className = 'quiz-wrap'; b.appendChild(wrap);
       [...groupEls, ...Object.values(slots), ...pieces].forEach(x => wrap.appendChild(x));
       requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('go')));
       setTimeout(() => Object.values(slots).forEach(s => replay(s, 'glow')), 650);
+      /* 냥박사가 왼쪽에 나와 칭찬해요 (11/9) */
+      setTimeout(() => {
+        labChar(b, 'nyang_cheer', 470, { left: 10, bottom: 0 });
+        labBubbleAt(labBubble(b, { x: 40, y: 0, w: 560, fs: 32, tail: 'bl' }), { bottom: 470, tailX: 250 }).say('대처 방법을 모두 기억했구나!<br>이제 {{나만의 방패}}를 만들러 가자!');
+      }, 500);
       setTimeout(() => { ok.hidden = false; replay(ok, 'pop'); }, 650);
     }, 350);
   }
