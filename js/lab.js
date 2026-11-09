@@ -379,10 +379,10 @@ Router.screens['S36-3'] = (app) => {
     const d = LAB.cope[key];
     const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-cope ' + d.type });
     LabState.copeSeen[d.type] = true;
-    labEl(b, 'cope-band', null, labFmt(d.title), 'div', 'left:50%;top:34px;transform:translateX(-50%)');
+    labPanel(b, { y: 22, title: d.title, center: true, fs: 36 });   // 연구소 공통 제목 부품 (11/9)
     const steps = d.steps.map(([img, label], i) => {
-      const s = labEl(b, 'cope-step', [110 + i * 480, 150, 420, 520], `<span class="num">${i + 1}</span><img src="${IMG.cope(img)}" alt=""><b>${label}</b>`);
-      if (i < 2) labEl(b, 'cope-arrow', null, '›', 'div', `left:${110 + i * 480 + 420 + 13}px;top:384px`);   // 카드 사이 한가운데
+      const s = labEl(b, 'cope-step', [130 + i * 470, 172, 400, 470], `<span class="num">${i + 1}</span><img src="${IMG.cope(img)}" alt=""><b>${label}</b>`);   // 둥근 카드, 세로 줄임 (11/9)
+      if (i < 2) labEl(b, 'cope-arrow', null, '›', 'div', `left:${130 + i * 470 + 400 + 18}px;top:381px`);   // 카드 사이 한가운데
       return s;
     });
     const back = labBtn(b, '‹ 증상 카드로', 'left:110px;bottom:56px;font-size:32px', 'w', () => { playSfx('tap'); labGo('S36-3'); });
