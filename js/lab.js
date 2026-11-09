@@ -428,8 +428,8 @@ Router.screens.S38A = (app) => {
   const panel = labPanel(b, { y: 20, title: '대처 방법 기억하기', center: true, fs: 38 });
   const chip = labEl(b, 'px-chip quiz-step', null, '', 'div', `left:${800 + panel.offsetWidth / 2 + 18}px;top:46px`);
   /* 냥박사가 왼쪽에서 판마다 안내해요 (11/9) */
-  const guide = labChar(b, 'nyang_explain', 400, { left: -40, bottom: 6 });
-  const bub = labBubbleAt(labBubble(b, { x: 30, y: 0, w: 480, fs: 30, tail: 'bl' }), { bottom: 440, tailX: 210 });
+  const guide = labChar(b, 'nyang_explain', 400, { left: -66, bottom: 6 });   // 보이는 몸 왼쪽 끝 = 화면 왼쪽 48px (오른쪽 여백과 같게)
+  const bub = labBubbleAt(labBubble(b, { x: 48, y: 0, w: 480, fs: 30, tail: 'bl' }), { bottom: 440, tailX: 190 });
   /* 띠: [230,196,1140,360] 안에 빈칸 3개 (240×280) + 화살표 */
   /* 오른쪽 칸 x 560~1552: 띠와 카드 받침의 폭·위치를 같게 */
   const BX = 560, BY = 196, BW = 992, BH = 340, SW = 210, SH = 250, AG = 80, SX0 = (BW - (SW * 3 + AG * 2)) / 2, SY = (BH - SH) / 2 + 6;
@@ -463,7 +463,7 @@ Router.screens.S38A = (app) => {
     e.style.animationDelay = i * 0.08 + 's'; replay(e, 'pop');
     return e;
   });
-  const ok = labBtn(b, '방패 만들러 가기 ›', 'left:1037px;top:838px;transform:translate(-50%,-50%);font-size:36px', 'y beat');
+  const ok = labBtn(b, '방패 만들러 가기 ›', 'left:auto;right:52px;top:786px;font-size:34px'   /* 위급 대처 띠 오른쪽 아래에 붙여요 */, 'y beat');
   ok.hidden = true;
 
   let round = 'light', placed = 0, selected = null;
@@ -540,8 +540,8 @@ Router.screens.S38A = (app) => {
       bands.light.classList.remove('away');
       requestAnimationFrame(() => requestAnimationFrame(() => { bands.light.classList.add('sum-top'); bands.severe.classList.add('sum-bot'); }));
       setTimeout(() => {
-        labChar(b, 'nyang_cheer', 400, { left: -40, bottom: 6 }, 'no-intro');   // 안내하던 냥박사와 같은 크기·자리 (11/9)
-        labBubbleAt(labBubble(b, { x: 30, y: 0, w: 540, fs: 30, tail: 'bl' }), { bottom: 440, tailX: 210 }).say('대처 방법을 모두 기억했구나!<br>이제 {{나만의 방패}}를 만들러 가자!');
+        labChar(b, 'nyang_cheer', 400, { left: -59, bottom: 6 }, 'no-intro');   // 안내하던 냥박사와 같은 크기·자리 (11/9)
+        labBubbleAt(labBubble(b, { x: 48, y: 0, w: 540, fs: 30, tail: 'bl' }), { bottom: 440, tailX: 190 }).say('대처 방법을 모두 기억했구나!<br>이제 {{나만의 방패}}를 만들러 가자!');
         ok.hidden = false; replay(ok, 'pop');
       }, 650);
     }, 350);
