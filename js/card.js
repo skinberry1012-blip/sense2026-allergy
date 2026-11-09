@@ -106,7 +106,7 @@ function drawSeal(ctx, cx, cy, r, color) {
   ctx.save(); ctx.globalAlpha = 0.9; ctx.drawImage(c, cx - m, cy - m); ctx.restore();
 }
 
-async function drawPromiseCard(canvas, { buddy = 'pinky_01', name = '', date = '', rules = [] }) {
+async function drawPromiseCard(canvas, { buddy = 'pinky_01', name = '', date = '', rules = [], sigImg = null, preview = false }) {
   const D = DESIGNS.certificate, A = CARD;
   canvas.width = CARD_W; canvas.height = CARD_H;
   const ctx = canvas.getContext('2d');
@@ -205,13 +205,23 @@ async function drawPromiseCard(canvas, { buddy = 'pinky_01', name = '', date = '
     if (i < L.items.length - 1 && L.items[i + 1].r.place === it.r.place) { ctx.fillStyle = 'rgba(30,42,90,.08)'; ctx.fillRect(rx + L.mk, y - 1, rw - L.mk, 2); }
   });
 
-  /* 아래 (11/9 서명 삭제): 날짜 한 줄, 그 아래 확인한 사람 냥박사 + 도장 */
-  const midX = bx + bw / 2 - 24, dateY = 816, rowY = 896, sr = 60;
+  /* 아래: 날짜 한 줄, 그 아래 다짐한 사람(서명) · 확인한 사람(냥박사 + 도장) */
+  const midX = bx + bw / 2 - 24, dateY = 816, rowY = 896, lineW = 250, sr = 60;
   ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'center';
   ctx.font = `400 32px ${GOWUN}`; ctx.fillStyle = A.ink; ctx.fillText(cardDate(date || DateK.today()), midX, dateY);
-  ctx.font = `400 26px ${HEAD}`; const wB = ctx.measureText('확인한 사람').width;
+  ctx.font = `400 26px ${HEAD}`; const wA = ctx.measureText('다짐한 사람').width, wB = ctx.measureText('확인한 사람').width;
   ctx.font = `400 32px ${HEAD}`; const wN = ctx.measureText('냥박사').width;
-  let cx = midX - (wB + 12 + wN + sr * 1.6) / 2; ctx.textAlign = 'left';
+  let cx = midX - (wA + 12 + lineW + 56 + wB + 12 + wN + sr * 1.6) / 2; ctx.textAlign = 'left';
+  ctx.font = `400 26px ${HEAD}`; ctx.fillStyle = A.accent; ctx.fillText('다짐한 사람', cx, rowY); cx += wA + 12;
+  ctx.fillRect(cx, rowY + 8, lineW, 3);
+  const sign = [cx - 10, rowY - 70, lineW + 20, 96];
+  if (sigImg) {
+    const s2 = Math.min((lineW - 10) / sigImg.width, 84 / sigImg.height), w2 = sigImg.width * s2, h2 = sigImg.height * s2;
+    ctx.drawImage(sigImg, cx + (lineW - w2) / 2, rowY + 4 - h2, w2, h2);
+  } else if (preview) {
+    ctx.font = `400 23px ${GOWUN}`; ctx.fillStyle = A.ink; ctx.globalAlpha = .4; ctx.fillText('눌러서 서명해요', cx + 16, rowY - 2); ctx.globalAlpha = 1;
+  }
+  cx += lineW + 56;
   ctx.font = `400 26px ${HEAD}`; ctx.fillStyle = A.accent; ctx.fillText('확인한 사람', cx, rowY); cx += wB + 12;
   ctx.font = `400 32px ${HEAD}`; ctx.fillStyle = A.ink; ctx.fillText('냥박사', cx, rowY);
   drawSeal(ctx, cx + wN + sr * 0.88, rowY - 12, sr, SEAL_INK);
@@ -230,7 +240,7 @@ async function drawPromiseCard(canvas, { buddy = 'pinky_01', name = '', date = '
   ctx.fillStyle = '#FFFFFF'; ctx.fill(); ctx.lineWidth = 3; ctx.lineJoin = 'round'; ctx.strokeStyle = A.accent; ctx.stroke();
   ctx.fillStyle = A.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(msg, X0 + (mw + 36) / 2, Y0 + 28);
   ctx.restore(); ctx.textBaseline = 'alphabetic';
-  return { fit };
+  return { fit, sign };
 }
 
 /* 챌린지 메달 이미지 (S48-2) — 이름은 넣지 않아요. color: pink | green | blue */
