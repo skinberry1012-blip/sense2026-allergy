@@ -463,7 +463,7 @@ Router.screens.S38A = (app) => {
     e.style.animationDelay = i * 0.08 + 's'; replay(e, 'pop');
     return e;
   });
-  const ok = labBtn(b, '방패 만들러 가기 ›', 'left:auto;right:52px;top:786px;font-size:34px'   /* 위급 대처 띠 오른쪽 아래에 붙여요 */, 'y beat');
+  const ok = labBtn(b, '방패 만들러 가기 ›', 'left:auto;right:160px;top:786px;font-size:34px'   /* 위급 대처 띠 오른쪽 아래에 붙여요 */, 'y beat');
   ok.hidden = true;
 
   let round = 'light', placed = 0, selected = null;
@@ -540,8 +540,8 @@ Router.screens.S38A = (app) => {
       bands.light.classList.remove('away');
       requestAnimationFrame(() => requestAnimationFrame(() => { bands.light.classList.add('sum-top'); bands.severe.classList.add('sum-bot'); }));
       setTimeout(() => {
-        labChar(b, 'nyang_cheer', 400, { left: -59, bottom: 6 }, 'no-intro');   // 안내하던 냥박사와 같은 크기·자리 (11/9)
-        labBubbleAt(labBubble(b, { x: 48, y: 0, w: 540, fs: 30, tail: 'bl' }), { bottom: 440, tailX: 190 }).say('대처 방법을 모두 기억했구나!<br>이제 {{나만의 방패}}를 만들러 가자!');
+        labChar(b, 'nyang_cheer', 400, { left: 43, bottom: 6 }, 'no-intro');   // 다 맞힌 뒤: 냥박사+말풍선과 두 띠를 한 덩어리로 가운데 (좌우 여백 같게)   // 안내하던 냥박사와 같은 크기·자리 (11/9)
+        labBubbleAt(labBubble(b, { x: 150, y: 0, w: 540, fs: 30, tail: 'bl' }), { bottom: 440, tailX: 190 }).say('대처 방법을 모두 기억했구나!<br>이제 {{나만의 방패}}를 만들러 가자!');
         ok.hidden = false; replay(ok, 'pop');
       }, 650);
     }, 350);

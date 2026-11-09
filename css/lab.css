@@ -533,3 +533,5 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 /* 다 맞힌 뒤 (11/9): 두 띠 오른쪽 끝 = 화면 오른쪽 48px, 띠 사이 56px */
 .quiz-band.sum-top { transform:translate(198px, -36px) scale(.8); }
 .quiz-band.sum-bot { transform:translate(198px, 292px) scale(.8); }
+.quiz-band.sum-top { transform:translate(90px, -36px) scale(.8); }
+.quiz-band.sum-bot { transform:translate(90px, 292px) scale(.8); }
