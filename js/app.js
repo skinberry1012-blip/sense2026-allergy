@@ -16,7 +16,7 @@ Router.screens.S39 = (app) => {
   <div class="sc room s39">
     <h1 class="title-banner s39-tb" id="banner">${pawSVG('#fff')} 알레르기 방패 만들기 ${pawSVG('#fff')}</h1>
     <p class="bubble big s39-bub">알레르기로부터 나를 지켜 줄<br>나만의 방패를 만들어 보자!</p>
-    <img class="s39-cat bob" src="${CAT('pinky_03')}" alt="방패를 든 냥박사 연구원">
+    <img class="s39-cat bob" src="${CAT('pinky_03')}" data-anim="staff_guide" alt="방패를 든 냥박사 연구원">
     <button class="btn pink xl pulse s39-start" id="start">나만의 약속 카드 만들기 ›</button>
   </div>`;
   onTap($('#start'), () => {
@@ -40,7 +40,7 @@ Router.screens.S40 = (app) => {
   <div class="sc room s40">
     <h1 class="title-banner s40-tb">${pawSVG('#fff')} 알레르기 예방 약속 카드 ${pawSVG('#fff')}</h1>
     <p class="sub-pill s40-sub">나만의 예방 약속을 고르고, 매일 지켜 봐요.</p>
-    <img class="s40-cat bob" src="${CAT('pinky_03')}" alt="">
+    <img class="s40-cat bob" src="${CAT('pinky_03')}" data-anim="staff_guide" alt="">
       <section class="clipcard">
         <div class="clip"></div>
         <p class="q">1. 이름을 입력해 봐!</p>
@@ -95,7 +95,7 @@ Router.screens.RULES = (app, p) => {
       <div class="countbox" id="countbox"></div>
       <div class="tabs" id="tabs" role="tablist"></div>
     </div>
-    <img class="rules-cat bob" id="rcat" src="${CAT('pinky_03')}" alt="">
+    <img class="rules-cat bob" id="rcat" src="${CAT('pinky_03')}" data-anim="staff_guide" alt="">
     <div class="rules-body">
       <section class="rules-panel">
         <div id="list"></div>
@@ -323,7 +323,7 @@ function openInstallModal() {
       <h2 class="title-banner sm">🎉 나만의 <em>약속 카드</em> 완성 및 저장 완료!</h2>
       <div class="install-grid">
         <div class="install-left">
-          <div class="install-top"><img src="${CAT('pinky_03')}" alt=""><p class="bubble sm">내일부터 시작되는 5일 챌린지를 위해 <mark>앱을 홈 화면에 추가</mark>해 주세요.</p></div>
+          <div class="install-top"><img src="${CAT('pinky_03')}" data-anim="staff_guide" alt=""><p class="bubble sm">내일부터 시작되는 5일 챌린지를 위해 <mark>앱을 홈 화면에 추가</mark>해 주세요.</p></div>
           <span class="lab-pill">나의 카드 고유번호</span>
           <div class="cardno">${esc(Store.get('cardNo', ''))}</div>
           <p class="saved-ok">※ 카드 저장이 완료되었습니다!</p>
@@ -370,7 +370,7 @@ Router.screens.S46 = (app, p) => {
     <h1 class="title-banner sm s47-tb">오늘 <em>${esc(name)}${josaNeun(name)}</em> 몇 개나 지켰을까?</h1>
     <p class="sub-pill s47-sub">${locked ? '오늘은 체크하지 않는 날이에요' : '👆 약속 카드를 눌러 오늘 실천을 체크해요!'}</p>
     <div class="bubble sm s46-bubble">내가 정한 약속을<br>오늘도 잘 지켜볼까요?</div>
-    <aside class="s47-left"><img class="s47-cat" src="${CAT('pinky_03')}" alt=""><div class="selbox" id="todaybox"></div></aside>
+    <aside class="s47-left"><img class="s47-cat" src="${CAT('pinky_03')}" data-anim="staff_guide" alt=""><div class="selbox" id="todaybox"></div></aside>
     <section class="s47-center">
       <div class="days" id="days"></div>
       <p class="legend"><span>⭐ 별 받음</span><span class="gray">⭐ 했지만 별 없음</span><span>– 체크 안 함</span><span>빈칸 아직</span></p>
@@ -420,7 +420,7 @@ Router.screens.S46 = (app, p) => {
     const row = r => { const s = r.type === 'situ' && !r.mine, v = draft[r.id];
       return `<div class="ck-row"><p class="t">${r.mine ? '<span class="mine">나만의</span>' : ''}${esc(r.text)}${s ? `<button class="help" data-help="${r.id}" aria-label="도움말 보기" aria-expanded="false">?</button>` : ''}</p>
       <div class="ox"><button class="o ${v === 'O' ? 'on' : ''}" data-id="${r.id}" data-v="O"><i>⭕</i>지켰어요</button><button class="x ${v === 'X' ? 'on' : ''}" data-id="${r.id}" data-v="X"><i>❌</i>못 지켰어요</button></div></div>`; };
-    const w = Modal.open(`<div class="ck-head"><img class="ck-cat" src="${CAT('pinky_02')}" alt=""><h2>📋 오늘 실천한 <em>약속</em></h2><button class="ck-x" id="ckX" aria-label="닫기">✕</button></div>
+    const w = Modal.open(`<div class="ck-head"><img class="ck-cat" src="${CAT('pinky_02')}" data-anim="staff_heart" alt=""><h2>📋 오늘 실천한 <em>약속</em></h2><button class="ck-x" id="ckX" aria-label="닫기">✕</button></div>
       <p class="ck-sub">약속을 하나씩 읽고 오늘 실천한 대로 눌러요 <span id="ckN"></span></p>
       <div class="ck-list" id="ckList">${rules.map(row).join('')}</div>
       <div class="ck-foot"><button class="btn white" id="ckClose">취소</button><button class="btn pink big" id="ckSave">✔ 저장하기</button></div>`, { cls: 'check-dim' });
@@ -472,7 +472,7 @@ Router.screens.S47 = (app, p) => {
     <h1 class="title-banner sm s47-tb">📊 5일 실천 <em>챌린지</em> 결과</h1>
     <p class="sub-pill s47-sub">나의 5일 실천 기록을 확인해요!</p>
     <aside class="s47-left">
-      <img class="s47-cat" src="${CAT('pinky_03')}" alt="">
+      <img class="s47-cat" src="${CAT('pinky_03')}" data-anim="staff_guide" alt="">
       <div class="selbox" id="selbox"></div>
     </aside>
     <section class="s47-center">
@@ -542,7 +542,7 @@ Router.screens.S48 = (app) => {
   <div class="sc outdoor s48">
     <h2 class="title-banner sm s48-tb">🏆 5일 챌린지 <em>완료!</em></h2>
     <p class="sub-pill s48-sub">5일 동안 나의 예방 <em class="pk">약속</em>을 실천했어요!</p>
-    <img class="s48-cat" id="s48cat" src="assets/char/staff_cheer_m.png" alt="">
+    <img class="s48-cat" src="assets/char/staff_cheer_m.png" alt="" data-anim="staff_cheer">
     <div class="days s48-days">${c.days.map((d, i) => `<div class="day ${states[i]}">${DateK.md(d)}<br>${DateK.wd(d)}요일<div class="mark ${states[i] === 'star' && first ? 'star-pop' : ''}" style="animation-delay:${i * .15}s">${{ star: '⭐', nostar: '⭐', miss: '–' }[states[i]] || ''}</div></div>`).join('')}</div>
     <aside class="s48-box"><h3>⭐ 나의 챌린지 결과 ⭐</h3><p class="starn"><span class="bigstar">⭐</span><span>별 획득<br><b>${stars}</b> <small>/ 5일</small></span></p></aside>
     <div class="ribbon ${first ? 'pop' : ''}">축하합니다! 5일 챌린지 완료!</div>
@@ -553,7 +553,6 @@ Router.screens.S48 = (app) => {
     </div>
     <p class="warn">${stars >= 3 ? '새로 도전하면 지금 기록은 지워져요. 메달을 먼저 저장해 두세요!' : '별 3일 이상이면 메달을 받을 수 있어요. 다시 도전해 볼까요?'}</p>
   </div>`;
-  if (window.Anim) Anim.attach($('#s48cat'), 'staff_cheer', null, '_m');   // 수호냥 깡충 (11/9)
   if (first) { sessionStorage.setItem('s48Shown', '1'); playSfx('fanfare'); confetti(); }
   onTap($('#medal'), () => openMedalModal({ stars }));
   onTap($('#del'), () => { playSfx('tap'); openDeleteModal(); });
@@ -566,11 +565,10 @@ function openMedalModal({ stars }) {
   const m = Modal.open(`
     <h2 class="md-title">🏅 5일 챌린지 성공 메달 받기!</h2>
     <button class="md-x" id="mdX" aria-label="닫기">✕</button>
-    <div class="md-talk"><img src="assets/char/staff_cheer_m.png" alt="" id="mdCat"><p>5일 동안 약속을 잘 지킨 나에게 주는 메달이에요.<br>마음에 드는 색을 골라 저장해 보세요!</p></div>
+    <div class="md-talk"><img src="assets/char/staff_cheer_m.png" alt="" data-anim="staff_cheer"><p>5일 동안 약속을 잘 지킨 나에게 주는 메달이에요.<br>마음에 드는 색을 골라 저장해 보세요!</p></div>
     <div class="md-list" id="mdList">${Object.keys(MEDAL_COLORS).map(k => `<button class="md-card ${k === color ? 'on' : ''}" data-k="${k}" aria-label="${MEDAL_COLORS[k].label} 메달"><span class="md-chk"></span><canvas data-c="${k}"></canvas></button>`).join('')}</div>
     <button class="btn pink big md-save" id="mdSave">⬇ 선택한 메달 이미지로 저장하기 ›</button>
     <button class="link md-later" id="mdLater">다음에 저장할래요</button>`, { cls: 'medal-dim' });
-  if (window.Anim) Anim.attach($('#mdCat', m), 'staff_cheer', null, '_m');   // 수호냥 깡충 (11/9)
   $$('canvas[data-c]', m).forEach(cv => drawMedal(cv, { color: cv.dataset.c, stars, cardNo }));
   const paintBtn = () => {
     const b = $('#mdSave', m);
@@ -616,7 +614,7 @@ function openDeleteModal() {
   const m = Modal.open(`
     <div class="pop-head redbar">↻ 새로 도전할까요?</div>
     <div class="del-grid">
-      <div class="del-art"><img src="assets/char/staff_hello_m.png" alt="" id="delCat"></div>
+      <div class="del-art"><img src="assets/char/staff_hello_m.png" alt="" data-anim="staff_hello"></div>
       <div>
         <p class="pop-box pink">지금까지의 <strong>약속 카드와 5일 기록이 지워지고</strong> 처음부터 다시 시작해요.</p>
         <p class="pop-box yellow">이미 저장한 <strong>카드·메달 이미지</strong>는 지워지지 않아요.</p>
@@ -624,7 +622,6 @@ function openDeleteModal() {
     </div>
     <div class="pop-btns"><button class="btn blue" data-autofocus id="dNo">아니오, 그대로 둘래요</button><button class="btn red" id="dYes">네, 새로 도전할래요</button></div>`,
     { cls: 'delete', onBack: () => {}, sfx: 'full' });
-  if (window.Anim) Anim.attach($('#delCat', m), 'staff_hello', null, '_m');   // 수호냥 손 흔들기 (11/9)
   onTap($('#dNo', m), () => { playSfx('tap'); Modal.close(); });
   onTap($('#dYes', m), () => {
     $('#dYes', m).disabled = true; playSfx('delete');

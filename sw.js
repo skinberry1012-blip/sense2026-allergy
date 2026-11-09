@@ -1,7 +1,7 @@
 /* 서비스 워커 — 화면 파일을 저장해 두어 인터넷이 끊겨도 앱이 열려요.
    ※ 파일을 고쳐서 다시 올릴 때는 아래 VERSION 숫자를 하나 올려 주세요. (예: v1 → v2)
    ※ 학생 기록은 여기 저장되지 않아요 (기록은 각 기기의 LocalStorage에만). */
-const VERSION = 'v11-motion2';
+const VERSION = 'v12-motion3';
 const CACHE = 'allergy-shield-' + VERSION;
 const FILES = [
   './',
@@ -49,6 +49,14 @@ const FILES = [
   './assets/char/staff_jump_2_m.png',
   './assets/char/staff_hello_m.png',
   './assets/char/staff_wave_1_m.png',
+  './assets/char/staff_guide_b.png',
+  './assets/char/staff_guide_blink.png',
+  './assets/char/staff_heart_b.png',
+  './assets/char/staff_guide_m.png',
+  './assets/char/staff_guide_b_m.png',
+  './assets/char/staff_guide_blink_m.png',
+  './assets/char/staff_heart_m.png',
+  './assets/char/staff_heart_b_m.png',
   './assets/char/nyang_cheer_t.png',
   './assets/char/nyang_explain.png',
   './assets/char/nyang_explain_t.png',

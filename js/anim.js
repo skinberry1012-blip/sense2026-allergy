@@ -2,7 +2,7 @@
    anim.js — 냥박사·수호냥 움직임 (2026-11-08)
    그림 여러 장을 번갈아 보여 주는 방식 (픽셀 아트 게임처럼)
    - 연구소 화면(S00~S38A)의 labChar() 그림에 자동으로 붙어요.
-   - 약속 카드 이후 화면(S48 완료·메달·새로 도전 팝업)은 Anim.attach(img, key, null, '_m')로
+   - 약속 카드 이후 화면(S39~S48·팝업)은 <img data-anim="그림 이름">만 붙이면 저절로 움직여요.
      여백을 잘라 낸 그림(_m.png, 같은 묶음은 같은 크기)을 써요. (2026-11-09)
    - 화면이 바뀌어 그림이 사라지면 저절로 멈춰요.
    - 기기 설정에서 '동작 줄이기'를 켜면 움직이지 않아요.
@@ -13,6 +13,9 @@
 const ANIM = {
   /* 늘 하는 움직임: 숨쉬기 + 가끔 눈 깜빡 */
   nyang_idle:    { loop: [['nyang_idle', 700], ['nyang_idle_b', 700], ['nyang_idle', 700], ['nyang_idle_b', 700], ['nyang_idle', 500], ['nyang_idle_blink', 140], ['nyang_idle', 360], ['nyang_idle_b', 700]] },
+  /* 약속 카드 이후 화면(S39~S47): 가리키기 숨쉬기 + 눈 깜빡 · 하트 들어 올리기 (11/9) */
+  staff_guide:   { loop: [['staff_guide', 700], ['staff_guide_b', 700], ['staff_guide', 700], ['staff_guide_b', 700], ['staff_guide', 500], ['staff_guide_blink', 140], ['staff_guide', 360], ['staff_guide_b', 700]] },
+  staff_heart:   { loop: [['staff_heart', 1100], ['staff_heart_b', 500], ['staff_heart', 260], ['staff_heart_b', 500]] },
   staff_base:    { loop: [['staff_base', 700], ['staff_base_b', 700], ['staff_base', 700], ['staff_base_b', 700], ['staff_base', 500], ['staff_base_blink', 140], ['staff_base', 360], ['staff_base_b', 700]] },
 
   /* 시작 화면: 손 흔들기 */
@@ -64,3 +67,13 @@ const Anim = {
   }
 };
 window.Anim = Anim;
+
+/* <img data-anim="staff_guide"> 가 화면에 나타나면 움직임 붙이기 (S39~ 화면·팝업 공통) */
+(function () {
+  const hook = el => {
+    if (el.nodeType !== 1) return;
+    const imgs = el.matches('img[data-anim]') ? [el] : [...el.querySelectorAll('img[data-anim]')];
+    imgs.forEach(img => { if (img.dataset.animOn) return; img.dataset.animOn = '1'; Anim.attach(img, img.dataset.anim, null, '_m'); });
+  };
+  new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(hook))).observe(document.documentElement, { childList: true, subtree: true });
+})();
