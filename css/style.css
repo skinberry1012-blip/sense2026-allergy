@@ -1170,3 +1170,39 @@ body.tablet .s48-btns { left:120px; right:200px; }
 }
 /* 약속 카드 새 디자인 (11/9): 디자인 고르기 칸 없애고 미리보기를 넓게 */
 .s44-grid, body.tablet .s44-grid { grid-template-columns:minmax(0,1fr) 320px; }
+/* ===== S44 새 배치 (11/9): 헌혈 임명장처럼 오른쪽 카드 · 왼쪽 고르기와 버튼 ===== */
+.s44b-body { flex:1; min-height:0; display:grid; grid-template-columns:330px minmax(0,1fr); gap:16px; margin-top:12px; align-items:stretch; }
+.s44b-side { display:flex; flex-direction:column; gap:12px; min-width:0; }
+.s44b-side .buddies { grid-template-columns:repeat(3,1fr); gap:8px; }
+.s44b-side .buddy .bn { font-size:14px; }
+.s44b-sign .sign-hint { margin-top:6px; text-align:left; font-size:16px; line-height:1.5; }
+.s44b-sign small { font-size:.75em; opacity:.8; }
+.s44b-btns { margin-top:auto; display:flex; flex-direction:column; gap:10px; }
+.s44b-btns .btn { width:100%; }
+.s44b-card { min-width:0; min-height:0; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.9); border:3px solid var(--pink); border-radius:22px; padding:14px; }
+.s44b-card .preview-wrap { width:100%; max-height:100%; aspect-ratio:3/2; }
+.s44b-card .preview-wrap canvas { width:100%; height:100%; aspect-ratio:3/2; }
+body.tablet .s44b-body { grid-template-columns:360px minmax(0,1fr); }
+.print-only { display:none; }
+@media print {
+  @page { size:A4 landscape; margin:10mm; }
+  body * { visibility:hidden !important; }
+  .print-only, .print-only * { visibility:visible !important; }
+  .print-only { display:block !important; position:fixed; inset:0; background:#fff; }
+  .print-only img { width:100%; height:auto; display:block; }
+}
+@media (max-width: 760px) {
+  .s44b-body { grid-template-columns:1fr; }
+  .s44b-card { order:-1; }
+  .s44b-side .buddies { grid-template-columns:repeat(5,1fr); }
+}
+.s44b-card { container-type:size; padding:12px; }
+.s44b-card .preview-wrap { width:min(100cqw, 150cqh); height:auto; max-height:none; aspect-ratio:3/2; background:transparent; }
+.s44b-side { padding-bottom:6px; }
+body.tablet .s44.s44b .preview-wrap, .s44b .s44b-card .preview-wrap { width:min(100cqw, 150cqh); margin:0; }
+@media print {
+  html, body { background:#fff !important; }
+  .print-only { position:static !important; display:flex !important; align-items:center; justify-content:center; height:100vh; }
+  .print-only img { width:auto !important; max-width:100%; max-height:100%; }
+  body > *:not(.print-only) { display:none !important; }
+}

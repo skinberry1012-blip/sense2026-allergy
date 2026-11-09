@@ -199,27 +199,26 @@ let signatureImg = null; // 서명은 저장하지 않고 이 화면 메모리�
 Router.screens.S44 = (app) => {
   const st = { design: Store.get('design', 'certificate'), buddy: Store.get('buddy', 'pinky_01'), step: 1 };
   const rules = selectedRules(), name = Store.get('name', '');
+  /* 배치 (11/9): 헌혈 임명장처럼 — 오른쪽 크게 약속 카드, 왼쪽에 수호 친구 고르기 · 저장 · 인쇄 · 처음으로 */
   app.innerHTML = `
-  <div class="sc outdoor s44">
+  <div class="sc outdoor s44 s44b">
     <header class="s44-top">
       <h1 class="title-banner">${pawSVG('#fff')} 나만의 알레르기 예방 <em>약속 카드</em> 만들기! ${pawSVG('#fff')}</h1>
-      <p class="bubble sm s44-bubble">함께할 수호 친구를 고르고,<br>카드에 서명해서 완성해 보세요!</p>
     </header>
-    <div class="s44-grid">
-      <section class="s44-box s44-center">
+    <div class="s44b-body">
+      <aside class="s44b-side">
+        <section class="s44-box"><h3 class="box-tag">① 나의 수호 친구 고르기</h3><div class="buddies" id="buddies"></div></section>
+        <section class="s44-box s44b-sign"><h3 class="box-tag">② 서명하기 <small>(선택)</small></h3><p class="sign-hint" id="signHint"></p></section>
+        <div class="s44b-btns">
+          <button class="btn pink big" id="save">⬇ 약속 카드 저장하기</button>
+          <button class="btn white" id="print">🖨 인쇄하기</button>
+          <button class="btn white" id="home">⌂ 처음으로</button>
+        </div>
+      </aside>
+      <section class="s44b-card">
         <div class="preview-wrap" id="pvwrap"><canvas id="pv"></canvas><button class="zoom" id="zoom">🔍 크게 보기</button></div>
-        <p class="sign-hint" id="signHint"></p>
-      </section>
-      <section class="s44-right">
-        <div class="s44-box"><h3 class="box-tag">나의 수호 친구 선택</h3><div class="buddies" id="buddies"></div></div>
-        <div class="s44-box summary" id="summary"></div>
       </section>
     </div>
-    <nav class="bottom-bar three s44-bar">
-      <button class="btn white big" id="redo">↻ 다시 꾸미기</button>
-      <button class="btn pink big" id="save">⬇ 내 <em>약속 카드</em> 저장하기</button>
-      <button class="btn white big" id="home">⌂ 처음으로</button>
-    </nav>
   </div>`;
   const canvas = $('#pv');
   const cardDay = () => Store.get('cardDate', '') || DateK.today();
@@ -227,8 +226,7 @@ Router.screens.S44 = (app) => {
   const draw = () => drawPromiseCard(canvas, { ...st, name, date: cardDay(), rules, sigImg: signatureImg, preview: true }).then(r => { signAt = r.sign; });
   const render = () => {
     $('#buddies').innerHTML = Object.entries(BUDDIES).map(([k, n]) => `<button class="buddy ${st.buddy === k ? 'on' : ''}" data-k="${k}"><span class="tick">✓</span><img src="${CAT(k)}" alt=""><span class="bn">${n}</span></button>`).join('');
-    $('#summary').innerHTML = `<h3 class="box-tag">📋 선택한 내용 요약</h3><p><span>나의 수호 친구</span><b>${BUDDIES[st.buddy]}</b></p><p><span>예방 수칙</span><b>총 ${rules.length}개</b></p>`;
-    $('#signHint').innerHTML = signatureImg ? '✓ 서명했어요 · <b>다짐한 사람</b> 줄을 누르면 다시 쓸 수 있어요' : '✍️ 카드의 <b>다짐한 사람</b> 줄을 누르면 서명할 수 있어요 (선택)';
+    $('#signHint').innerHTML = signatureImg ? '✓ 서명했어요.<br>카드의 <b>다짐한 사람</b> 줄을 누르면 다시 쓸 수 있어요.' : '카드의 <b>다짐한 사람</b> 줄을 누르면<br>서명할 수 있어요.';
     draw();
   };
   $('#buddies').addEventListener('click', e => { const b = e.target.closest('[data-k]'); if (!b) return; st.buddy = b.dataset.k; st.step = Math.max(st.step, 3); Store.set('buddy', st.buddy); playSfx('check'); render(); replay($(`.buddy[data-k="${st.buddy}"]`), 'hop'); });
@@ -275,7 +273,6 @@ Router.screens.S44 = (app) => {
     });
   };
 
-  onTap($('#redo'), () => Router.go('RULES', { tab: 0 }));
   onTap($('#home'), () => {
     const m = Modal.open(`<div class="pop-head">처음 화면으로 갈까요?</div><p class="pop-body">만든 카드는 아직 저장되지 않았어요.</p>
       <div class="pop-btns"><button class="btn white" data-autofocus id="mNo">아니요</button><button class="btn pink" id="mYes">처음 화면으로</button></div>`);
@@ -283,6 +280,16 @@ Router.screens.S44 = (app) => {
     onTap($('#mYes', m), () => { Modal.close(); Router.go('S39'); });
   });
 
+  /* 인쇄: 저장용과 같은 카드를 그려서 인쇄 전용 칸에 넣고 인쇄 창을 열어요 */
+  onTap($('#print'), async () => {
+    if (!Store.get('cardDate')) Store.set('cardDate', DateK.today());
+    const out = document.createElement('canvas');
+    await drawPromiseCard(out, { ...st, name, date: cardDay(), rules, sigImg: signatureImg, preview: false });
+    let pa = document.getElementById('printArea');   // 화면 확대·축소의 영향을 받지 않게 body 바로 아래에
+    if (!pa) { pa = document.createElement('div'); pa.id = 'printArea'; pa.className = 'print-only'; document.body.appendChild(pa); }
+    pa.innerHTML = `<img src="${out.toDataURL('image/png')}" alt="알레르기 예방 약속 카드">`;
+    playSfx('tap'); setTimeout(() => window.print(), 150);
+  });
   onTap($('#save'), async () => {
     if (!Store.get('cardNo')) {
       const t = DateK.today().replace(/-/g, '').slice(0, 6);
