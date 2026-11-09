@@ -1235,3 +1235,7 @@ body.tablet .s44.s44b .preview-wrap, .s44b .s44b-card .preview-wrap { width:min(
 .s44b-side > .s44-box:first-child .box-tag { box-shadow:0 0 0 3px #fff; margin-bottom:10px; }
 /* 보조 버튼은 흰색 (노란 저장 버튼과 구분) */
 .s44b-btns .btn.white { background:#fff !important; }
+/* 이름표가 버튼처럼 보이지 않게 (11/9): 노란 칸 대신 남색 글씨 제목 */
+.s44b-side > .s44-box:first-child .box-tag { background:none !important; box-shadow:none !important; border:0 !important; padding:0 2px !important; color:var(--navy) !important;
+  font-family:var(--font-head); font-size:24px !important; font-weight:400; }
+.s44b-side > .s44-box:first-child .box-tag { text-shadow:0 0 6px #fff, 0 0 3px #fff, 0 2px 0 #fff; }
