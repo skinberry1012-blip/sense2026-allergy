@@ -386,8 +386,8 @@ Router.screens['S36-3'] = (app) => {
       labEl(b, 'cope-siren r', null, SIREN, 'div', 'right:300px;top:14px');
     }
     const steps = d.steps.map(([img, label], i) => {
-      const s = labEl(b, 'cope-step', [130 + i * 470, 172, 400, 470], `<span class="num">${i + 1}</span><img src="${IMG.cope(img)}" alt=""><b>${label}</b>`);   // 둥근 카드, 세로 줄임 (11/9)
-      if (i < 2) labEl(b, 'cope-arrow', null, '›', 'div', `left:${130 + i * 470 + 400 + 18}px;top:381px`);   // 카드 사이 한가운데
+      const s = labEl(b, 'cope-step', [130 + i * 470, 216, 400, 470], `<span class="num">${i + 1}</span><img src="${IMG.cope(img)}" alt=""><b>${label}</b>`);   // 둥근 카드, 제목과 버튼 사이 가운데 (위아래 94px, 11/9)
+      if (i < 2) labEl(b, 'cope-arrow', null, '›', 'div', `left:${130 + i * 470 + 400 + 18}px;top:425px`);   // 카드 사이 한가운데
       return s;
     });
     const back = labBtn(b, '‹ 증상 카드로', 'left:110px;bottom:56px;font-size:32px', 'w', () => { playSfx('tap'); labGo('S36-3'); });
