@@ -514,3 +514,19 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .quiz-band.sum-bot { transform:translate(370px, 258px) scale(.8); }
 .quiz-hand { background:rgba(255,253,245,.78); }
 .quiz-hand { transition:left .35s, width .35s, opacity .4s; }
+/* 기억 체크 시안 2 (11/9): 냥박사 왼쪽 · 오른쪽 칸 띠 + 카드 받침 */
+.lab-quiz.rounds .quiz-piece { padding:12px 8px 10px; gap:6px; }
+.lab-quiz.rounds .quiz-piece b { font-size:24px; }
+.lab-quiz.rounds .quiz-piece.placed b { font-size:26px; }
+.quiz-band.sum-top { transform:translate(80px, -10px) scale(.8); }
+.quiz-band.sum-bot { transform:translate(80px, 290px) scale(.8); }
+/* 기억 체크 시안 2 (11/9): 냥박사 왼쪽 · 오른쪽 칸 띠 + 카드 받침 */
+.lab-quiz.rounds .quiz-piece { padding:12px 8px 10px; gap:6px; }
+.lab-quiz.rounds .quiz-piece b { font-size:24px; }
+.lab-quiz.rounds .quiz-piece.placed b { font-size:26px; }
+.quiz-band.sum-top { transform:translate(80px, -10px) scale(.8); }
+.quiz-band.sum-bot { transform:translate(80px, 290px) scale(.8); }
+.lab-quiz.rounds .quiz-piece:not(.placed) { padding:12px 6px 10px; }
+.lab-quiz.rounds .quiz-piece:not(.placed) b { font-size:22px; letter-spacing:-.03em; }
+.quiz-band.sum-top { transform:translate(80px, -26px) scale(.8); }
+.quiz-band.sum-bot { transform:translate(80px, 274px) scale(.8); }

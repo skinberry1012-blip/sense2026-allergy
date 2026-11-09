@@ -425,12 +425,15 @@ Router.screens.S38A = (app) => {
   const Q = LAB.quiz;
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-quiz rounds' });
   playSfx('open');
-  labPanel(b, { y: 20, title: '기억 체크!', center: true, fs: 38 });
-  const chip = labEl(b, 'px-chip quiz-step', null, '', 'div', 'left:946px;top:46px');
-  const hint = labEl(b, 'quiz-hint', null, '', 'div', 'left:0;right:0;top:130px');
+  const panel = labPanel(b, { y: 20, title: '대처 방법 기억하기', center: true, fs: 38 });
+  const chip = labEl(b, 'px-chip quiz-step', null, '', 'div', `left:${800 + panel.offsetWidth / 2 + 18}px;top:46px`);
+  /* 냥박사가 왼쪽에서 판마다 안내해요 (11/9) */
+  const guide = labChar(b, 'nyang_explain', 400, { left: -40, bottom: 6 });
+  const bub = labBubbleAt(labBubble(b, { x: 30, y: 0, w: 480, fs: 30, tail: 'bl' }), { bottom: 440, tailX: 210 });
   /* 띠: [230,196,1140,360] 안에 빈칸 3개 (240×280) + 화살표 */
-  const BX = 230, BY = 212, BW = 1140, BH = 360, SW = 240, SH = 280, AG = 90, SX0 = (BW - (SW * 3 + AG * 2)) / 2, SY = (BH - SH) / 2 + 6;
-  const ROUND = { light: { label: '가벼운 증상 대처', hint: '가벼운 증상일 때, {{순서대로}} 넣어 볼까?' }, severe: { label: '위급한 증상 대처', hint: '위급한 증상일 때는? {{순서대로}} 넣어 보자!' } };
+  /* 오른쪽 칸 x 560~1552: 띠와 카드 받침의 폭·위치를 같게 */
+  const BX = 560, BY = 196, BW = 992, BH = 340, SW = 210, SH = 250, AG = 80, SX0 = (BW - (SW * 3 + AG * 2)) / 2, SY = (BH - SH) / 2 + 6;
+  const ROUND = { light: { label: '가벼운 증상 대처', hint: '가벼운 증상일 땐 어떻게 할까?<br>카드를 골라 {{순서대로}} 넣어 봐!' }, severe: { label: '위급한 증상 대처', hint: '이번엔 위급한 증상!<br>남은 카드를 {{순서대로}} 넣어 봐!' } };
   const bands = {}, slots = {};
   const makeBand = t => {
     const band = labEl(b, 'quiz-band ' + t, [BX, BY, BW, BH], `<span class="qb-tag">${ROUND[t].label}</span>`);
@@ -445,9 +448,9 @@ Router.screens.S38A = (app) => {
     bands[t] = band; return band;
   };
   /* 아래 카드 줄 */
-  const PW = 180, PH = 230, PG = 22, HY = 612;
-  const hand = labEl(b, 'quiz-hand', [140, HY - 22, 1320, PH + 44]);
-  const handPos = n => Array.from({ length: n }, (_, i) => [800 - (n * PW + (n - 1) * PG) / 2 + i * (PW + PG), HY]);
+  const PW = 150, PH = 206, PG = 12, HY = 604, HC = BX + BW / 2;
+  const hand = labEl(b, 'quiz-hand', [BX, HY - 16, BW, PH + 32]);
+  const handPos = n => Array.from({ length: n }, (_, i) => [HC - (n * PW + (n - 1) * PG) / 2 + i * (PW + PG), HY]);
   const ISCALE = { avoid: .97, tell: .98, clinic: 1.04, call119: .99, epipen: .96, ambulance: 1.1 };
   const order = Q.pieces.map((_, i) => i);
   for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
@@ -460,19 +463,19 @@ Router.screens.S38A = (app) => {
     e.style.animationDelay = i * 0.08 + 's'; replay(e, 'pop');
     return e;
   });
-  const ok = labBtn(b, '방패 만들러 가기 ›', 'left:1056px;top:836px;transform:translate(-50%,-50%);font-size:36px', 'y beat');
+  const ok = labBtn(b, '방패 만들러 가기 ›', 'left:1037px;top:838px;transform:translate(-50%,-50%);font-size:36px', 'y beat');
   ok.hidden = true;
 
   let round = 'light', placed = 0, selected = null;
   const startRound = t => {
     round = t; placed = 0;
     chip.innerHTML = `<b class="lc">${t === 'light' ? 1 : 2}</b> / 2`;
-    hint.innerHTML = labFmt(ROUND[t].hint); replay(hint, 'pop');
+    bub.say(ROUND[t].hint);
     const band = makeBand(t); replay(band, 'pop');
     /* 남은 카드를 가운데로 다시 모아요 */
     const left = pieces.filter(e => !e.disabled);
     handPos(left.length).forEach(([x, y], i) => { home[left[i].dataset.id] = [x, y, PW, PH]; setR(left[i], home[left[i].dataset.id]); });
-    const hw = left.length * PW + (left.length - 1) * PG + 60; hand.style.left = (800 - hw / 2) + 'px'; hand.style.width = hw + 'px';   // 카드 줄 받침도 카드 수에 맞게
+    const hw = left.length === 6 ? BW : Math.max(520, left.length * PW + (left.length - 1) * PG + 48); hand.style.left = (HC - hw / 2) + 'px'; hand.style.width = hw + 'px';   // 카드 줄 받침도 카드 수에 맞게
   };
 
   const scale = () => b.getBoundingClientRect().width / 1600;
@@ -532,7 +535,7 @@ Router.screens.S38A = (app) => {
     LabState.quizDone = true; Store.set('labComplete', true);
     setTimeout(() => {
       playSfx('fanfare'); labConfetti();
-      hint.classList.add('out'); chip.classList.add('out'); $('.quiz-hand', b).classList.add('out');
+      chip.classList.add('out'); hand.classList.add('out'); guide.remove(); bub.remove();
       bands.severe.classList.add('done');
       bands.light.classList.remove('away');
       requestAnimationFrame(() => requestAnimationFrame(() => { bands.light.classList.add('sum-top'); bands.severe.classList.add('sum-bot'); }));
