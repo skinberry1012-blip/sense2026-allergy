@@ -313,8 +313,9 @@ Router.screens['S36-3'] = (app) => {
   const C = LAB.cards;
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream' });
   /* 네모 줄이기 (11/9): 제목은 상자 없이 글씨만, 확인 수는 제목 옆 작은 글씨 */
-  labEl(b, 'sym-title', null, '알레르기 증상 카드 <span class="sym-cnt"></span>', 'div', 'left:1073px;top:52px;transform:translateX(-50%)');
-  const cnt = $('.sym-cnt', b);
+  /* 제목은 다른 연구소 화면과 같은 상자 그대로, 확인 수는 오른쪽 위 둥근 배지 (11/9) */
+  labPanel(b, { y: 22, title: '알레르기 증상 카드', center: true, fs: 36 });
+  const cnt = labEl(b, 'sym-cnt', null, '', 'div', 'right:110px;top:34px');
   let sel = null, lockTimer;
   const cards = C.list.map((c, i) => {
     /* 2줄 배치 (11/9): 오른쪽에 4장 + 3장(가운데 맞춤), 왼쪽은 냥박사와 말풍선 */
