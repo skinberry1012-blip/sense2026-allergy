@@ -248,15 +248,18 @@ Object.entries(LAB.info).forEach(([key, d]) => {
     const b = labBoard(app, LAB.bg[d.place], { dim: 'navy' });
     playSfx('open');
     labChar(b, 'nyang_scan', 560, { left: -40, bottom: 0 }, 'no-intro flip');   // 좌우 뒤집어 스캐너가 결과 창을 비추게 (11/9)
+    /* '알겠어요!' 아이: 결과 창이 열릴 때마다 여자·남자아이 번갈아 (11/9) */
+    LabState.kidTurn = (LabState.kidTurn || 0) + 1;
+    const kid = LabState.kidTurn % 2 ? 'girl' : 'boy';
     /* 결과 창: 폭 850, 높이는 내용에 맞추고 위아래 가운데 (11/9) */
     const win = labEl(b, 'lab-result', [700, 34, 850, 832], `
       <div class="rs-light"></div>
       <div class="rs-screen">
         <div class="rs-head"><img src="${IMG.item(d.item)}" alt=""><div><small>발견! 알레르기 원인</small><b>${LAB.items[d.item]}</b></div></div>
-        <div class="rs-box"><h3 class="lc">이런 증상이 나타날 수 있어요</h3>
+        <div class="rs-box rs-symbox"><span class="rs-badge">증상</span>
           <div class="rs-syms">${d.syms.map(([s, l]) => `<div><span class="sym-c"><img src="${IMG.sym(s)}" alt=""></span><b>${l}</b></div>`).join('')}</div></div>
         <div class="rs-box"><h3 class="lg">예방법</h3><ul>${d.tips.map(t => `<li>${labFmt(t)}</li>`).join('')}</ul></div>
-        <button class="rs-ok" type="button" hidden><span class="rs-kid"><img src="assets/kid/kid_ok_tmp.png" alt=""></span><span class="rs-ok-btn">알겠어요!</span></button>
+        <button class="rs-ok" type="button" hidden><span class="rs-kid"><img src="assets/kid/kid_${kid}_face.png" alt=""></span><span class="px-bub tail-l rs-say"><span class="px-bub-txt">알겠어요!</span><i class="t1"></i><i class="t2"></i></span></button>
       </div>
       <i class="rs-dot"></i>`);
     const lis = $$('li', win);
