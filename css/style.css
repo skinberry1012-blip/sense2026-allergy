@@ -1230,3 +1230,8 @@ body.tablet .s44.s44b .preview-wrap, .s44b .s44b-card .preview-wrap { width:min(
 .s44b-btns .btn { margin:0 0 0 4px !important; width:calc(100% - 8px) !important; }   /* 픽셀 테두리(4px)까지 상자 끝선과 맞춤 */
 .s44b-side > .s44-box:first-child .box-tag { align-self:flex-start; }
 .s44b-btns { gap:14px; padding:4px 0; }
+/* 수호 친구 큰 상자 빼기 (11/9): 칸 4개만, 이름표는 흰 테두리로 또렷하게 */
+.s44b-side > .s44-box:first-child { background:transparent !important; border-color:transparent !important; box-shadow:none !important; padding:0 !important; }
+.s44b-side > .s44-box:first-child .box-tag { box-shadow:0 0 0 3px #fff; margin-bottom:10px; }
+/* 보조 버튼은 흰색 (노란 저장 버튼과 구분) */
+.s44b-btns .btn.white { background:#fff !important; }
