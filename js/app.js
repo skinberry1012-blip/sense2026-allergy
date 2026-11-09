@@ -631,10 +631,17 @@ function openDeleteModal() {
   });
 }
 
-/* ===================== S49 선생님 설정 (한 화면 · 탭 2개 · 미리 보기) ===================== */
+/* ===================== S49 선생님 설정 (탭 2개 · 큰 미리 보기) — 2026-11-09 새 구도 =====================
+   참고: 확정 그림 모음 16쪽 시안 (한 줄 제목 · 접는 탭 · 번호 붙은 칸)
+   버튼은 세 가지만: .tc-btn.pri(주 버튼, 화면에 하나) · .tc-btn(보조) · .tc-seg(고르기)
+   스타일은 css/teacher.css */
 const isHttps = s => /^https:\/\/\S+$/i.test(s);
-const DEMO_BASE = 'https://health-action-card.github.io/Dr.-Nyang-s-Allergy-Lab/';
+const DEMO_BASE = 'https://skinberry1012-blip.github.io/sense2026-allergy/';   // 내 컴퓨터에서 열 때 보여 줄 예시 주소
 const PREVIEW_VIEWS = [['start', '처음 화면'], ['RULES', '약속 고르기'], ['S44', '카드 꾸미기'], ['S46', '5일 체크'], ['S48', '완료 화면']];
+const T_FLOW = {
+  class: ['연구소 · 알레르기 원인 12가지 찾기', '증상 카드 · 대처 방법 익히기', '나만의 예방 약속 카드 만들기', '5일 실천 체크 → 메달 받기'],
+  event: ['나만의 예방 약속 카드 만들기', '5일 실천 체크 → 메달 받기']
+};
 Router.screens.T49 = (app, p) => {
   const returnTo = p.returnTo || 'S00';
   let tab = p.tab || 1, d = Draft.get(), dev = 'tablet', view = Draft.get().mode === 'event' ? 'card' : 'lab';
@@ -643,13 +650,14 @@ Router.screens.T49 = (app, p) => {
   const okBoard = () => d.board && isHttps(d.board);
   const query = () => '?mode=' + (d.mode === 'event' ? 'event' : 'class') + (okBoard() ? '&board=' + encodeURIComponent(d.board) : '') + (d.sound === 'off' ? '&sound=off' : '') + (d.bgm === 'off' ? '&bgm=off' : '');
   const urlOf = () => base + query();
-  app.innerHTML = `<div class="sc outdoor tg">
-    <img class="tg-cat" src="${CAT('pinky_03')}" alt="">
-    <h1 class="tg-title">⚙ 냥박사 알레르기 연구소 · <em>선생님 설정</em></h1>
-    <p class="tg-sub">✦ 학생들에게 나눠 주기 전, 수업 활용 방식과 결과 공유 방법을 정해 주세요 ✦</p>
-    <button class="tg-close" id="tClose">▶ 학생 화면 열기</button>
-    <nav class="tg-tabs"><button class="tg-tab" data-t="1">⚙ <b>01</b> 기본 설정</button><button class="tg-tab" data-t="2">▦ <b>02</b> 공유 준비 및 QR 코드</button></nav>
-    <section class="tg-panel" id="panel"></section>
+  const modeName = () => d.mode === 'event' ? '행사용' : '수업용';
+  app.innerHTML = `<div class="sc tgx">
+    <header class="tc-head">
+      <h1 class="tc-title">냥박사의 알레르기 연구소 <span>선생님 설정</span></h1>
+      <p class="tc-sub">학생에게 QR을 나눠 주기 전에 정해 주세요</p>
+    </header>
+    <nav class="tc-tabs" role="tablist"><button class="tc-tab" data-t="1" role="tab"><b>01</b> 기본 설정</button><button class="tc-tab" data-t="2" role="tab"><b>02</b> QR 코드와 공유</button></nav>
+    <section class="tc-panel" id="panel"></section>
   </div>`;
   const viewName = () => view === 'lab' ? 'S00' : 'S39';
   const pvSrc = () => `index.html${query()}&preview=1&view=${viewName()}`;
@@ -658,57 +666,88 @@ Router.screens.T49 = (app, p) => {
     const W = dev === 'tablet' ? 1600 : 852, H = dev === 'tablet' ? 900 : 393, s = Math.min(f.clientWidth / W, f.clientHeight / H);
     Object.assign(ifr.style, { width: W + 'px', height: H + 'px', transform: `translate(-50%,-50%) scale(${s})` });
   };
+  const seg = (k, opts, cur) => `<span class="tc-seg" data-k="${k}">${opts.map(([v, n]) => `<button data-v="${v}" class="${v === cur ? 'on' : ''}">${n}</button>`).join('')}</span>`;
+  const paintSeg = (k, v) => $$(`.tc-seg[data-k="${k}"] button`).forEach(x => x.classList.toggle('on', x.dataset.v === v));
   const drawPrev = () => {
-    if (tab === 1) {
-      if (d.mode === 'event' && view === 'lab') view = 'card';
-      $$('#views button').forEach(x => { x.classList.toggle('on', x.dataset.v === view); x.disabled = x.dataset.v === 'lab' && d.mode === 'event'; });
-      $('#pv').src = pvSrc(); fitFrame();
-      $('#pvcap').textContent = view === 'lab' ? '🔬 수업용 학생은 연구소에서 시작해요. 연구소 학습을 마치면 약속 카드로 넘어가요.'
-        : d.mode === 'event' ? '✏️ 행사용: 학생은 QR을 찍으면 바로 이 약속 카드 화면에서 시작해요.' : '🛡 수업용: 연구소 학습을 마친 학생이 이 약속 카드 화면으로 와요.';
-    } else {
-      $('#qr').innerHTML = QR.toSVG(urlOf()); $('#lnk').textContent = urlOf();
-      $('#modeChip').innerHTML = `지금 설정: <b>${d.mode === 'event' ? '✏️ 행사용 모드' : '📚 수업용 모드'}</b> · 효과음 ${d.sound === 'off' ? '끄기' : '켜기'} · 대기 음악 ${d.bgm === 'off' ? '끄기' : '켜기'} <span>바꾸기 ›</span>`;
-    }
+    if (tab !== 1) return;
+    if (d.mode === 'event' && view === 'lab') view = 'card';
+    paintSeg('view', view);
+    $$('.tc-seg[data-k="view"] button').forEach(x => { x.disabled = x.dataset.v === 'lab' && d.mode === 'event'; });
+    $('#pv').src = pvSrc(); fitFrame();
+    $('#pvcap').textContent = view === 'lab' ? '수업용: 학생은 연구소 첫 화면에서 시작해요. 연구소를 마치면 약속 카드로 넘어가요.'
+      : d.mode === 'event' ? '행사용: 학생은 QR을 찍으면 바로 이 약속 카드 화면에서 시작해요.' : '수업용: 연구소를 마친 학생이 이 약속 카드 화면으로 와요.';
   };
+
+  /* QR 이미지 저장 (칠판·학습지에 붙이기) */
+  const saveQR = async () => {
+    const W = 1000, H = 1240, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+    const g = cv.getContext('2d');
+    g.fillStyle = '#FFFFFF'; g.fillRect(0, 0, W, H);
+    g.strokeStyle = '#1E2A5A'; g.lineWidth = 10; g.strokeRect(5, 5, W - 10, H - 10);
+    g.fillStyle = '#1E2A5A'; g.textAlign = 'center';
+    g.font = '64px Jua, sans-serif'; g.fillText('냥박사의 알레르기 연구소', W / 2, 130);
+    g.font = '40px "Gowun Dodum", sans-serif'; g.fillStyle = '#4A5578';
+    g.fillText(`${modeName()} · 태블릿 카메라로 찍어 들어와요`, W / 2, 200);
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej;
+      i.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(QR.toSVG(urlOf())); });
+    g.imageSmoothingEnabled = false; g.drawImage(img, 150, 260, 700, 700);
+    g.font = '30px "Gowun Dodum", sans-serif'; g.fillStyle = '#1E2A5A';
+    const u = urlOf(), cut = u.lastIndexOf('/', u.indexOf('?'));   // 주소는 마지막 / 앞에서 나눠 두 줄로
+    if (u.length > 52 && cut > 0) { g.fillText(u.slice(0, cut), W / 2, 1050); g.fillText(u.slice(cut), W / 2, 1095); } else g.fillText(u, W / 2, 1060);
+    try { await saveCanvasPNG(cv, `냥박사연구소_QR_${modeName()}.png`); toast('QR 이미지를 저장했어요.', 1800); }
+    catch (e) { toast(e && e.name === 'AbortError' ? '저장이 취소됐어요.' : '저장하지 못했어요. 다시 눌러 주세요.'); }
+  };
+
   const draw = () => {
-    $$('.tg-tab').forEach(b => b.classList.toggle('on', +b.dataset.t === tab));
+    $$('.tc-tab').forEach(b => { b.classList.toggle('on', +b.dataset.t === tab); b.setAttribute('aria-selected', +b.dataset.t === tab); });
+    $('#panel').className = 'tc-panel t' + tab;
     if (tab === 1) {
       $('#panel').innerHTML = `
-      <div class="tg-col">
-        <h3 class="tg-h sky"><i>🖥</i>앱 실행 모드 선택</h3>
-        <div class="tg-modes" id="seg">
-          <button data-m="class" class="${d.mode !== 'event' ? 'on' : ''}"><span class="rd"></span><span class="tx"><b>수업용 모드</b>연구소 학습을 마친 후<br>예방 약속 카드를 만듭니다.</span><em>📚</em></button>
-          <button data-m="event" class="${d.mode === 'event' ? 'on' : ''}"><span class="rd"></span><span class="tx"><b>행사용 모드</b>학습 과정을 생략하고 '예방 약속 카드<br>만들기' 화면으로 바로 진입합니다.</span><em>✏️</em></button>
-        </div>
-        <h3 class="tg-h lav"><i>☁</i>결과 공유 게시판 <span class="opt">선택사항</span></h3>
-        <p class="tg-label">학생들이 <b>5일 챌린지</b> 메달 이미지를 올릴 패들렛, 띵커벨 보드 주소</p>
-        <label class="tg-url" id="uf">🔗<input type="url" inputmode="url" id="board" placeholder="예: https://padlet.com/..." value="${esc(d.board)}"></label>
-        <p class="tg-err" id="err"></p>
-        <h3 class="tg-h sky"><i>🔔</i>소리 기본값 <span class="opt new">NEW</span></h3>
-        <div class="tg-sound">
-          <div><b>효과음</b><span class="tg-seg" data-k="sound"><button data-v="on">켜기</button><button data-v="off">끄기</button></span></div>
-          <div><b>대기 음악</b><span class="tg-seg" data-k="bgm"><button data-v="on">켜기</button><button data-v="off">끄기</button></span><small>첫 화면에서만</small></div>
-        </div>
+      <div class="tc-col tc-set">
+        <section class="tc-sec">
+          <h2 class="tc-h"><i>1</i>실행 모드</h2>
+          <div class="tc-modes" id="modes">
+            <button data-m="class" class="${d.mode !== 'event' ? 'on' : ''}"><span class="rd"></span><span><b>수업용</b><small>연구소 학습을 마친 뒤 약속 카드를 만들어요</small></span></button>
+            <button data-m="event" class="${d.mode === 'event' ? 'on' : ''}"><span class="rd"></span><span><b>행사용</b><small>연구소를 건너뛰고 약속 카드부터 시작해요</small></span></button>
+          </div>
+        </section>
+        <section class="tc-sec">
+          <h2 class="tc-h"><i>2</i>소리 기본값</h2>
+          <div class="tc-row"><span class="tc-lbl">효과음</span>${seg('sound', [['on', '켜기'], ['off', '끄기']], d.sound === 'off' ? 'off' : 'on')}</div>
+          <div class="tc-row"><span class="tc-lbl">대기 음악</span>${seg('bgm', [['on', '켜기'], ['off', '끄기']], d.bgm === 'off' ? 'off' : 'on')}<small>첫 화면에서만 나와요</small></div>
+        </section>
+        <section class="tc-sec">
+          <h2 class="tc-h"><i>3</i>결과 공유 게시판 <em>선택</em></h2>
+          <label class="tc-url" id="uf"><span class="sr">게시판 주소</span><input type="url" inputmode="url" id="board" placeholder="예: https://padlet.com/…" value="${esc(d.board)}"></label>
+          <p class="tc-help" id="err">5일 챌린지 메달 이미지를 올릴 패들렛·띵커벨 보드 주소예요.</p>
+        </section>
+        <section class="tc-device">
+          <button class="tc-btn sm danger" id="wipe">이 기기 기록 지우기</button>
+          <p>학생 기록(이름·약속·5일 체크)은 <b>이 기기에만</b> 저장되고 서버로 보내지 않아요. 공용 기기는 수업 뒤 지워 주세요.</p>
+        </section>
       </div>
-      <div class="tg-col">
-        <div class="tg-pvhead"><h3 class="tg-h pink"><i>👀</i>미리 보기</h3>
-          <div class="tg-views" id="views"><button data-v="lab">🔬 연구소</button><button data-v="card">🛡 약속 카드</button></div>
-          <div class="tg-dev" id="dev"><button data-d="tablet" class="${dev === 'tablet' ? 'on' : ''}">태블릿</button><button data-d="phone" class="${dev === 'phone' ? 'on' : ''}">휴대폰</button></div></div>
-        <div class="tg-frame" id="frame"><iframe id="pv" title="학생 화면 미리 보기"></iframe></div>
-        <p class="tg-pvcap" id="pvcap"></p>
-        <div class="tg-btns"><button class="tg-reset danger" id="wipe" title="공용 태블릿을 다음 반·다음 체험자에게 넘기기 전에">🗑 이 기기 기록 지우기</button><button class="tg-reset" id="reset">기본값으로</button><button class="tg-go pink" id="toNext">다음 단계로 ›</button></div>
+      <div class="tc-col tc-pv">
+        <div class="tc-pvhead"><h2 class="tc-h">미리 보기</h2>
+          ${seg('view', [['lab', '연구소'], ['card', '약속 카드']], view)}
+          ${seg('dev', [['tablet', '태블릿'], ['phone', '휴대폰']], dev)}</div>
+        <div class="tc-frame" id="frame"><iframe id="pv" title="학생 화면 미리 보기"></iframe></div>
+        <p class="tc-help" id="pvcap"></p>
+        <div class="tc-foot"><button class="tc-btn" id="reset">기본값으로</button><button class="tc-btn pri" id="toNext">다음 · QR 만들기 ›</button></div>
       </div>`;
-      $('#seg').addEventListener('click', e => { const b = e.target.closest('[data-m]'); if (!b) return; d.mode = b.dataset.m; Draft.set(d); view = d.mode === 'event' ? 'card' : 'lab';
-        $$('#seg button').forEach(x => x.classList.toggle('on', x === b)); drawPrev(); });
+      $('#modes').addEventListener('click', e => { const b = e.target.closest('[data-m]'); if (!b) return; d.mode = b.dataset.m; Draft.set(d); view = d.mode === 'event' ? 'card' : 'lab';
+        $$('#modes button').forEach(x => x.classList.toggle('on', x === b)); drawPrev(); });
       $('#board').addEventListener('change', e => { d.board = e.target.value.trim(); Draft.set(d);
-        const bad = d.board && !isHttps(d.board); $('#uf').classList.toggle('bad', !!bad); $('#err').textContent = bad ? '⚠ https로 시작하는 주소를 넣어 주세요.' : ''; });
-      $('#views').addEventListener('click', e => { const b = e.target.closest('[data-v]'); if (!b || b.disabled) return; view = b.dataset.v; drawPrev(); });
-      $('#dev').addEventListener('click', e => { const b = e.target.closest('[data-d]'); if (!b) return; dev = b.dataset.d; $$('#dev button').forEach(x => x.classList.toggle('on', x === b)); fitFrame(); });
-      const paintSeg = () => $$('.tg-seg').forEach(g => $$('button', g).forEach(x => x.classList.toggle('on', x.dataset.v === (d[g.dataset.k] === 'off' ? 'off' : 'on'))));
-      paintSeg();
-      $$('.tg-seg').forEach(g => g.addEventListener('click', e => { const x = e.target.closest('[data-v]'); if (!x) return; d[g.dataset.k] = x.dataset.v; Draft.set(d); paintSeg(); drawPrev(); }));
+        const bad = d.board && !isHttps(d.board); $('#uf').classList.toggle('bad', !!bad);
+        $('#err').classList.toggle('bad', !!bad);
+        $('#err').textContent = bad ? 'https로 시작하는 주소를 넣어 주세요.' : '5일 챌린지 메달 이미지를 올릴 패들렛·띵커벨 보드 주소예요.'; });
+      $$('.tc-seg').forEach(g => g.addEventListener('click', e => {
+        const x = e.target.closest('[data-v]'); if (!x || x.disabled) return; const k = g.dataset.k;
+        if (k === 'view') { view = x.dataset.v; drawPrev(); return; }
+        if (k === 'dev') { dev = x.dataset.v; paintSeg('dev', dev); fitFrame(); return; }
+        d[k] = x.dataset.v; Draft.set(d); paintSeg(k, x.dataset.v); drawPrev();
+      }));
       onTap($('#wipe'), () => {
-        const m = Modal.open(`<div class="pop-head redbar">🗑 이 기기의 기록을 모두 지울까요?</div>
+        const m = Modal.open(`<div class="pop-head redbar">이 기기의 기록을 모두 지울까요?</div>
           <p class="pop-body">이 기기에 저장된 <b class="red">약속 카드·5일 기록·연구소 진행</b>이 모두 지워져요.<br>다음 학생이 처음부터 시작할 수 있어요.</p>
           <div class="pop-btns"><button class="btn blue" data-autofocus id="wNo">취소</button><button class="btn red" id="wYes">모두 지우기</button></div>`, { sfx: 'full' });
         onTap($('#wNo', m), () => Modal.close());
@@ -718,39 +757,47 @@ Router.screens.T49 = (app, p) => {
       onTap($('#reset'), () => { d = { mode: 'class', board: '', sound: 'on', bgm: 'on' }; Draft.set(d); view = 'lab'; draw(); toast('기본값으로 되돌렸어요'); });
     } else {
       $('#panel').innerHTML = `
-      <div class="tg-col qrcol">
-        <h3 class="tg-ribbon">📱 학생 접속 QR코드</h3>
-        <button class="tg-mode" id="modeChip"></button>
-        <div class="tg-qrbox"><span class="ray l"></span><button class="tg-qr" id="qr" aria-label="QR 크게 보기"></button><span class="ray r"></span></div>
-        <p class="tg-hint">⤢ QR 코드를 누르면 전체 화면으로 크게 확대됩니다.</p>
+      <div class="tc-col tc-qrcol">
+        <h2 class="tc-h">학생 접속 QR 코드</h2>
+        <button class="tc-qr" id="qr" aria-label="QR 코드 크게 보기">${QR.toSVG(urlOf())}</button>
+        <p class="tc-help">QR 코드를 누르면 전체 화면으로 크게 보여요.</p>
+        <div class="tc-qrbtns"><button class="tc-btn" id="qrBig">크게 보기</button><button class="tc-btn" id="qrSave">QR 이미지 저장</button></div>
       </div>
-      <div class="tg-col">
-        <h3 class="tg-h sky"><i>🔗</i>접속 링크 직접 공유</h3>
-        <div class="tg-link" id="lnk"></div>
-        <button class="tg-go blue" id="copy">⧉ 링크 복사하기</button>
-        <h3 class="tg-h lav"><i>☁</i>5일 챌린지 결과 게시판</h3>
-        ${okBoard()
-          ? `<div class="tg-board"><span>☁ ${esc(d.board)}</span><button class="tg-go blue sm" id="bqr">📌 결과 게시판 QR 보기</button></div>`
-          : `<div class="tg-board none"><span>⚠ 5일 챌린지 업로드 게시판 설정이 안 되었습니다.</span><button class="tg-reset" id="goSet">01 기본 설정에서 넣기 ›</button></div>`}
-        <p class="tg-info"><i>i</i><span>설정을 바꾸면 링크와 QR도 바뀌어요.<br>학생들은 <b>새 QR을 다시 스캔</b>해야 해요.</span></p>
-        <div class="tg-btns"><button class="tg-go white" id="prev">‹ 이전 (설정 수정)</button><button class="tg-go pink" id="done">설정 완료 및 닫기 ✓</button></div>
+      <div class="tc-col tc-share">
+        <section class="tc-sum">
+          <div class="tc-sumhead"><h2 class="tc-h">설정 요약</h2><button class="tc-btn sm" id="edit">수정</button></div>
+          <p class="tc-mode"><b>${modeName()}</b> 학생은 이렇게 해요</p>
+          <ol class="tc-flow">${T_FLOW[d.mode === 'event' ? 'event' : 'class'].map(s => `<li>${s}</li>`).join('')}</ol>
+          <dl class="tc-facts">
+            <div><dt>소리</dt><dd>효과음 ${d.sound === 'off' ? '끄기' : '켜기'} · 대기 음악 ${d.bgm === 'off' ? '끄기' : '켜기'}</dd></div>
+            <div><dt>결과 게시판</dt><dd>${okBoard() ? `<span class="ok">연결됨</span> ${esc(d.board)}` : '<span class="no">없음</span> 메달은 학생 기기에만 저장돼요'}</dd></div>
+          </dl>
+        </section>
+        <section class="tc-sec">
+          <h2 class="tc-h">접속 링크</h2>
+          <div class="tc-linkrow"><div class="tc-link" id="lnk">${esc(urlOf())}</div><button class="tc-btn" id="copy">링크 복사</button></div>
+          ${okBoard() ? '<button class="tc-btn sm" id="bqr">결과 게시판 QR 보기</button>' : ''}
+          <p class="tc-help">설정을 바꾸면 링크와 QR도 바뀌어요. 학생은 <b>새 QR을 다시 찍어야</b> 해요.</p>
+        </section>
+        <div class="tc-foot"><button class="tc-btn" id="prev">‹ 이전</button><button class="tc-btn pri" id="done">설정 완료 · 학생 화면 열기 ›</button></div>
       </div>`;
-      onTap($('#copy'), async () => { if (await copyText(urlOf(), $('#lnk'))) toast('✅ 링크를 복사했어요.', 1800); });
-      onTap($('#bqr'), () => full('📌 결과 게시판 QR (접속용 아님)', d.board, true));
-      onTap($('#goSet'), () => { tab = 1; draw(); setTimeout(() => { const i = $('#board'); if (i) i.focus(); }, 50); });
-      onTap($('#qr'), () => full('📱 학생 접속 QR코드', urlOf()));
-      onTap($('#modeChip'), () => { tab = 1; draw(); });
+      onTap($('#copy'), async () => { if (await copyText(urlOf(), $('#lnk'))) toast('링크를 복사했어요.', 1800); });
+      onTap($('#bqr'), () => full('결과 게시판 QR (접속용 아님)', d.board, true));
+      onTap($('#qr'), () => full('학생 접속 QR 코드', urlOf()));
+      onTap($('#qrBig'), () => full('학생 접속 QR 코드', urlOf()));
+      onTap($('#qrSave'), saveQR);
+      onTap($('#edit'), () => { tab = 1; draw(); });
       onTap($('#prev'), () => { tab = 1; draw(); });
       onTap($('#done'), () => Router.go(returnTo));
     }
     drawPrev();
   };
   const full = (title, text, warn) => {
-    const m = Modal.open(`<h3 class="${warn ? 'warn' : ''}">${title}</h3><div class="qr-big">${QR.toSVG(text)}</div><p>${warn ? '5일 챌린지를 마친 뒤 메달 이미지를 올릴 때 쓰세요' : '태블릿 카메라로 스캔하세요'}</p><button class="btn white" data-autofocus id="qc">✕ 닫기</button>`, { cls: 'qr-full', sfx: null });
+    const m = Modal.open(`<h3 class="${warn ? 'warn' : ''}">${title}</h3><div class="qr-big">${QR.toSVG(text)}</div><p>${warn ? '5일 챌린지를 마친 뒤 메달 이미지를 올릴 때 쓰세요' : '태블릿 카메라로 찍어 주세요'}</p><button class="btn white" data-autofocus id="qc">✕ 닫기</button>`, { cls: 'qr-full', sfx: null });
     onTap($('#qc', m), () => Modal.close());
   };
-  $('.tg-tabs').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (!b) return; tab = +b.dataset.t; draw(); });
-  onTap($('#tClose'), () => Router.go(returnTo));
+  $('.tc-tabs').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (!b) return; tab = +b.dataset.t; draw(); });
+  window.addEventListener('resize', fitFrame);
   draw();
 };
 Router.screens.T50 = (app, p) => Router.screens.T49(app, { ...p, tab: 2 });
