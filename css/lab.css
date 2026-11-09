@@ -446,3 +446,19 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .quiz-wrap.go { transform:translate(78px, 2px) scale(.92); }
 .lab-quiz .quiz-sub { transition:opacity .4s; }
 .lab-quiz .quiz-sub.out { opacity:0; }
+/* ===== 기억 체크 단순하게 (11/9): 상자 없애기 — 카드 6장 · 빈칸 6개 · 이름표 2개만 ===== */
+.lab-quiz .quiz-deck { background:none; box-shadow:none; }
+.lab-quiz .quiz-deck span { display:none; }
+.lab-quiz .quiz-tray { box-shadow:inset 0 0 0 2px rgba(169,177,201,.28); background:rgba(255,255,255,.18); }
+.lab-quiz .quiz-group.light, .lab-quiz .quiz-group.severe { background:none; box-shadow:none; }
+.lab-quiz .quiz-group span { top:calc(50% - 160px); left:136px; box-shadow:none; }
+.lab-quiz .quiz-group.light ~ .quiz-slot { }
+.lab-quiz .quiz-slot { background:rgba(255,255,255,.7); }
+.lab-quiz .quiz-slot.light { border-color:#E2BE4A; background:rgba(255,246,206,.88); }
+.lab-quiz .quiz-slot.light em { color:#D9B84A; }
+.lab-quiz .quiz-slot.severe { border-color:#E39780; background:rgba(253,231,223,.88); }
+.lab-quiz .quiz-slot.severe em { color:#E0957F; }
+.lab-quiz .lab-dim.cream { background:rgba(255,248,238,.74); }   /* 상자가 없으니 배경을 조금 더 눌러요 */
+.lab-quiz .quiz-group span { left:122px; }
+.lab-quiz .quiz-slot.light { background:#FFF6D2; } .lab-quiz .quiz-slot.severe { background:#FDE8E0; }
+.lab-quiz .quiz-tray { background:rgba(255,255,255,.35); }

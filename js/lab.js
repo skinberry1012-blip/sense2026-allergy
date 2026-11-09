@@ -441,7 +441,7 @@ Router.screens.S38A = (app) => {
     const sy = gy + (GH - SH) / 2, sx0 = GX + (GW - (SW * 3 + AG * 2)) / 2;
     for (let i = 0; i < 3; i++) {
       const id = `${t}-${i}`, x = sx0 + i * (SW + AG);
-      slots[id] = labEl(b, 'quiz-slot', [x, sy, SW, SH], `<em>${i + 1}</em>`); slots[id].dataset.id = id;
+      slots[id] = labEl(b, 'quiz-slot ' + t, [x, sy, SW, SH], `<em>${i + 1}</em>`); slots[id].dataset.id = id;
       if (i < 2) groupEls.push(labEl(b, 'cope-arrow quiz-arr ' + t, null, '', 'div', `left:${x + SW + (AG - 30) / 2}px;top:${sy + SH / 2 - 23}px`));
     }
   });
