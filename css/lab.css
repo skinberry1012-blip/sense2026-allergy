@@ -331,3 +331,7 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .rs-screen { border-radius:16px; }
 .rs-box { border:0; border-radius:20px; box-shadow:0 0 0 3px rgba(30,42,90,.16); padding:16px 24px; }
 .rs-head img { border:0; border-radius:22px; box-shadow:0 0 0 3px rgba(30,42,90,.16); }
+
+/* 원인 결과 창: 그림 칸을 조금 줄여 아래 버튼 자리 확보 (11/9) */
+.rs-head img { width:118px; height:118px; }
+.rs-head b { font-size:60px; }
