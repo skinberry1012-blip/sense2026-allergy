@@ -256,3 +256,6 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .lab-deco { pointer-events:none; z-index:1; }
 .lab-spot { z-index:2; }   /* 물건은 꾸밈 덤불 앞에 */
 .lab-deco img { width:100%; height:100%; image-rendering:pixelated; display:block; }
+
+/* 말풍선 줄바꿈 고르게 (증상 카드 2줄 배치, 11/9) */
+.px-bub.bal .px-bub-txt { text-wrap:balance; word-break:keep-all; }
