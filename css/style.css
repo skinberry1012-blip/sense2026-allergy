@@ -1259,3 +1259,5 @@ body.tablet .s44.s44b .preview-wrap, .s44b .s44b-card .preview-wrap { width:min(
 .s44b-side .buddy.on { background:#FFF3C4 !important; box-shadow:0 -4px 0 #F2B705,0 4px 0 #F2B705,-4px 0 0 #F2B705,4px 0 0 #F2B705 !important; }
 .s44b-side .buddy .tick { top:8px !important; right:8px !important; }
 .s44b-side > .s44-box:first-child { border-width:0 !important; }
+/* 수호냥 칸 테두리 연하게 (11/9): 큰 칸은 그대로, 고르지 않은 칸 테두리만 옅은 남색 2px */
+.s44b-side .buddy:not(.on) { box-shadow:0 -2px 0 rgba(30,42,90,.4),0 2px 0 rgba(30,42,90,.4),-2px 0 0 rgba(30,42,90,.4),2px 0 0 rgba(30,42,90,.4) !important; }
