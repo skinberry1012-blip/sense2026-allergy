@@ -208,7 +208,7 @@ Router.screens.S44 = (app) => {
     </header>
     <div class="s44b-body">
       <aside class="s44b-side">
-        <section class="s44-box"><h3 class="box-tag">① 나의 수호 친구 고르기</h3><div class="buddies" id="buddies"></div></section>
+        <section class="s44-box"><h3 class="box-tag">나의 수호 친구 고르기</h3><div class="buddies" id="buddies"></div></section>
         <div class="s44b-btns">
           <button class="btn pink" id="save">⬇ 약속 카드 저장하기</button>
           <button class="btn white" id="print">🖨 인쇄하기</button>
@@ -225,7 +225,7 @@ Router.screens.S44 = (app) => {
   let signAt = null;
   const draw = () => drawPromiseCard(canvas, { ...st, name, date: cardDay(), rules, sigImg: signatureImg, preview: true }).then(r => { signAt = r.sign; });
   const render = () => {
-    $('#buddies').innerHTML = Object.entries(BUDDIES).map(([k, n]) => `<button class="buddy ${st.buddy === k ? 'on' : ''}" data-k="${k}"><span class="tick">✓</span><img src="${CAT(k)}" alt=""><span class="bn">${n}</span></button>`).join('');
+    $('#buddies').innerHTML = Object.entries(BUDDIES).map(([k, n]) => `<button class="buddy ${st.buddy === k ? 'on' : ''}" data-k="${k}" aria-label="수호냥 ${n}"><span class="tick">✓</span><img src="${CAT(k)}" alt=""></button>`).join('');
     draw();
   };
   $('#buddies').addEventListener('click', e => { const b = e.target.closest('[data-k]'); if (!b) return; st.buddy = b.dataset.k; st.step = Math.max(st.step, 3); Store.set('buddy', st.buddy); playSfx('check'); render(); replay($(`.buddy[data-k="${st.buddy}"]`), 'hop'); });

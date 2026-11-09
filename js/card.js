@@ -206,25 +206,26 @@ async function drawPromiseCard(canvas, { buddy = 'pinky_01', name = '', date = '
   });
 
   /* 아래: 날짜 한 줄, 그 아래 다짐한 사람(서명) · 확인한 사람(냥박사 + 도장) */
-  const midX = bx + bw / 2 - 24, dateY = 816, rowY = 896, lineW = 250, sr = 60;
+  const midX = bx + bw / 2 - 24, dateY = 806, rowY = 878, lineW = 250, sr = 60;   // 두 줄 사이 좁히고 위로 (11/9)
   ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'center';
   ctx.font = `400 32px ${GOWUN}`; ctx.fillStyle = A.ink; ctx.fillText(cardDate(date || DateK.today()), midX, dateY);
   ctx.font = `400 26px ${HEAD}`; const wA = ctx.measureText('다짐한 사람').width, wB = ctx.measureText('확인한 사람').width;
   ctx.font = `400 32px ${HEAD}`; const wN = ctx.measureText('냥박사').width;
-  let cx = midX - (wA + 12 + lineW + 56 + wB + 12 + wN + sr * 1.6) / 2; ctx.textAlign = 'left';
+  let cx = midX - (wA + 12 + lineW + 56 + wB + 12 + wN + sr * 1.9) / 2; ctx.textAlign = 'left';
   ctx.font = `400 26px ${HEAD}`; ctx.fillStyle = A.accent; ctx.fillText('다짐한 사람', cx, rowY); cx += wA + 12;
   ctx.fillRect(cx, rowY + 8, lineW, 3);
   const sign = [cx - 10, rowY - 70, lineW + 20, 96];
   if (sigImg) {
     const s2 = Math.min((lineW - 10) / sigImg.width, 84 / sigImg.height), w2 = sigImg.width * s2, h2 = sigImg.height * s2;
     ctx.drawImage(sigImg, cx + (lineW - w2) / 2, rowY + 4 - h2, w2, h2);
-  } else if (preview) {
-    ctx.font = `400 23px ${GOWUN}`; ctx.fillStyle = A.ink; ctx.globalAlpha = .4; ctx.fillText('눌러서 서명해요', cx + 16, rowY - 2); ctx.globalAlpha = 1;
+  } else if (preview) {   /* 미리보기에만: 점선 상자 + ✍️ 안내 (저장·인쇄 카드에는 안 나와요) */
+    ctx.save(); ctx.setLineDash([10, 7]); ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(62,107,46,.55)'; rr(ctx, cx - 2, rowY - 52, lineW + 10, 66, 12); ctx.stroke(); ctx.restore();
+    ctx.font = `400 25px ${GOWUN}`; ctx.fillStyle = A.ink; ctx.globalAlpha = .7; ctx.fillText('✍️ 눌러서 서명해요', cx + 14, rowY - 10); ctx.globalAlpha = 1;
   }
   cx += lineW + 56;
   ctx.font = `400 26px ${HEAD}`; ctx.fillStyle = A.accent; ctx.fillText('확인한 사람', cx, rowY); cx += wB + 12;
   ctx.font = `400 32px ${HEAD}`; ctx.fillStyle = A.ink; ctx.fillText('냥박사', cx, rowY);
-  drawSeal(ctx, cx + wN + sr * 0.88, rowY - 12, sr, SEAL_INK);
+  drawSeal(ctx, cx + wN + sr * 1.12, rowY - 12, sr, SEAL_INK);   // 이름 끝 글자에 살짝만 걸치게 (11/9)
 
   /* 수호냥 (맨 마지막에 얹어 칸 모서리를 살짝 덮어요) + 말풍선 */
   ctx.fillStyle = 'rgba(30,42,90,.12)'; ctx.beginPath(); ctx.ellipse(bLeft + bW / 2, footY - 4, bW * .42, 14, 0, 0, Math.PI * 2); ctx.fill();
