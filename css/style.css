@@ -1168,3 +1168,5 @@ body.tablet .s48-btns { left:120px; right:200px; }
   .md-title { font-size:16px; padding:8px 14px; margin-right:36px; }
   .md-x { width:38px; height:38px; right:8px; top:8px; font-size:16px; border-width:3px; }
 }
+/* 약속 카드 새 디자인 (11/9): 디자인 고르기 칸 없애고 미리보기를 넓게 */
+.s44-grid, body.tablet .s44-grid { grid-template-columns:minmax(0,1fr) 320px; }

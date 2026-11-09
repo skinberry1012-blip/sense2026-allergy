@@ -1,7 +1,7 @@
 /* 서비스 워커 — 화면 파일을 저장해 두어 인터넷이 끊겨도 앱이 열려요.
    ※ 파일을 고쳐서 다시 올릴 때는 아래 VERSION 숫자를 하나 올려 주세요. (예: v1 → v2)
    ※ 학생 기록은 여기 저장되지 않아요 (기록은 각 기기의 LocalStorage에만). */
-const VERSION = 'v39-quiz-center';
+const VERSION = 'v40-card-new';
 const CACHE = 'allergy-shield-' + VERSION;
 const FILES = [
   './',
@@ -30,6 +30,7 @@ const FILES = [
   './assets/bg/bg_lab.png',
   './assets/bg/bg_playground.png',
   './assets/card/bg_certificate.jpg',
+  './assets/card/bg_certificate_clean.jpg',
   './assets/card/bg_lab.jpg',
   './assets/card/bg_playground.jpg',
   './assets/char/nyang_cheer.png',

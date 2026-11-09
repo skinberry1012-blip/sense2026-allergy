@@ -12,13 +12,8 @@ const HEAD = '"Jua",' + FONT;
    새 구도 (팀 점검 11/8): 큰 칸 왼쪽에 수호 친구 크게, 오른쪽에 예방 수칙
    아래 줄: 작성일 · 이름 · 서명 동그라미(선택). 고유번호·서명 줄은 넣지 않음 */
 const CARD_TITLE = '알레르기 예방 약속 카드';
-const DESIGNS = {
-  certificate: { name: '인증서', bg: 'assets/card/bg_certificate.jpg', titleBox: [410, 116, 720, 128], titleSize: 54, titleColor: '#2F5A1F',
-    box: [206, 312, 1118, 424], nameBox: [909, 804, 335, 88], seal: [1326, 846, 60] },
-  lab: { name: '연구실', bg: 'assets/card/bg_lab.jpg', titleBox: [400, 92, 740, 152], titleSize: 56, titleColor: '#252E52',
-    box: [172, 318, 1194, 418], nameBox: [970, 802, 400, 112], seal: [1434, 858, 56] },
-  playground: { name: '운동장', bg: 'assets/card/bg_playground.jpg', titleBox: [410, 100, 712, 140], titleSize: 54, titleColor: '#2F5A1F',
-    box: [146, 308, 1240, 436], nameBox: [974, 800, 386, 112], seal: [1428, 856, 56] }
+const DESIGNS = {   /* 회의 결정 (11/9): 인증서 한 장만 — 아래 이름 칸·오른쪽 아래 장식 없는 깨끗한 배경 */
+  certificate: { name: '인증서', bg: 'assets/card/bg_certificate_clean.jpg', titleBox: [410, 116, 720, 128], box: [206, 312, 1118, 424] }
 };
 /* 나의 수호 친구 = 수호냥 5동작 (저장 값은 예전 이름 pinky_01~05 그대로) */
 const BUDDIES = { pinky_01: '인사', pinky_02: '하트', pinky_03: '안내', pinky_04: '엄지', pinky_05: '만세' };
@@ -77,84 +72,175 @@ function layoutRules(ctx, rules, box) {
 /* 작성일 '2026년 11월 8일' */
 const cardDate = iso => { const [y, m, d] = String(iso).split('-').map(Number); return `${y}년 ${m}월 ${d}일`; };
 
-/* 약속 카드 그리기 — 반환값 seal: 서명 동그라미 위치(카드 좌표), 미리보기에서 누르면 서명 */
-async function drawPromiseCard(canvas, { design = 'certificate', buddy = 'pinky_01', name = '', date = '', rules = [], sigImg = null, preview = false }) {
-  const D = DESIGNS[design] || DESIGNS.certificate;
+/* 약속 카드 그리기 (새 디자인 · 회의 결정 11/9: 인증서 한 장)
+   - 제목: 원래 칸 + 주아 / 칸 안 맨 위 "나 ○○○은 이렇게 약속해요"
+   - 약속: 장소 배지(집에서·학교에서·밖에서)를 묶음 첫 줄에 맞추고, 옅은 띠 + 번호
+   - 아래: 날짜 · 다짐한 사람(눌러서 서명, 선택) · 확인한 사람 냥박사 + 굵은 테두리 발바닥 도장
+   - 수호냥은 칸 밖 오른쪽 아래에 기대 서고 "함께 지켜 줄게!" 말풍선
+   반환값: { fit, sign: [x, y, w, h] } — sign은 서명 줄 자리(카드 좌표), 미리보기에서 누르면 서명 */
+const CARD = { accent: '#3E6B2E', ink: '#22361A', soft: '#E3ECD5' };
+const GOWUN = '"Gowun Dodum",' + FONT;
+const SEAL_INK = '#C9573A', HILITE = 'rgba(245,200,66,.55)';
+const RULE_STEPS = [{ fs: 44, lh: 1.26, gap: 12 }, { fs: 38, lh: 1.28, gap: 11 }, { fs: 36, lh: 1.26, gap: 10 }, { fs: 34, lh: 1.24, gap: 8 }, { fs: 32, lh: 1.2, gap: 7 }, { fs: 30, lh: 1.2, gap: 6 }, { fs: 28, lh: 1.18, gap: 5 }, { fs: 26, lh: 1.18, gap: 4 }, { fs: 24, lh: 1.16, gap: 3 }];
+const PLACE_TAG = { home: { name: '집에서', fill: '#F7D667', soft: 'rgba(247,214,103,.18)' }, school: { name: '학교에서', fill: '#A9D3F5', soft: 'rgba(169,211,245,.24)' }, outside: { name: '밖에서', fill: '#B5DFA6', soft: 'rgba(181,223,166,.26)' } };
+const hasJong = w => { const c = String(w).trim().slice(-1).charCodeAt(0); return c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28 !== 0; };
+
+/* 도장: 따로 그려 투명도만 낮춰 얹어요 (배경이 비치고 잉크 색은 그대로) */
+function drawSeal(ctx, cx, cy, r, color) {
+  const S = Math.ceil(r * 2 + 30), c = document.createElement('canvas'); c.width = c.height = S;
+  const g = c.getContext('2d'), m = S / 2;
+  g.translate(m, m); g.rotate(-0.16);
+  g.strokeStyle = color; g.fillStyle = color; g.lineJoin = 'round';
+  g.lineWidth = r * 0.17; g.beginPath(); g.arc(0, 0, r * 0.9, 0, Math.PI * 2); g.stroke();
+  g.lineWidth = r * 0.05; g.beginPath(); g.arc(0, 0, r * 0.7, 0, Math.PI * 2); g.stroke();
+  const word = [...'약속 확인'], fs = r * 0.3, span = 1.5;
+  g.font = `400 ${fs}px ${HEAD}`; g.textAlign = 'center'; g.textBaseline = 'middle';
+  word.forEach((ch, i) => { g.save(); g.rotate(-span / 2 + span * i / (word.length - 1)); g.translate(0, -r * 0.5);
+    g.lineWidth = fs * 0.12; g.strokeText(ch, 0, 0); g.fillText(ch, 0, 0); g.restore(); });
+  drawPaw(g, -r * 0.31, -r * 0.12, r * 0.62, color);
+  /* 잉크 결: 군데군데 빠진 자국 (늘 같은 모양) */
+  g.setTransform(1, 0, 0, 1, 0, 0); g.globalCompositeOperation = 'destination-out';
+  let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (let i = 0; i < 140; i++) { g.globalAlpha = 0.25 + rnd() * 0.5; g.beginPath(); g.arc(rnd() * S, rnd() * S, 0.6 + rnd() * 2.2, 0, Math.PI * 2); g.fill(); }
+  for (let i = 0; i < 5; i++) { g.globalAlpha = 0.18; g.beginPath(); g.ellipse(rnd() * S, rnd() * S, 6 + rnd() * 10, 3 + rnd() * 5, rnd() * 3, 0, Math.PI * 2); g.fill(); }
+  ctx.save(); ctx.globalAlpha = 0.9; ctx.drawImage(c, cx - m, cy - m); ctx.restore();
+}
+
+async function drawPromiseCard(canvas, { buddy = 'pinky_01', name = '', date = '', rules = [], sigImg = null, preview = false }) {
+  const D = DESIGNS.certificate, A = CARD;
   canvas.width = CARD_W; canvas.height = CARD_H;
   const ctx = canvas.getContext('2d');
   if (document.fonts && document.fonts.ready) await document.fonts.ready;
   const [bg, ch] = await Promise.all([loadImg(D.bg), loadImg(buddySrc(buddy))]);
-  ctx.clearRect(0, 0, CARD_W, CARD_H);
-  ctx.drawImage(bg, 0, 0, CARD_W, CARD_H);
+  ctx.clearRect(0, 0, CARD_W, CARD_H); ctx.drawImage(bg, 0, 0, CARD_W, CARD_H);
 
   /* 제목 */
   const [tx, ty, tw, th] = D.titleBox;
-  ctx.fillStyle = D.titleColor; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.font = `400 ${D.titleSize}px ${HEAD}`; ctx.fillText(CARD_TITLE, tx + tw / 2, ty + th / 2 + 2, tw - 30);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = A.accent;
+  ctx.font = `400 58px ${HEAD}`; ctx.fillText(CARD_TITLE, tx + tw / 2, ty + th / 2 + 3, tw - 40);
 
-  /* 큰 칸 나누기: 왼쪽 수호 친구 · 오른쪽 수칙 */
-  const [bx, by, bw, bh] = D.box, leftW = Math.round(bw * 0.25);
-  const sc = Math.min((leftW - 40) / ch.width, (bh * 0.72) / ch.height);   // 수호 친구 크기 (사용자 요청: 조금 작게)
-  const dw = ch.width * sc, dh = ch.height * sc;
-  ctx.save(); ctx.imageSmoothingEnabled = false;
-  ctx.drawImage(ch, bx + (leftW - dw) / 2, by + (bh - dh) / 2, dw, dh); ctx.restore();
-  ctx.strokeStyle = 'rgba(30,42,90,.22)'; ctx.setLineDash([10, 8]); ctx.lineWidth = 3;
-  ctx.beginPath(); ctx.moveTo(bx + leftW + 6, by + 18); ctx.lineTo(bx + leftW + 6, by + bh - 18); ctx.stroke(); ctx.setLineDash([]);
+  const [bx, by, bw, bh] = D.box;
+  /* 수호냥 자리: 칸 밖 오른쪽 아래 */
+  const bH = 316, bW = ch.width * bH / ch.height, footY = 948, bLeft = 1432 - bW;
+  const ruleRight = Math.min(bx + bw - 40, bLeft - 18);
 
-  /* 아래 줄: 작성일 · 이름 · 서명 */
-  const [nx, ny, nw, nh] = D.nameBox, midY = ny + nh / 2;
-  ctx.textBaseline = 'middle';
-  ctx.font = `800 30px ${FONT}`; ctx.fillStyle = '#2a1f1a'; ctx.textAlign = 'right';
-  ctx.fillText(cardDate(date || DateK.today()), nx - 26, midY + 1);
-  ctx.font = `800 20px ${FONT}`; const tagW = ctx.measureText('이름').width + 24;
-  let nf = 34; ctx.font = `900 ${nf}px ${FONT}`;
-  while (nf > 20 && tagW + 10 + ctx.measureText(name).width > nw - 24) { nf -= 2; ctx.font = `900 ${nf}px ${FONT}`; }
-  const nmW = ctx.measureText(name).width, startX = nx + (nw - (tagW + 10 + nmW)) / 2;
-  ctx.fillStyle = '#E0663F'; rr(ctx, startX, midY - 16, tagW, 32, 16); ctx.fill();
-  ctx.font = `800 20px ${FONT}`; ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.fillText('이름', startX + 12, midY + 1);
-  ctx.font = `900 ${nf}px ${FONT}`; ctx.fillStyle = '#2a1f1a'; ctx.fillText(name, startX + tagW + 10, midY + 1);
+  /* 칸 안 맨 위: 나 ○○○은 이렇게 약속해요 */
+  const nm = name || '○○○', a = '나 ', c = (hasJong(nm) ? '은' : '는') + ' 이렇게 약속해요';
+  ctx.font = `400 42px ${HEAD}`;
+  const wa = ctx.measureText(a).width, wb = ctx.measureText(nm).width, wc = ctx.measureText(c).width;
+  const lx0 = bx + bw / 2 - (wa + wb + wc) / 2;
+  const drawLead = ly0 => {
+    ctx.font = `400 42px ${HEAD}`; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.save(); ctx.strokeStyle = HILITE; ctx.lineCap = 'round'; ctx.lineWidth = 22;
+    ctx.beginPath(); ctx.moveTo(lx0 + wa + 8, ly0 + 15); ctx.lineTo(lx0 + wa + wb - 2, ly0 + 11); ctx.stroke(); ctx.restore();
+    ctx.fillStyle = A.ink; ctx.fillText(a, lx0, ly0); ctx.fillStyle = A.accent; ctx.fillText(nm, lx0 + wa, ly0); ctx.fillStyle = A.ink; ctx.fillText(c, lx0 + wa + wb, ly0);
+  };
 
-  const [sx, sy, sr] = D.seal;
-  ctx.beginPath(); ctx.arc(sx, sy, sr, 0, Math.PI * 2);
-  if (sigImg) {
-    ctx.fillStyle = '#fff'; ctx.fill(); ctx.lineWidth = 6; ctx.strokeStyle = '#E0663F'; ctx.stroke();
-    ctx.save(); ctx.beginPath(); ctx.arc(sx, sy, sr - 6, 0, Math.PI * 2); ctx.clip();
-    const s2 = Math.min((sr * 1.7) / sigImg.width, (sr * 1.2) / sigImg.height);
-    ctx.drawImage(sigImg, sx - sigImg.width * s2 / 2, sy - sigImg.height * s2 / 2, sigImg.width * s2, sigImg.height * s2); ctx.restore();
-  } else {
-    ctx.fillStyle = '#F07A5E'; ctx.fill(); ctx.lineWidth = 4; ctx.strokeStyle = '#C9573A'; ctx.stroke();
-    if (preview) {
-      ctx.fillStyle = '#fff'; ctx.textAlign = 'center';
-      ctx.font = `900 24px ${FONT}`; ctx.fillText('서명', sx, sy - 11);
-      ctx.font = `800 17px ${FONT}`; ctx.fillText('(선택)', sx, sy + 15);
-    } else drawPaw(ctx, sx - sr * .45, sy - sr * .48, sr * .9, 'rgba(255,255,255,.9)');
+  /* 약속 배치: 개수에 맞는 글씨 크기에서 시작, 수호냥 머리 높이에 걸리는 약속만 좁게 */
+  const rx = bx + 48, rw = bx + bw - 48 - rx, rwCat = ruleRight - rx, catTop = footY - bH, rh = bh - 114, n = rules.length;
+  const colOf = s => Math.max(s.fs * 3.3, 140);
+  let L, fallback = null;
+  for (let k = n <= 3 ? 0 : n <= 5 ? 2 : 3; k < RULE_STEPS.length; k++) {
+    const s = RULE_STEPS[k], mk = colOf(s) + s.fs * 1.5;
+    const lay = (r, width) => {
+      ctx.font = `400 ${s.fs * .62}px ${HEAD}`; const tagW = r.mine ? ctx.measureText('나만의').width + 18 : 0;
+      ctx.font = `400 ${s.fs}px ${GOWUN}`;
+      const maxW = width - mk - tagW; let lines = wrapLines(ctx, r.text, maxW);
+      if (lines.length > 1) { for (let w = maxW - 10; w > maxW * 0.45; w -= 10) { const t = wrapLines(ctx, r.text, w); if (t.length > lines.length) break; lines = t; } }   // 줄 길이 고르게
+      return { r, lines, tagW, h: lines.length * s.fs * s.lh + s.gap * 2 };
+    };
+    let narrow = rules.map(() => false), items, total;
+    for (let pass = 0; pass < 4; pass++) {
+      items = rules.map((r, i) => lay(r, narrow[i] ? rwCat : rw));
+      total = items.reduce((p, q) => p + q.h, 0);
+      let yy = by + Math.max(24, (bh - (44 + 26 + total)) / 2) + 44 + 26, changed = false;
+      items.forEach((it, i) => { if (yy + it.h > catTop + 6 && !narrow[i]) { narrow[i] = true; changed = true; } yy += it.h; });
+      if (!changed) break;
+    }
+    const cur = { s, items, total, mk };
+    if (total <= rh) {
+      if (!fallback) fallback = cur;
+      if (!items.some((it, i) => it.lines.length > 1 && !narrow[i])) { L = cur; break; }
+      if (s.fs <= 34) { L = fallback; break; }
+    }
+    L = cur;
   }
-  ctx.textBaseline = 'alphabetic';
+  if (L.total > rh && fallback) L = fallback;
+  const fit = L.total <= rh + 40;
 
-  /* 수칙 */
-  const box = [bx + leftW + 30, by + 14, bw - leftW - 50, bh - 28]; const L = layoutRules(ctx, rules, box);
-  let y = box[1] + (box[3] - L.total) / 2;
-  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+  /* 약속 문장 + 약속 묶음을 한 덩어리로 칸 안 위아래 가운데 */
+  const LEAD = 44, GAP = 26, top = by + Math.max(24, (bh - (LEAD + GAP + L.total)) / 2);
+  drawLead(top + LEAD / 2);
+  let y = top + LEAD + GAP;
+  /* 장소 배지 + 옅은 띠 */
+  let gy = y;
   L.items.forEach((it, i) => {
-    const s = L.s, x = box[0] + 4; let ly = y + s.gap;
-    ctx.fillStyle = '#3E5099'; ctx.fillRect(x + s.fs * .22, ly + s.fs * .36, s.fs * .42, s.fs * .42);
-    const textX = x + s.fs * 1.4;
+    if (i === 0 || L.items[i - 1].r.place !== it.r.place) {
+      let gh = 0; for (let j = i; j < L.items.length && L.items[j].r.place === it.r.place; j++) gh += L.items[j].h;
+      const s = L.s, col = colOf(s), bandX = rx + col - 4, P = PLACE_TAG[it.r.place] || PLACE_TAG.home;
+      ctx.fillStyle = P.soft; rr(ctx, bandX, gy + 3, rx + rw + 4 - bandX, gh - 6, 12); ctx.fill();
+      const firstY = gy + s.gap + s.fs * .62, fz = Math.max(26, s.fs * .7), chW = col - 16, chH = fz * 1.5;
+      ctx.fillStyle = P.fill; rr(ctx, rx, firstY - chH / 2, chW, chH, chH / 2); ctx.fill();
+      ctx.fillStyle = A.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = `400 ${fz}px ${HEAD}`;
+      ctx.fillText(P.name, rx + chW / 2, firstY + 2);
+    }
+    gy += it.h;
+  });
+  /* 번호 + 약속 글씨 */
+  L.items.forEach((it, i) => {
+    const s = L.s, mx = rx + colOf(s) + 6 + s.fs * .55, my = y + s.gap + s.fs * .62;
+    ctx.fillStyle = A.accent; ctx.beginPath(); ctx.arc(mx, my, s.fs * .5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = `400 ${s.fs * .64}px ${HEAD}`; ctx.fillText(String(i + 1), mx, my + 2);
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    let yy = y + s.gap;
     it.lines.forEach((line, j) => {
-      let lx = textX;
+      let lx = rx + L.mk;
       if (j === 0 && it.r.mine) {
-        ctx.font = `800 ${s.fs * .62}px ${FONT}`; const mw2 = ctx.measureText('나만의').width + 14;
-        ctx.fillStyle = '#fff1c9'; rr(ctx, lx, ly + s.fs * .15, mw2, s.fs * .9, 8); ctx.fill();
-        ctx.fillStyle = '#9a6a00'; ctx.fillText('나만의', lx + 7, ly + s.fs * .82); lx += mw2 + 8;
+        ctx.font = `400 ${s.fs * .62}px ${HEAD}`; rr(ctx, lx, yy + s.fs * .2, it.tagW - 8, s.fs * .86, 6); ctx.fillStyle = '#FFFFFF'; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = A.accent; ctx.stroke();
+        ctx.fillStyle = A.ink; ctx.fillText('나만의', lx + 5, yy + s.fs * .84); lx += it.tagW;
       }
-      ctx.font = `800 ${s.fs}px ${FONT}`; ctx.fillStyle = '#2a1f1a';
-      ctx.fillText(line, lx, ly + s.fs * .95); ly += s.fs * s.lh;
+      ctx.font = `400 ${s.fs}px ${GOWUN}`; ctx.fillStyle = A.ink; ctx.fillText(line, lx, yy + s.fs * .95); yy += s.fs * s.lh;
     });
     y += it.h;
-    if (i < L.items.length - 1) { ctx.strokeStyle = 'rgba(30,42,90,.2)'; ctx.setLineDash([8, 6]); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(box[0], y); ctx.lineTo(box[0] + box[2], y); ctx.stroke(); ctx.setLineDash([]); }
+    if (i < L.items.length - 1 && L.items[i + 1].r.place === it.r.place) { ctx.fillStyle = 'rgba(30,42,90,.08)'; ctx.fillRect(rx + L.mk, y - 1, rw - L.mk, 2); }
   });
 
-  ctx.textBaseline = 'alphabetic';
-  return { fit: L.fit, step: L.step, seal: D.seal };
+  /* 아래: 날짜 한 줄, 그 아래 다짐한 사람(서명) · 확인한 사람(냥박사 + 도장) */
+  const midX = bx + bw / 2 - 24, dateY = 816, rowY = 896, lineW = 250, sr = 60;
+  ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'center';
+  ctx.font = `400 32px ${GOWUN}`; ctx.fillStyle = A.ink; ctx.fillText(cardDate(date || DateK.today()), midX, dateY);
+  ctx.font = `400 26px ${HEAD}`; const wA = ctx.measureText('다짐한 사람').width, wB = ctx.measureText('확인한 사람').width;
+  ctx.font = `400 32px ${HEAD}`; const wN = ctx.measureText('냥박사').width;
+  let cx = midX - (wA + 12 + lineW + 56 + wB + 12 + wN + sr * 1.6) / 2; ctx.textAlign = 'left';
+  ctx.font = `400 26px ${HEAD}`; ctx.fillStyle = A.accent; ctx.fillText('다짐한 사람', cx, rowY); cx += wA + 12;
+  ctx.fillRect(cx, rowY + 8, lineW, 3);
+  const sign = [cx - 10, rowY - 70, lineW + 20, 96];
+  if (sigImg) {
+    const s2 = Math.min((lineW - 10) / sigImg.width, 84 / sigImg.height), w2 = sigImg.width * s2, h2 = sigImg.height * s2;
+    ctx.drawImage(sigImg, cx + (lineW - w2) / 2, rowY + 4 - h2, w2, h2);
+  } else if (preview) {
+    ctx.font = `400 23px ${GOWUN}`; ctx.fillStyle = A.ink; ctx.globalAlpha = .4; ctx.fillText('눌러서 서명해요', cx + 16, rowY - 2); ctx.globalAlpha = 1;
+  }
+  cx += lineW + 56;
+  ctx.font = `400 26px ${HEAD}`; ctx.fillStyle = A.accent; ctx.fillText('확인한 사람', cx, rowY); cx += wB + 12;
+  ctx.font = `400 32px ${HEAD}`; ctx.fillStyle = A.ink; ctx.fillText('냥박사', cx, rowY);
+  drawSeal(ctx, cx + wN + sr * 0.88, rowY - 12, sr, SEAL_INK);
+
+  /* 수호냥 (맨 마지막에 얹어 칸 모서리를 살짝 덮어요) + 말풍선 */
+  ctx.fillStyle = 'rgba(30,42,90,.12)'; ctx.beginPath(); ctx.ellipse(bLeft + bW / 2, footY - 4, bW * .42, 14, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.save(); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high'; ctx.drawImage(ch, bLeft, footY - bH, bW, bH); ctx.restore();
+  const msg = '함께 지켜 줄게!'; ctx.font = `400 27px ${HEAD}`;
+  const mw = ctx.measureText(msg).width, X0 = bLeft - (mw + 36) + 6, Y0 = by + bh + 14, X1 = X0 + mw + 36, Y1 = Y0 + 52, R = 16;
+  ctx.save(); ctx.beginPath();
+  ctx.moveTo(X0 + R, Y0); ctx.lineTo(X1 - R, Y0); ctx.quadraticCurveTo(X1, Y0, X1, Y0 + R);
+  ctx.lineTo(X1, Y0 + 18); ctx.lineTo(X1 + 20, Y0 + 10); ctx.lineTo(X1, Y0 + 32);
+  ctx.lineTo(X1, Y1 - R); ctx.quadraticCurveTo(X1, Y1, X1 - R, Y1);
+  ctx.lineTo(X0 + R, Y1); ctx.quadraticCurveTo(X0, Y1, X0, Y1 - R);
+  ctx.lineTo(X0, Y0 + R); ctx.quadraticCurveTo(X0, Y0, X0 + R, Y0); ctx.closePath();
+  ctx.fillStyle = '#FFFFFF'; ctx.fill(); ctx.lineWidth = 3; ctx.lineJoin = 'round'; ctx.strokeStyle = A.accent; ctx.stroke();
+  ctx.fillStyle = A.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(msg, X0 + (mw + 36) / 2, Y0 + 28);
+  ctx.restore(); ctx.textBaseline = 'alphabetic';
+  return { fit, sign };
 }
 
 /* 챌린지 메달 이미지 (S48-2) — 이름은 넣지 않아요. color: pink | green | blue */

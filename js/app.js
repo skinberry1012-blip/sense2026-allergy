@@ -203,13 +203,12 @@ Router.screens.S44 = (app) => {
   <div class="sc outdoor s44">
     <header class="s44-top">
       <h1 class="title-banner">${pawSVG('#fff')} 나만의 알레르기 예방 <em>약속 카드</em> 만들기! ${pawSVG('#fff')}</h1>
-      <p class="bubble sm s44-bubble">원하는 디자인과 캐릭터를 선택하고,<br>나만의 약속 카드를 완성해 보세요!</p>
+      <p class="bubble sm s44-bubble">함께할 수호 친구를 고르고,<br>카드에 서명해서 완성해 보세요!</p>
     </header>
     <div class="s44-grid">
-      <section class="s44-box s44-designs"><h3 class="box-tag">🗂 카드 디자인 선택</h3><div id="designs"></div></section>
       <section class="s44-box s44-center">
         <div class="preview-wrap" id="pvwrap"><canvas id="pv"></canvas><button class="zoom" id="zoom">🔍 크게 보기</button></div>
-        <p class="sign-hint" id="signHint">✍️ 카드의 <b>빨간 동그라미</b>를 누르면 서명할 수 있어요 (선택)</p>
+        <p class="sign-hint" id="signHint"></p>
       </section>
       <section class="s44-right">
         <div class="s44-box"><h3 class="box-tag">나의 수호 친구 선택</h3><div class="buddies" id="buddies"></div></div>
@@ -224,16 +223,14 @@ Router.screens.S44 = (app) => {
   </div>`;
   const canvas = $('#pv');
   const cardDay = () => Store.get('cardDate', '') || DateK.today();
-  let sealAt = null;
-  const draw = () => drawPromiseCard(canvas, { ...st, name, date: cardDay(), rules, sigImg: signatureImg, preview: true }).then(r => { sealAt = r.seal; });
+  let signAt = null;
+  const draw = () => drawPromiseCard(canvas, { ...st, name, date: cardDay(), rules, sigImg: signatureImg, preview: true }).then(r => { signAt = r.sign; });
   const render = () => {
-    $('#designs').innerHTML = Object.entries(DESIGNS).map(([k, d]) => `<button class="design ${st.design === k ? 'on' : ''}" data-k="${k}"><span class="radio"></span><span class="thumb" style="background-image:url(${d.bg})"><b>${d.name}<br>디자인</b></span></button>`).join('');
     $('#buddies').innerHTML = Object.entries(BUDDIES).map(([k, n]) => `<button class="buddy ${st.buddy === k ? 'on' : ''}" data-k="${k}"><span class="tick">✓</span><img src="${CAT(k)}" alt=""><span class="bn">${n}</span></button>`).join('');
-    $('#summary').innerHTML = `<h3 class="box-tag">📋 선택한 내용 요약</h3><p><span>카드 디자인</span><b>${DESIGNS[st.design].name}</b></p><p><span>나의 수호 친구</span><b>${BUDDIES[st.buddy]}</b></p><p><span>예방 수칙</span><b>총 ${rules.length}개</b></p>`;
-    $('#signHint').innerHTML = signatureImg ? '✓ 서명했어요 · <b>빨간 동그라미</b>를 누르면 다시 쓸 수 있어요' : '✍️ 카드의 <b>빨간 동그라미</b>를 누르면 서명할 수 있어요 (선택)';
+    $('#summary').innerHTML = `<h3 class="box-tag">📋 선택한 내용 요약</h3><p><span>나의 수호 친구</span><b>${BUDDIES[st.buddy]}</b></p><p><span>예방 수칙</span><b>총 ${rules.length}개</b></p>`;
+    $('#signHint').innerHTML = signatureImg ? '✓ 서명했어요 · <b>다짐한 사람</b> 줄을 누르면 다시 쓸 수 있어요' : '✍️ 카드의 <b>다짐한 사람</b> 줄을 누르면 서명할 수 있어요 (선택)';
     draw();
   };
-  $('#designs').addEventListener('click', e => { const b = e.target.closest('[data-k]'); if (!b) return; st.design = b.dataset.k; st.step = Math.max(st.step, 2); Store.set('design', st.design); playSfx('tab'); render(); });
   $('#buddies').addEventListener('click', e => { const b = e.target.closest('[data-k]'); if (!b) return; st.buddy = b.dataset.k; st.step = Math.max(st.step, 3); Store.set('buddy', st.buddy); playSfx('check'); render(); replay($(`.buddy[data-k="${st.buddy}"]`), 'hop'); });
 
   /* 크게 보기 (휴대폰: 카드를 옆으로 돌려 화면 가득) */
@@ -244,11 +241,11 @@ Router.screens.S44 = (app) => {
   };
   onTap($('#zoom'), zoom);
 
-  /* 서명 창: 미리보기 카드의 빨간 동그라미를 누르면 열림 */
+  /* 서명 창: 미리보기 카드의 '다짐한 사람' 서명 줄을 누르면 열림 (헌혈 임명장처럼) */
   const onSeal = e => {
-    if (!sealAt) return false;
+    if (!signAt) return false;
     const r = canvas.getBoundingClientRect(), x = (e.clientX - r.left) * CARD_W / r.width, y = (e.clientY - r.top) * CARD_H / r.height;
-    return Math.hypot(x - sealAt[0], y - sealAt[1]) <= sealAt[2] + 24;
+    return x >= signAt[0] - 20 && x <= signAt[0] + signAt[2] + 20 && y >= signAt[1] - 20 && y <= signAt[1] + signAt[3] + 20;
   };
   canvas.addEventListener('pointermove', e => { canvas.style.cursor = onSeal(e) ? 'pointer' : ''; });
   canvas.addEventListener('click', e => { if (onSeal(e)) { playSfx('tap'); openSign(); } });
@@ -268,7 +265,12 @@ Router.screens.S44 = (app) => {
     onTap($('#sClear', m), () => { c.clearRect(0, 0, pad.width, pad.height); has = false; });
     onTap($('#sOk', m), async () => {
       if (!has) { Modal.close(); return; }
-      signatureImg = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.src = pad.toDataURL('image/png'); });
+      /* 쓴 부분만 잘라서 서명 줄 크기에 맞춰요 */
+      const d = c.getImageData(0, 0, pad.width, pad.height).data; let x0 = pad.width, y0 = pad.height, x1 = 0, y1 = 0;
+      for (let yy = 0; yy < pad.height; yy += 2) for (let xx = 0; xx < pad.width; xx += 2) if (d[(yy * pad.width + xx) * 4 + 3] > 20) { if (xx < x0) x0 = xx; if (xx > x1) x1 = xx; if (yy < y0) y0 = yy; if (yy > y1) y1 = yy; }
+      const pd = 10; x0 = Math.max(0, x0 - pd); y0 = Math.max(0, y0 - pd); x1 = Math.min(pad.width, x1 + pd); y1 = Math.min(pad.height, y1 + pd);
+      const cut = document.createElement('canvas'); cut.width = Math.max(1, x1 - x0); cut.height = Math.max(1, y1 - y0); cut.getContext('2d').drawImage(pad, x0, y0, cut.width, cut.height, 0, 0, cut.width, cut.height);
+      signatureImg = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.src = cut.toDataURL('image/png'); });
       Modal.close(); render();
     });
   };
