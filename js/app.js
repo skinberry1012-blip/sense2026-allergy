@@ -637,7 +637,11 @@ function openDeleteModal() {
    스타일은 css/teacher.css */
 const isHttps = s => /^https:\/\/\S+$/i.test(s);
 const DEMO_BASE = 'https://skinberry1012-blip.github.io/sense2026-allergy/';   // 내 컴퓨터에서 열 때 보여 줄 예시 주소
-const PREVIEW_VIEWS = [['start', '처음 화면'], ['RULES', '약속 고르기'], ['S44', '카드 꾸미기'], ['S46', '5일 체크'], ['S48', '완료 화면']];
+/* 미리 보기에서 열어 볼 화면 (연구소 · 약속 카드) */
+const PREVIEW_STEPS = {
+  lab:  [['S00', '처음'], ['S01', '이야기'], ['S05', '활동 고르기'], ['S06', '집 3-1'], ['S15', '급식실 3-2'], ['S24', '운동장 3-3'], ['S36-3', '증상 카드'], ['S37', '대처 방법'], ['S38A', '기억 체크']],
+  card: [['S39', '시작'], ['S40', '이름'], ['RULES', '약속 고르기'], ['S44', '카드 꾸미기'], ['S46', '5일 체크'], ['S47', '결과'], ['S48', '완료']]
+};
 const T_FLOW = {
   class: ['연구소 · 알레르기 원인 12가지 찾기', '증상 카드 · 대처 방법 익히기', '나만의 예방 약속 카드 만들기', '5일 실천 체크 → 메달 받기'],
   event: ['나만의 예방 약속 카드 만들기', '5일 실천 체크 → 메달 받기']
@@ -645,6 +649,7 @@ const T_FLOW = {
 Router.screens.T49 = (app, p) => {
   const returnTo = p.returnTo || 'S00';
   let tab = p.tab || 1, d = Draft.get(), dev = 'tablet', view = Draft.get().mode === 'event' ? 'card' : 'lab';
+  const step = { lab: 'S00', card: 'S39' };   // 부분마다 마지막으로 연 화면
   const local = location.protocol === 'file:' || ['localhost', '127.0.0.1', ''].includes(location.hostname);
   const base = local ? DEMO_BASE : location.origin + location.pathname;
   const okBoard = () => d.board && isHttps(d.board);
@@ -659,7 +664,7 @@ Router.screens.T49 = (app, p) => {
     <nav class="tc-tabs" role="tablist"><button class="tc-tab" data-t="1" role="tab"><b>01</b> 기본 설정</button><button class="tc-tab" data-t="2" role="tab"><b>02</b> QR 코드와 공유</button></nav>
     <section class="tc-panel" id="panel"></section>
   </div>`;
-  const viewName = () => view === 'lab' ? 'S00' : 'S39';
+  const viewName = () => step[view];
   const pvSrc = () => `index.html${query()}&preview=1&view=${viewName()}`;
   const fitFrame = () => {
     const f = $('#frame'), ifr = $('#pv'); if (!f) return;
@@ -672,6 +677,7 @@ Router.screens.T49 = (app, p) => {
     if (tab !== 1) return;
     if (d.mode === 'event' && view === 'lab') view = 'card';
     paintSeg('view', view);
+    $('#steps').innerHTML = PREVIEW_STEPS[view].map(([k, n]) => `<button data-s="${k}" class="${k === step[view] ? 'on' : ''}">${n}</button>`).join('');
     $$('.tc-seg[data-k="view"] button').forEach(x => { x.disabled = x.dataset.v === 'lab' && d.mode === 'event'; });
     $('#pv').src = pvSrc(); fitFrame();
     $('#pvcap').textContent = view === 'lab' ? '수업용: 학생은 연구소 첫 화면에서 시작해요. 연구소를 마치면 약속 카드로 넘어가요.'
@@ -730,6 +736,7 @@ Router.screens.T49 = (app, p) => {
         <div class="tc-pvhead"><h2 class="tc-h">미리 보기</h2>
           ${seg('view', [['lab', '연구소'], ['card', '약속 카드']], view)}
           ${seg('dev', [['tablet', '태블릿'], ['phone', '휴대폰']], dev)}</div>
+        <div class="tc-steps" id="steps" aria-label="열어 볼 화면"></div>
         <div class="tc-frame" id="frame"><iframe id="pv" title="학생 화면 미리 보기"></iframe></div>
         <p class="tc-help" id="pvcap"></p>
         <div class="tc-foot"><button class="tc-btn" id="reset">기본값으로</button><button class="tc-btn pri" id="toNext">다음 · QR 만들기 ›</button></div>
@@ -740,6 +747,7 @@ Router.screens.T49 = (app, p) => {
         const bad = d.board && !isHttps(d.board); $('#uf').classList.toggle('bad', !!bad);
         $('#err').classList.toggle('bad', !!bad);
         $('#err').textContent = bad ? 'https로 시작하는 주소를 넣어 주세요.' : '5일 챌린지 메달 이미지를 올릴 패들렛·띵커벨 보드 주소예요.'; });
+      $('#steps').addEventListener('click', e => { const b = e.target.closest('[data-s]'); if (!b) return; step[view] = b.dataset.s; drawPrev(); });
       $$('.tc-seg').forEach(g => g.addEventListener('click', e => {
         const x = e.target.closest('[data-v]'); if (!x || x.disabled) return; const k = g.dataset.k;
         if (k === 'view') { view = x.dataset.v; drawPrev(); return; }
@@ -808,7 +816,13 @@ function seedPreview(view) {
   Store.set('name', '김건강'); Store.set('cardNo', 'AL-PREVIEW');
   Store.set('rules', { home: ['home-1', 'home-2'], school: ['school-1', 'school-3'], outside: ['outside-2'] });
   Store.set('custom', { home: [], school: [], outside: [] });
-  if (view === 'S46' || view === 'S48') {
+  /* 연구소 뒤쪽 화면은 앞 단계를 마친 것처럼 (미리 보기 기기에만) */
+  if (['S36-3', 'S37', 'S38', 'S38A'].includes(view) && window.LAB) {
+    Store.set('labFound', Object.fromEntries(Object.entries(LAB.places).map(([k, pl]) => [k, pl.points.map(pt => pt.item)])));
+    if (view !== 'S36-3') LabState.cardsSeen = LAB.cards.list.map(c => c.id);
+    if (view === 'S38A') LabState.copeSeen = { light: true, severe: true };
+  }
+  if (view === 'S46' || view === 'S47' || view === 'S48') {
     const real = DateK.override; DateK.override = '2026-11-04';
     const c = Challenge.create ? Challenge.create() : null;
     const cc = Challenge.get(), ids = selectedRules().map(r => r.id);

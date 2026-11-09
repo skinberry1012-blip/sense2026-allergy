@@ -81,7 +81,12 @@
 /* 미리 보기 */
 .tgx .tc-pvhead { display:flex; align-items:center; gap:12px; }
 .tgx .tc-pvhead .tc-h { margin-right:auto; }
-.tgx .tc-pv { gap:16px; }
+.tgx .tc-pv { gap:12px; }
+/* 미리 볼 화면 고르기 (고르기 버튼 묶음과 같은 모양, 한 줄 꽉 채움) */
+.tgx .tc-steps { display:flex; border:2px solid var(--navy); border-radius:10px; overflow:hidden; background:#fff; }
+.tgx .tc-steps button { flex:1; min-width:0; height:38px; padding:0 6px; border:0; background:#fff; color:var(--navy); font-family:var(--font-head); font-size:16px; white-space:nowrap; }
+.tgx .tc-steps button + button { border-left:2px solid var(--navy); }
+.tgx .tc-steps button.on { background:var(--navy); color:#fff; }
 .tgx .tc-frame { position:relative; flex:1; min-height:0; border:2px solid var(--tc-line); border-radius:12px; background:var(--tc-soft); overflow:hidden; }
 .tgx .tc-frame iframe { position:absolute; left:50%; top:50%; border:0; background:#fff; transform-origin:center; }
 .tgx .tc-foot { display:flex; align-items:center; justify-content:flex-end; gap:12px; margin-top:auto; }
@@ -90,7 +95,7 @@
 
 /* 탭 02: QR */
 .tgx .tc-qrcol { align-items:center; justify-content:center; gap:18px; }
-.tgx .tc-share { border-left:2px dashed var(--tc-line); padding-left:40px; }
+.tgx .tc-share { padding-left:8px; }
 .tgx .tc-qr { width:400px; height:400px; padding:16px; background:#fff; border:3px solid var(--navy); border-radius:14px; }
 .tgx .tc-qr svg { width:100%; height:100%; display:block; }
 .tgx .tc-qrbtns { display:flex; gap:12px; }
