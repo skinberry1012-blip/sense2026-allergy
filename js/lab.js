@@ -258,7 +258,7 @@ Object.entries(LAB.info).forEach(([key, d]) => {
       </div>
       <i class="rs-dot"></i>`);
     const lis = $$('li', win);
-    const ok = labBtn(b, '알겠어요! ✓', 'right:88px;bottom:96px;font-size:34px', 'y');
+    const ok = labBtn(b, '알겠어요! ✓', 'right:105px;bottom:100px;font-size:34px', 'y');   // 예방법 칸 아래 빈 곳 가운데, 칸 오른쪽 끝에 맞춤 (11/9)
     ok.hidden = true;
     const timers = [];
     const showAll = () => { timers.forEach(clearTimeout); lis.forEach(li => li.classList.add('on')); ok.hidden = false; };
