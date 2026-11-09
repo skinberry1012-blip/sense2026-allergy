@@ -209,11 +209,10 @@ Router.screens.S44 = (app) => {
     <div class="s44b-body">
       <aside class="s44b-side">
         <section class="s44-box"><h3 class="box-tag">① 나의 수호 친구 고르기</h3><div class="buddies" id="buddies"></div></section>
-        <section class="s44-box s44b-sign"><h3 class="box-tag">② 서명하기 <small>(선택)</small></h3><button class="btn white" id="signBtn"></button></section>
         <div class="s44b-btns">
           <button class="btn pink" id="save">⬇ 약속 카드 저장하기</button>
           <button class="btn white" id="print">🖨 인쇄하기</button>
-          <div class="s44b-links"><button class="link" id="redo">‹ 약속 다시 고르기</button><button class="link" id="home">⌂ 처음으로</button></div>
+          <button class="btn white" id="home">⌂ 처음으로</button>
         </div>
       </aside>
       <section class="s44b-card">
@@ -223,52 +222,14 @@ Router.screens.S44 = (app) => {
   </div>`;
   const canvas = $('#pv');
   const cardDay = () => Store.get('cardDate', '') || DateK.today();
-  let signAt = null;
-  const draw = () => drawPromiseCard(canvas, { ...st, name, date: cardDay(), rules, sigImg: signatureImg, preview: true }).then(r => { signAt = r.sign; });
+  const draw = () => drawPromiseCard(canvas, { ...st, name, date: cardDay(), rules, preview: true });
   const render = () => {
     $('#buddies').innerHTML = Object.entries(BUDDIES).map(([k, n]) => `<button class="buddy ${st.buddy === k ? 'on' : ''}" data-k="${k}"><span class="tick">✓</span><img src="${CAT(k)}" alt=""><span class="bn">${n}</span></button>`).join('');
-    $('#signBtn').innerHTML = signatureImg ? '✓ 서명했어요 · 다시 쓰기' : '✍️ 카드에 서명하기';
     draw();
   };
   $('#buddies').addEventListener('click', e => { const b = e.target.closest('[data-k]'); if (!b) return; st.buddy = b.dataset.k; st.step = Math.max(st.step, 3); Store.set('buddy', st.buddy); playSfx('check'); render(); replay($(`.buddy[data-k="${st.buddy}"]`), 'hop'); });
 
 
-  /* 서명 창: 미리보기 카드의 '다짐한 사람' 서명 줄을 누르면 열림 (헌혈 임명장처럼) */
-  const onSeal = e => {
-    if (!signAt) return false;
-    const r = canvas.getBoundingClientRect(), x = (e.clientX - r.left) * CARD_W / r.width, y = (e.clientY - r.top) * CARD_H / r.height;
-    return x >= signAt[0] - 20 && x <= signAt[0] + signAt[2] + 20 && y >= signAt[1] - 20 && y <= signAt[1] + signAt[3] + 20;
-  };
-  canvas.addEventListener('pointermove', e => { canvas.style.cursor = onSeal(e) ? 'pointer' : ''; });
-  canvas.addEventListener('click', e => { if (onSeal(e)) { playSfx('tap'); openSign(); } });
-  onTap($('#signBtn'), () => { playSfx('tap'); openSign(); });
-  const openSign = () => {
-    const m = Modal.open(`
-      <div class="pop-head">✍️ 직접 서명하기</div>
-      <p class="pop-small">손가락이나 터치펜으로 이름을 써 주세요. 서명은 선택이에요.</p>
-      <canvas class="sig-pad" id="pad" width="900" height="300"></canvas>
-      <div class="pop-btns three"><button class="btn white" id="sClose">닫기</button><button class="btn white" id="sClear">다시 쓰기</button><button class="btn pink" id="sOk">서명 완료</button></div>`, { cls: 'sheet' });
-    const pad = $('#pad', m), c = pad.getContext('2d'); let drawing = false, has = false, lastPt = null;
-    c.lineWidth = 9; c.lineCap = 'round'; c.lineJoin = 'round'; c.strokeStyle = '#1F2436';
-    const pt = e => { const r = pad.getBoundingClientRect(); return [(e.clientX - r.left) * pad.width / r.width, (e.clientY - r.top) * pad.height / r.height]; };
-    pad.addEventListener('pointerdown', e => { drawing = true; lastPt = pt(e); pad.setPointerCapture(e.pointerId); });
-    pad.addEventListener('pointermove', e => { if (!drawing) return; const p2 = pt(e); c.beginPath(); c.moveTo(...lastPt); c.lineTo(...p2); c.stroke(); lastPt = p2; has = true; });
-    ['pointerup', 'pointercancel'].forEach(t => pad.addEventListener(t, () => (drawing = false)));
-    onTap($('#sClose', m), () => Modal.close());
-    onTap($('#sClear', m), () => { c.clearRect(0, 0, pad.width, pad.height); has = false; });
-    onTap($('#sOk', m), async () => {
-      if (!has) { Modal.close(); return; }
-      /* 쓴 부분만 잘라서 서명 줄 크기에 맞춰요 */
-      const d = c.getImageData(0, 0, pad.width, pad.height).data; let x0 = pad.width, y0 = pad.height, x1 = 0, y1 = 0;
-      for (let yy = 0; yy < pad.height; yy += 2) for (let xx = 0; xx < pad.width; xx += 2) if (d[(yy * pad.width + xx) * 4 + 3] > 20) { if (xx < x0) x0 = xx; if (xx > x1) x1 = xx; if (yy < y0) y0 = yy; if (yy > y1) y1 = yy; }
-      const pd = 10; x0 = Math.max(0, x0 - pd); y0 = Math.max(0, y0 - pd); x1 = Math.min(pad.width, x1 + pd); y1 = Math.min(pad.height, y1 + pd);
-      const cut = document.createElement('canvas'); cut.width = Math.max(1, x1 - x0); cut.height = Math.max(1, y1 - y0); cut.getContext('2d').drawImage(pad, x0, y0, cut.width, cut.height, 0, 0, cut.width, cut.height);
-      signatureImg = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.src = cut.toDataURL('image/png'); });
-      Modal.close(); render();
-    });
-  };
-
-  onTap($('#redo'), () => Router.go('RULES', { tab: 0 }));
   onTap($('#home'), () => {
     const m = Modal.open(`<div class="pop-head">처음 화면으로 갈까요?</div><p class="pop-body">만든 카드는 아직 저장되지 않았어요.</p>
       <div class="pop-btns"><button class="btn white" data-autofocus id="mNo">아니요</button><button class="btn pink" id="mYes">처음 화면으로</button></div>`);
@@ -280,7 +241,7 @@ Router.screens.S44 = (app) => {
   onTap($('#print'), async () => {
     if (!Store.get('cardDate')) Store.set('cardDate', DateK.today());
     const out = document.createElement('canvas');
-    await drawPromiseCard(out, { ...st, name, date: cardDay(), rules, sigImg: signatureImg, preview: false });
+    await drawPromiseCard(out, { ...st, name, date: cardDay(), rules, preview: false });
     let pa = document.getElementById('printArea');   // 화면 확대·축소의 영향을 받지 않게 body 바로 아래에
     if (!pa) { pa = document.createElement('div'); pa.id = 'printArea'; pa.className = 'print-only'; document.body.appendChild(pa); }
     pa.innerHTML = `<img src="${out.toDataURL('image/png')}" alt="알레르기 예방 약속 카드">`;
@@ -293,7 +254,7 @@ Router.screens.S44 = (app) => {
     }
     const out = document.createElement('canvas');
     if (!Store.get('cardDate')) Store.set('cardDate', DateK.today());
-    const res = await drawPromiseCard(out, { ...st, name, date: cardDay(), rules, sigImg: signatureImg, preview: false });
+    const res = await drawPromiseCard(out, { ...st, name, date: cardDay(), rules, preview: false });
     if (!res.fit) {
       toast('약속이 카드에 다 들어가지 않아요. [다시 꾸미기]에서 약속을 줄이거나 짧게 고쳐 주세요.', 3500); return;
     }
