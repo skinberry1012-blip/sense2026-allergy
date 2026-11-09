@@ -129,7 +129,7 @@ Router.screens.S00 = (app) => {
   const b = labBoard(app, LAB.bg.entrance, { cls: 'lab-s00' });
   labEl(b, 'lab-sign', [378, 222, 842, 172], `<div><span class="px-tag">냥박사의</span><b><em>알레르기</em> 연구소</b></div>`);
   labChar(b, 'nyang_welcome', 560, { left: -40, bottom: 22 });
-  labChar(b, 'staff_hello', 470, { right: -10, bottom: 22 });   // 수호냥은 냥박사보다 조금 작게
+  labChar(b, 'staff_hello', 440, { right: 0, bottom: 22 });   // 수호냥은 냥박사보다 작게 (머리·모자가 커서 같은 높이면 더 커 보여요, 11/9: 냥박사의 약 0.8배)
   const go = labBtn(b, '입장하기 ›', 'left:50%;bottom:64px;transform:translateX(-50%);font-size:52px;padding:20px 64px 16px', 'y shine beat');
   /* 대기 음악: 첫 터치에 작게 시작 → [입장하기] 누르면 멈춤 (선생님 설정 '대기 음악 끄기'면 안 나옴) */
   const cfg = Config.get();
@@ -289,7 +289,7 @@ function labDone(app, key) {
     </div>`);
   replay($('.pop-card', w), 'pop');
   labChar(w, 'nyang_cheer', 380, { left: 150, bottom: 40 });
-  labChar(w, 'staff_cheer', 380, { right: 150, bottom: 40 });
+  labChar(w, 'staff_cheer', 310, { right: 170, bottom: 40 });   // 냥박사의 약 0.8배 (11/9)
   setTimeout(() => playSfx('whistle'), 900);
   labBtn(w, d.label, 'left:50%;bottom:70px;transform:translateX(-50%);font-size:36px', 'y beat', () => {
     playSfx('next');
@@ -309,7 +309,7 @@ Router.screens['S36-1'] = (app) => {
   const c = labEl(b, 'lab-cheer', [450, 150, 700, 470], `<img src="${IMG.trophy}" alt=""><p>와! 알레르기 유발물질<br><b class="lc big">12가지</b>를 모두 찾았어!</p>`);
   replay(c, 'pop');
   labChar(b, 'nyang_cheer', 520, { left: -50, bottom: 20 });
-  labChar(b, 'staff_cheer', 520, { right: -70, bottom: 20 });
+  labChar(b, 'staff_cheer', 425, { right: -40, bottom: 20 });   // 냥박사의 약 0.8배 (11/9)
   setTimeout(() => playSfx('whistle'), 1000);
   labBtn(b, '다음 ›', 'left:50%;bottom:70px;transform:translateX(-50%);font-size:40px', 'y beat', () => { playSfx('next'); labGo('S36-2'); });
 };
@@ -321,7 +321,7 @@ Router.screens['S36-2'] = (app) => {
   labPanel(b, { y: 30, title: '냥박사의 알레르기 연구소', center: true, fs: 34 });
   labEl(b, 'lab-cheer guide', [440, 170, 720, 440], `<p>이제 [알레르기 증상 카드 7개]를<br>하나씩 눌러 보자!</p><small>증상을 모두 확인한 다음,<br>{{대처 방법}}도 함께 알아보자!</small>`.replace(/\[([^\]]+)\]/g, '<b class="lb">$1</b>').replace(/\{\{(.+?)\}\}/g, '<b class="lc">$1</b>'));
   labChar(b, 'nyang_explain', 520, { left: -50, bottom: 20 });
-  labChar(b, 'staff_guide', 520, { right: -70, bottom: 20 });
+  labChar(b, 'staff_guide', 425, { right: -40, bottom: 20 });   // 냥박사의 약 0.8배 (11/9)
   labBtn(b, '알겠어요! ›', 'left:50%;bottom:90px;transform:translateX(-50%);font-size:40px', 'y', () => { playSfx('next'); labGo('S36-3'); });
 };
 
