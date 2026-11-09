@@ -181,12 +181,12 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
   box-shadow:0 -5px 0 var(--navy),0 5px 0 var(--navy),-5px 0 0 var(--navy),5px 0 0 var(--navy),6px 10px 0 var(--navy); }
 .cd-back { background:var(--blue); display:flex; align-items:center; justify-content:center; }
 .cd-back span { width:150px; height:240px; border:5px dashed var(--sky); display:flex; align-items:center; justify-content:center; font-family:var(--font-head); font-size:90px; color:var(--yellow); }
-.cd-front { background:#fff; transform:rotateY(180deg); display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:16px 8px 14px; }
-.cd-front .sym-c { width:164px; height:158px; } .cd-front .sym-c img { height:158px; }
+.cd-front { background:#fff; transform:rotateY(180deg); display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:8px; padding:12px 8px 8px; }
+.cd-front .sym-c { width:152px; height:146px; } .cd-front .sym-c img { height:146px; }
 .cd-front b { font-family:var(--font-head); font-weight:400; font-size:24px; text-align:center; line-height:1.2; word-break:keep-all; }
 /* 그림을 먼저 보여 주고, 누르면 증상 이름 (팀 점검 11/8) */
 .lab-card .cd-front { transform:none; }
-.cd-name { height:72px; flex:none; display:flex; align-items:center; justify-content:center; width:100%; border-top:4px dashed var(--sky); padding-top:6px; }
+.cd-name { height:66px; flex:none; display:flex; align-items:center; justify-content:center; width:100%; border-top:4px dashed var(--sky); padding-top:6px; }
 .cd-name i { font-style:normal; font-size:40px; color:var(--blue); }
 .cd-name em { font-style:normal; display:none; }
 .lab-card.seen .cd-name i { display:none; } .lab-card.seen .cd-name em { display:block; animation:pxpop .35s ease-out; }

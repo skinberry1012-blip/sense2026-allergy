@@ -316,14 +316,14 @@ Router.screens['S36-3'] = (app) => {
   const cnt = labEl(b, 'px-chip big', null, '', 'div', 'right:104px;top:30px');
   let sel = null, lockTimer;
   const cards = C.list.map((c, i) => {
-    const e = labEl(b, 'lab-card', [42 + i * 222, 170, 184, 300], `   // 카드 사이 38px (11/9)
+    const e = labEl(b, 'lab-card', [42 + i * 222, 176, 184, 246], `   // 카드 사이 38px, 세로를 줄여 빈 곳 없게 (11/9)
       <span class="cd-front"><span class="sym-c"><img src="${IMG.sym(c.id)}" alt=""></span><b class="cd-name"><i>?</i><em>${c.label}</em></b></span>`, 'button');
     e.setAttribute('aria-label', '증상 카드');
     onTap(e, () => pick(c.id));
     return e;
   });
   labChar(b, 'nyang_explain', 360, { left: -40, bottom: 6 });
-  const bub = labBubble(b, { x: 410, y: 540, w: 620, fs: 34, tail: 'bl' });   // 카드를 내린 만큼 아래로 (11/9)
+  const bub = labBubble(b, { x: 410, y: 500, w: 620, fs: 34, tail: 'bl' });   // 카드를 내린 만큼 아래로 (11/9)
   const lineFor = n => n >= 7 ? C.lines[7] : n >= 2 ? C.lines[2] : C.lines[n];
   const bl = labBtn(b, '<i class="lk">🔒</i> 가벼운 증상 대처 방법 ›', 'left:640px;bottom:58px;font-size:28px', 'y');
   const bs = labBtn(b, '<i class="lk">🔒</i> 위급한 증상 대처 방법 ›', 'left:1080px;bottom:58px;font-size:28px', 'c');
