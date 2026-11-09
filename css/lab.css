@@ -407,3 +407,8 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .lab-quiz .quiz-piece b { font-size:23px; line-height:1.2; min-height:2.4em; display:flex; align-items:center; justify-content:center; }
 .lab-quiz .quiz-piece.sel { outline:6px solid var(--yellow); outline-offset:3px; }
 .lab-quiz .quiz-piece.placed { box-shadow:0 0 0 4px var(--green), 0 4px 10px rgba(30,42,90,.10); }
+/* 기억 체크 묶음 상자 옅게 (11/9): 바탕은 더 투명하게, 테두리도 한 단계 옅게 */
+.lab-quiz .quiz-group.light { background:rgba(255,251,234,.62); box-shadow:0 0 0 3px rgba(242,207,91,.75), 0 6px 14px rgba(30,42,90,.06); }
+.lab-quiz .quiz-group.severe { background:rgba(255,243,239,.62); box-shadow:0 0 0 3px rgba(238,138,110,.6), 0 6px 14px rgba(201,87,58,.06); }
+.quiz-deck { background:rgba(255,253,245,.62); box-shadow:0 0 0 3px rgba(169,200,236,.8), 0 6px 14px rgba(30,42,90,.06); }
+.lab-quiz .quiz-slot { background:rgba(255,255,255,.72); }

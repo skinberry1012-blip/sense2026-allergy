@@ -451,7 +451,7 @@ Router.screens.S38A = (app) => {
     e.style.animationDelay = i * 0.08 + 's'; replay(e, 'pop');
     return e;
   });
-  const ok = labBtn(b, '방패 만들러 가기 ›', 'left:360px;top:766px;transform:translateX(-50%);font-size:34px', 'b beat');   // 카드가 빠진 왼쪽 칸 아래에
+  const ok = labBtn(b, '방패 만들러 가기 ›', 'left:360px;top:766px;transform:translateX(-50%);font-size:34px', 'y beat');   // 카드가 빠진 왼쪽 칸 아래에
   ok.hidden = true;
 
   const scale = () => b.getBoundingClientRect().width / 1600;
