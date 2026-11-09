@@ -259,7 +259,7 @@ Object.entries(LAB.info).forEach(([key, d]) => {
         <div class="rs-box rs-symbox"><span class="rs-badge">증상</span>
           <div class="rs-syms">${d.syms.map(([s, l]) => `<div><span class="sym-c"><img src="${IMG.sym(s)}" alt=""></span><b>${l}</b></div>`).join('')}</div></div>
         <div class="rs-box"><h3 class="lg">예방법</h3><ul>${d.tips.map(t => `<li>${labFmt(t)}</li>`).join('')}</ul></div>
-        <button class="rs-ok" type="button" hidden><span class="rs-kid"><img src="assets/kid/kid_${kid}_face.png" alt=""></span><span class="px-bub tail-l rs-say"><span class="px-bub-txt">알겠어요!</span><i class="t1"></i><i class="t2"></i></span></button>
+        <button class="rs-ok" type="button" hidden><span class="px-bub tail-r rs-say"><span class="px-bub-txt">알겠어요!</span><i class="t1"></i><i class="t2"></i></span><span class="rs-kid"><img src="assets/kid/kid_${kid}_face.png" alt=""></span></button>
       </div>
       <i class="rs-dot"></i>`);
     const lis = $$('li', win);
