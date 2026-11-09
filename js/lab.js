@@ -338,7 +338,7 @@ Router.screens['S36-3'] = (app) => {
   }));
   const paint = (fresh) => {
     const seen = LabState.cardsSeen, all = seen.length >= 7;
-    cnt.innerHTML = `확인 <b class="lc">${seen.length}</b> / 7`;
+    cnt.innerHTML = `<b class="lc">${seen.length}</b> / 7`;   // '확인' 글자 없이 (11/9)
     cards.forEach((e, i) => { const id = C.list[i].id; e.classList.toggle('seen', seen.includes(id)); e.classList.toggle('sel', sel === id); });
     [bl, bs].forEach(x => { x.classList.toggle('off', !all); x.classList.toggle('did', LabState.copeSeen[x.dataset.type]); x.setAttribute('aria-disabled', String(!all)); });
     if (fresh && all) [bl, bs].forEach((x, i) => setTimeout(() => replay(x, 'pop'), 300 + i * 150));

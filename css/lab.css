@@ -269,3 +269,12 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .screen-S36-3 .cd-name { border-top:0; }
 .screen-S36-3 .cd-name i { color:rgba(30,42,90,.35); }
 .screen-S36-3 .lab-card.sel > span { outline:none; box-shadow:0 0 0 5px var(--yellow), 0 8px 18px rgba(30,42,90,.14); }
+
+/* 말풍선: 모서리를 둥글게, 꼬리도 둥근 세모로 (11/9) — 연구소 말풍선 모두 */
+.px-bub { border:5px solid var(--navy); border-radius:24px; box-shadow:0 6px 0 rgba(30,42,90,.18); }
+.px-name { border-radius:12px; box-shadow:none; border:3px solid var(--navy); }
+.px-bub i.t2 { display:none; }
+.px-bub i.t1 { width:28px !important; height:28px !important; background:#fff; border:solid var(--navy); border-width:0 5px 5px 0; border-bottom-right-radius:6px; }
+.px-bub.tail-bl i.t1 { left:46px; bottom:-17px; transform:rotate(45deg); }
+.px-bub.tail-br i.t1 { right:46px; left:auto; bottom:-17px; transform:rotate(45deg); }
+.px-bub.tail-l i.t1 { left:-17px; top:40px; bottom:auto; transform:rotate(135deg); }
