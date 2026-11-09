@@ -16,7 +16,7 @@ const DESIGNS = {   /* 회의 결정 (11/9): 인증서 한 장만 — 아래 이
   certificate: { name: '인증서', bg: 'assets/card/bg_certificate_clean.jpg', titleBox: [410, 116, 720, 128], box: [206, 312, 1118, 424] }
 };
 /* 나의 수호 친구 = 수호냥 5동작 (저장 값은 예전 이름 pinky_01~05 그대로) */
-const BUDDIES = { pinky_01: '인사', pinky_02: '하트', pinky_03: '안내', pinky_04: '엄지', pinky_05: '만세' };
+const BUDDIES = { pinky_01: '인사', pinky_02: '하트', pinky_03: '안내', pinky_04: '엄지' };   // 카드 수호 친구 4가지 (11/9, 만세는 메달에서만)
 const BUDDY_IMG = { pinky_01: 'staff_hello', pinky_02: 'staff_heart', pinky_03: 'staff_guide', pinky_04: 'staff_thumb', pinky_05: 'staff_cheer' };
 const buddySrc = k => `assets/char/${BUDDY_IMG[k] || k}_t.png`;
 

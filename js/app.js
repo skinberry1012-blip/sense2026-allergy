@@ -197,7 +197,8 @@ Router.screens.RULES = (app, p) => {
 /* ===================== S44 카드 디자인 및 제작 ===================== */
 let signatureImg = null; // 서명은 저장하지 않고 이 화면 메모리에만
 Router.screens.S44 = (app) => {
-  const st = { design: Store.get('design', 'certificate'), buddy: Store.get('buddy', 'pinky_01'), step: 1 };
+  const st = { design: 'certificate', buddy: Store.get('buddy', 'pinky_01'), step: 1 };
+  if (!BUDDIES[st.buddy]) st.buddy = 'pinky_01';   // 수호 친구는 4가지만 (11/9)
   const rules = selectedRules(), name = Store.get('name', '');
   /* 배치 (11/9): 헌혈 임명장처럼 — 오른쪽 크게 약속 카드, 왼쪽에 수호 친구 고르기 · 저장 · 인쇄 · 처음으로 */
   app.innerHTML = `
@@ -208,15 +209,15 @@ Router.screens.S44 = (app) => {
     <div class="s44b-body">
       <aside class="s44b-side">
         <section class="s44-box"><h3 class="box-tag">① 나의 수호 친구 고르기</h3><div class="buddies" id="buddies"></div></section>
-        <section class="s44-box s44b-sign"><h3 class="box-tag">② 서명하기 <small>(선택)</small></h3><p class="sign-hint" id="signHint"></p></section>
+        <section class="s44-box s44b-sign"><h3 class="box-tag">② 서명하기 <small>(선택)</small></h3><button class="btn white" id="signBtn"></button></section>
         <div class="s44b-btns">
-          <button class="btn pink big" id="save">⬇ 약속 카드 저장하기</button>
+          <button class="btn pink" id="save">⬇ 약속 카드 저장하기</button>
           <button class="btn white" id="print">🖨 인쇄하기</button>
-          <button class="btn white" id="home">⌂ 처음으로</button>
+          <div class="s44b-links"><button class="link" id="redo">‹ 약속 다시 고르기</button><button class="link" id="home">⌂ 처음으로</button></div>
         </div>
       </aside>
       <section class="s44b-card">
-        <div class="preview-wrap" id="pvwrap"><canvas id="pv"></canvas><button class="zoom" id="zoom">🔍 크게 보기</button></div>
+        <div class="preview-wrap" id="pvwrap"><canvas id="pv"></canvas></div>
       </section>
     </div>
   </div>`;
@@ -226,18 +227,11 @@ Router.screens.S44 = (app) => {
   const draw = () => drawPromiseCard(canvas, { ...st, name, date: cardDay(), rules, sigImg: signatureImg, preview: true }).then(r => { signAt = r.sign; });
   const render = () => {
     $('#buddies').innerHTML = Object.entries(BUDDIES).map(([k, n]) => `<button class="buddy ${st.buddy === k ? 'on' : ''}" data-k="${k}"><span class="tick">✓</span><img src="${CAT(k)}" alt=""><span class="bn">${n}</span></button>`).join('');
-    $('#signHint').innerHTML = signatureImg ? '✓ 서명했어요.<br>카드의 <b>다짐한 사람</b> 줄을 누르면 다시 쓸 수 있어요.' : '카드의 <b>다짐한 사람</b> 줄을 누르면<br>서명할 수 있어요.';
+    $('#signBtn').innerHTML = signatureImg ? '✓ 서명했어요 · 다시 쓰기' : '✍️ 카드에 서명하기';
     draw();
   };
   $('#buddies').addEventListener('click', e => { const b = e.target.closest('[data-k]'); if (!b) return; st.buddy = b.dataset.k; st.step = Math.max(st.step, 3); Store.set('buddy', st.buddy); playSfx('check'); render(); replay($(`.buddy[data-k="${st.buddy}"]`), 'hop'); });
 
-  /* 크게 보기 (휴대폰: 카드를 옆으로 돌려 화면 가득) */
-  const zoom = () => {
-    const url = canvas.toDataURL('image/jpeg', .9);
-    const m = Modal.open(`<img class="zoom-img" src="${url}" alt="약속 카드 미리보기"><button class="btn white zoom-close" data-autofocus id="zc">✕ 닫기</button>`, { cls: 'zoom-dim' });
-    onTap($('#zc', m), () => Modal.close());
-  };
-  onTap($('#zoom'), zoom);
 
   /* 서명 창: 미리보기 카드의 '다짐한 사람' 서명 줄을 누르면 열림 (헌혈 임명장처럼) */
   const onSeal = e => {
@@ -247,6 +241,7 @@ Router.screens.S44 = (app) => {
   };
   canvas.addEventListener('pointermove', e => { canvas.style.cursor = onSeal(e) ? 'pointer' : ''; });
   canvas.addEventListener('click', e => { if (onSeal(e)) { playSfx('tap'); openSign(); } });
+  onTap($('#signBtn'), () => { playSfx('tap'); openSign(); });
   const openSign = () => {
     const m = Modal.open(`
       <div class="pop-head">✍️ 직접 서명하기</div>
@@ -273,6 +268,7 @@ Router.screens.S44 = (app) => {
     });
   };
 
+  onTap($('#redo'), () => Router.go('RULES', { tab: 0 }));
   onTap($('#home'), () => {
     const m = Modal.open(`<div class="pop-head">처음 화면으로 갈까요?</div><p class="pop-body">만든 카드는 아직 저장되지 않았어요.</p>
       <div class="pop-btns"><button class="btn white" data-autofocus id="mNo">아니요</button><button class="btn pink" id="mYes">처음 화면으로</button></div>`);

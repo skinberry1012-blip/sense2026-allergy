@@ -1206,3 +1206,13 @@ body.tablet .s44.s44b .preview-wrap, .s44b .s44b-card .preview-wrap { width:min(
   .print-only img { width:auto !important; max-width:100%; max-height:100%; }
   body > *:not(.print-only) { display:none !important; }
 }
+/* S44 정리 (11/9): 수호 친구 2×2, 버튼 작게, 서명 버튼, 이동은 작은 링크 */
+.s44b-side .buddies { grid-template-columns:repeat(2,1fr); gap:10px; }
+.s44b-side .buddy img { aspect-ratio:1.15; }
+.s44b-side .buddy .bn { font-size:16px; padding:2px 0 4px; }
+.s44b-sign .btn { width:100%; min-height:46px; font-size:17px; padding:8px 14px; margin-top:4px; }
+.s44b-btns { gap:8px; }
+.s44b-btns .btn { min-height:50px; font-size:18px; padding:10px 16px; }
+.s44b-links { display:flex; justify-content:space-between; padding:2px 6px 0; }
+.s44b-links .link { background:none; border:0; font-weight:800; font-size:16px; color:#5a5055; text-decoration:underline; text-underline-offset:3px; padding:6px 2px; }
+.s44b .buddy .bn { font-size:17px !important; } .s44b-links .link { font-size:17px !important; }

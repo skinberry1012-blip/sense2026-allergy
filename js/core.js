@@ -188,7 +188,7 @@ const NavBtns = {
         $('#nhYes', m).addEventListener('click', () => { Modal.close(); Router.go(NavBtns.home()); });
       });
     }
-    const hide = PREVIEW || screen === 'T49' || screen === 'T50' || screen === NavBtns.home();
+    const hide = PREVIEW || screen === 'T49' || screen === 'T50' || screen === 'S44' || screen === NavBtns.home();   // S44는 왼쪽에 자체 이동 버튼
     NavBtns.el.hidden = hide;
   },
   depth: 0
