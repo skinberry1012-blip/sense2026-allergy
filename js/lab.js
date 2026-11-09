@@ -84,6 +84,12 @@ function labBtn(board, label, style, cls = 'y', fn) {
   return b;
 }
 /* 말풍선 B (픽셀 + 이름표) : tail = bl | br | l | r */
+/* 말풍선을 말하는 캐릭터에 붙이기 (11/9): bottom = 판 아래에서 말풍선 아래까지, tailX = 꼬리 위치(말풍선 왼쪽에서) */
+function labBubbleAt(bub, { bottom, tailX }) {
+  bub.style.top = 'auto'; bub.style.bottom = bottom + 'px';
+  if (tailX != null) { const t1 = $('.t1', bub), t2 = $('.t2', bub); t1.style.left = tailX + 'px'; t1.style.right = 'auto'; t2.style.left = (tailX - 22) + 'px'; t2.style.right = 'auto'; }
+  return bub;
+}
 function labBubble(board, { x, y, w, name = '냥박사', staff = false, tail = 'bl', fs = 34 }) {
   const e = labEl(board, `px-bub tail-${tail}`, null,
     `<span class="px-name ${staff ? 's' : ''}">${name}</span><div class="px-bub-txt"></div><i class="t1"></i><i class="t2"></i>`,
@@ -136,7 +142,7 @@ Object.entries(LAB.story).forEach(([key, d], i) => {
     const b = labBoard(app, LAB.bg.lab, { dim: 'soft-r' });
     labEl(b, 'px-chip', null, `이야기 ${i + 1} / 4`, 'div', 'left:28px;top:26px');
     labChar(b, d.pose, 640, { left: -90, bottom: 8 }, 'bob');
-    const bub = labBubble(b, { x: 700, y: 150, w: 820, fs: 42, tail: 'bl' });
+    const bub = labBubble(b, { x: 560, y: 230, w: 860, fs: 42, tail: 'l' });   // 냥박사 얼굴 옆에 붙임 (11/9)
     bub.say(d.line);
     labBtn(b, d.label || '다음 ›', 'right:56px;bottom:62px;font-size:38px', 'y', () => { playSfx('next'); labGo(d.go); });
   };
@@ -215,7 +221,7 @@ Object.entries(LAB.observe).forEach(([key, d]) => {
     const b = labBoard(app, LAB.bg[d.place], { dim: 'navy' });
     playSfx('scan');
     labChar(b, 'nyang_scan', 600, { right: -70, bottom: 0 });
-    const bub = labBubble(b, { x: 90, y: 54, w: 820, fs: 40, tail: 'br' });
+    const bub = labBubbleAt(labBubble(b, { x: 380, y: 0, w: 860, fs: 40, tail: 'br' }), { bottom: 660, tailX: 806 });   // 냥박사 머리 쪽으로 (11/9)
     bub.say(d.line);
     const lens = labEl(b, 'lab-lens pulse', [250, 300, 470, 470], `<img src="${IMG.item(d.item)}" alt="${LAB.items[d.item]}">${corners()}`, 'button');
     lens.setAttribute('aria-label', LAB.items[d.item] + ' 눌러 보기');
@@ -327,7 +333,7 @@ Router.screens['S36-3'] = (app) => {
     return e;
   });
   labChar(b, 'nyang_explain', 430, { left: -20, bottom: 6 });
-  const bub = labBubble(b, { x: 40, y: 170, w: 520, fs: 34, tail: 'bl' });   // 2줄 배치: 왼쪽 위 (11/9)
+  const bub = labBubbleAt(labBubble(b, { x: 36, y: 0, w: 540, fs: 34, tail: 'bl' }), { bottom: 470, tailX: 230 });   // 냥박사 머리 바로 위 (11/9)
   bub.classList.add('bal');
   const lineFor = n => n >= 7 ? C.lines[7] : n >= 2 ? C.lines[2] : C.lines[n];
   const bl = labBtn(b, '<i class="lk">🔒</i> 가벼운 증상 대처 방법 ›', 'left:640px;bottom:58px;font-size:28px', 'y');
