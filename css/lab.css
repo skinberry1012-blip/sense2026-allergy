@@ -292,3 +292,6 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .lab-cope .cope-step img { width:300px; height:300px; }
 .lab-cope .cope-step b { font-size:32px; }
 .lab-cope .cope-step.glow::after { border-radius:30px; }
+
+/* 캐릭터 좌우 뒤집기 (11/9) */
+.lab-char.flip img { transform:scaleX(-1); }

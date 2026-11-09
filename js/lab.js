@@ -247,7 +247,7 @@ Object.entries(LAB.info).forEach(([key, d]) => {
   Router.screens[key] = (app) => {
     const b = labBoard(app, LAB.bg[d.place], { dim: 'navy' });
     playSfx('open');
-    labChar(b, 'nyang_scan', 560, { left: -120, bottom: 0 }, 'no-intro');
+    labChar(b, 'nyang_scan', 560, { left: -120, bottom: 0 }, 'no-intro flip');   // 좌우 뒤집어 스캐너가 결과 창을 비추게 (11/9)
     const win = labEl(b, 'lab-result', [600, 26, 950, 848], `
       <div class="rs-light"></div>
       <div class="rs-screen">
