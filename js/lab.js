@@ -380,6 +380,7 @@ Router.screens['S36-3'] = (app) => {
     const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-cope ' + d.type });
     LabState.copeSeen[d.type] = true;
     labPanel(b, { y: 22, title: d.title, center: true, fs: 36 });   // 연구소 공통 제목 부품 (11/9)
+    if (d.type === 'severe') labEl(b, 'cope-alert', null, '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18v-6a6 6 0 0 1 12 0v6"/><path d="M4 18h16v3H4z"/><path d="M12 2v2M3 7l1.5 1M21 7l-1.5 1"/></svg>응급', 'div', 'left:1188px;top:44px');   // 위급 화면 응급 표시 (11/9)
     const steps = d.steps.map(([img, label], i) => {
       const s = labEl(b, 'cope-step', [130 + i * 470, 172, 400, 470], `<span class="num">${i + 1}</span><img src="${IMG.cope(img)}" alt=""><b>${label}</b>`);   // 둥근 카드, 세로 줄임 (11/9)
       if (i < 2) labEl(b, 'cope-arrow', null, '›', 'div', `left:${130 + i * 470 + 400 + 18}px;top:381px`);   // 카드 사이 한가운데
