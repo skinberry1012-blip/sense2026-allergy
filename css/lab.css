@@ -384,3 +384,26 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 /* 대처 카드 안쪽 위아래 여백 맞추기 (11/9): 내용을 카드 세로 가운데로 */
 .lab-cope .cope-step { justify-content:center; }
 .lab-cope.severe .cope-step { padding-top:32px; padding-bottom:18px; }
+/* ===== 기억 체크 새 구도 (11/9): 좌우 구분 · 둥근 카드 · 대처 화면과 같은 부품 ===== */
+.lab-quiz .quiz-sub { width:auto; white-space:nowrap; font-size:30px; background:#FFFDF5; border-radius:999px; padding:8px 34px 6px;
+  box-shadow:0 0 0 3px rgba(30,42,90,.16), 0 4px 10px rgba(30,42,90,.08); }
+.quiz-deck { background:rgba(255,253,245,.92); border-radius:24px; box-shadow:0 0 0 4px #A9C8EC, 0 8px 18px rgba(30,42,90,.10); }
+.quiz-deck span, .lab-quiz .quiz-group span { position:absolute; left:22px; top:16px; font-family:var(--font-head); font-size:28px; padding:6px 22px 4px; border-radius:999px; box-shadow:none; }
+.quiz-deck span { background:#D8EAFB; color:var(--navy); }
+.lab-quiz .quiz-group { padding:0; border-radius:24px; }
+.lab-quiz .quiz-group.light { background:#FFFBEA; box-shadow:0 0 0 4px #F2CF5B, 0 8px 18px rgba(30,42,90,.10); }
+.lab-quiz .quiz-group.severe { background:#FFF3EF; box-shadow:0 0 0 4px #EE8A6E, 0 8px 18px rgba(201,87,58,.14); }
+.lab-quiz .quiz-group.light span { background:var(--yellow); color:var(--navy); }
+.lab-quiz .quiz-group.severe span { background:var(--coral); color:#fff; }
+.lab-quiz .quiz-tray { background:transparent; border-radius:20px; box-shadow:inset 0 0 0 3px rgba(138,147,174,.35); }
+.lab-quiz .quiz-slot { border:4px dashed #B5AE9E; border-radius:20px; background:rgba(255,255,255,.75); }
+.lab-quiz .quiz-slot em { font-size:56px; color:#C4BBA8; }
+.lab-quiz .quiz-slot.ok { border:4px solid var(--green); }
+.quiz-arr { width:30px; height:46px; }
+.quiz-arr.light { background:var(--navy); } .quiz-arr.severe { background:var(--coral-d); }
+.lab-quiz .quiz-piece { border-radius:20px; background:#fff; padding:14px 8px 10px; gap:6px;
+  box-shadow:0 0 0 3px rgba(30,42,90,.20), 0 6px 14px rgba(30,42,90,.14); }
+.lab-quiz .quiz-piece img { width:84%; }
+.lab-quiz .quiz-piece b { font-size:23px; line-height:1.2; min-height:2.4em; display:flex; align-items:center; justify-content:center; }
+.lab-quiz .quiz-piece.sel { outline:6px solid var(--yellow); outline-offset:3px; }
+.lab-quiz .quiz-piece.placed { box-shadow:0 0 0 4px var(--green), 0 4px 10px rgba(30,42,90,.10); }
