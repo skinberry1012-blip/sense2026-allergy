@@ -26,6 +26,12 @@ const ANIM = {
   nyang_scan:    { intro: [['nyang_idle', 260], ['nyang_scan_ready', 260]],
                    loop: [['nyang_scan', 1500], ['nyang_scan_nolight', 110], ['nyang_scan', 150], ['nyang_scan_nolight', 110]] },
 
+  /* 이야기 화면(S01~S04 등): 인사 · 긁기 · 갸웃 · 설명 (그림요청서 v7 B1~B4, 11/9) */
+  nyang_hello:   { loop: [['nyang_hello', 1300], ['nyang_hello_wave', 240], ['nyang_hello', 200], ['nyang_hello_wave', 240], ['nyang_hello', 200], ['nyang_hello_wave', 240]] },
+  nyang_symptom: { loop: [['nyang_symptom', 900], ['nyang_symptom_b', 200], ['nyang_symptom', 200], ['nyang_symptom_b', 200], ['nyang_symptom', 200], ['nyang_symptom_b', 200]] },
+  nyang_worry:   { loop: [['nyang_worry', 1500], ['nyang_worry_b', 1300]] },
+  nyang_explain: { loop: [['nyang_explain', 1000], ['nyang_explain_b', 450], ['nyang_explain', 400], ['nyang_explain_b', 450]] },
+
   /* 기뻐할 때: 냥박사 폴짝 · 수호냥 깡충 */
   nyang_cheer:   { loop: [['nyang_cheer', 1400], ['nyang_cheer_b', 180], ['nyang_cheer', 500], ['nyang_cheer_b', 180]] },
   staff_cheer:   { loop: [['staff_cheer', 1300], ['staff_jump_1', 160], ['staff_jump_2', 320], ['staff_jump_1', 140], ['staff_cheer', 300], ['staff_jump_1', 160], ['staff_jump_2', 320], ['staff_jump_1', 140]] }
