@@ -259,3 +259,13 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 
 /* 말풍선 줄바꿈 고르게 (증상 카드 2줄 배치, 11/9) */
 .px-bub.bal .px-bub-txt { text-wrap:balance; word-break:keep-all; }
+
+/* 증상 카드 화면 네모 줄이기 (11/9) */
+.sym-title { white-space:nowrap; font-family:var(--font-head); font-size:46px; color:var(--navy); display:flex; align-items:baseline; gap:22px;
+  padding:10px 40px; background:radial-gradient(closest-side, rgba(255,250,240,.96) 70%, rgba(255,250,240,0)); /* 테두리 없이 뒤만 살짝 밝게 */ }
+.sym-cnt { font-size:28px; color:var(--muted, #55607F); }
+.sym-cnt b.lc { font-size:32px; }
+.screen-S36-3 .lab-card > span { border-radius:22px; box-shadow:0 0 0 3px rgba(30,42,90,.18), 0 8px 18px rgba(30,42,90,.12); }
+.screen-S36-3 .cd-name { border-top:0; }
+.screen-S36-3 .cd-name i { color:rgba(30,42,90,.35); }
+.screen-S36-3 .lab-card.sel > span { outline:none; box-shadow:0 0 0 5px var(--yellow), 0 8px 18px rgba(30,42,90,.14); }

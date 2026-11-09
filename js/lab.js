@@ -312,8 +312,9 @@ Router.screens['S36-3'] = (app) => {
   if (labNeed12()) return;
   const C = LAB.cards;
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream' });
-  labEl(b, 'cope-band sky', null, '알레르기 증상 카드', 'div', 'left:50%;top:34px;transform:translateX(-50%)');   // 대처 방법 화면과 같은 띠 모양 (11/9)
-  const cnt = labEl(b, 'px-chip big', null, '', 'div', 'right:104px;top:30px');
+  /* 네모 줄이기 (11/9): 제목은 상자 없이 글씨만, 확인 수는 제목 옆 작은 글씨 */
+  labEl(b, 'sym-title', null, '알레르기 증상 카드 <span class="sym-cnt"></span>', 'div', 'left:1073px;top:52px;transform:translateX(-50%)');
+  const cnt = $('.sym-cnt', b);
   let sel = null, lockTimer;
   const cards = C.list.map((c, i) => {
     /* 2줄 배치 (11/9): 오른쪽에 4장 + 3장(가운데 맞춤), 왼쪽은 냥박사와 말풍선 */
