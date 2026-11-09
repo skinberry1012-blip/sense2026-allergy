@@ -420,58 +420,74 @@ Router.screens['S36-3'] = (app) => {
 Router.screens.S38A = (app) => {
   if (labNeed12()) return;
   if (!(LabState.copeSeen.light && LabState.copeSeen.severe)) return labGo('S36-3', {}, { replace: true });
+  /* 시안 (11/9): 두 판으로 나눠 하나씩 — 1판 가벼운 증상(카드 6장 중 3장 고르기) → 2판 위급한 증상(남은 3장 순서)
+     판마다 가운데 띠 하나(S37·S38 카드와 같은 모양) + 아래 카드 줄 하나 */
   const Q = LAB.quiz;
-  const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-quiz' });
+  const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-quiz rounds' });
   playSfx('open');
   labPanel(b, { y: 20, title: '기억 체크!', center: true, fs: 38 });
-  /* 좌우 구분 (11/9): 왼쪽 = 그림 카드 6장, 오른쪽 = 끼워 넣을 자리 (위 가벼운 · 아래 위급한)
-     여백: 화면 좌우 48 · 아래 36 · 상자 사이 28 / 이름표는 상자 위 테두리에 걸쳐요 */
-  const TOP = 192, BOT = 864, L = 48, R = 1552, DW = 600, G = 28, PW = 164, PH = 210, GAP = 18;
-  const deck = labEl(b, 'quiz-deck', [L, TOP, DW, BOT - TOP], '<span>그림 카드</span>');
-  /* 섞은 자리: 3칸 × 2줄, 상자 한가운데 */
-  /* 안내 문구는 그림 카드 위에 (11/9): 안내 + 카드 묶음을 왼쪽 칸 위아래 가운데로 */
-  const HINT = 96, gx0 = L + (DW - (PW * 3 + GAP * 2)) / 2, gy0 = TOP + (BOT - TOP - (PH * 2 + GAP) - HINT) / 2 + HINT;
-  const title = labEl(b, 'quiz-sub', null, '알맞은 칸에 그림을 넣어요!<small>누르거나 끌어서 옮겨요</small>', 'div', `left:${L + DW / 2}px;top:${gy0 - HINT}px;transform:translateX(-50%)`);
-  const cells = Q.pieces.map((_, i) => [gx0 + (i % 3) * (PW + GAP), gy0 + Math.floor(i / 3) * (PH + GAP)]);
-  for (let i = cells.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [cells[i], cells[j]] = [cells[j], cells[i]]; }
-  const trays = cells.map(([x, y]) => labEl(b, 'quiz-tray', [x, y, PW, PH]));
-  /* 빈 칸: 묶음 상자 안 위아래 가운데 */
-  const slots = {}, groupEls = [], SW = PW, SH = PH, GX = L + DW + G, GW = R - GX, GH = (BOT - TOP - G) / 2, AG = 70;
-  [['light', '가벼운 증상 대처', TOP], ['severe', '위급한 증상 대처', TOP + GH + G]].forEach(([t, label, gy]) => {
-    groupEls.push(labEl(b, 'quiz-group ' + t, [GX, gy, GW, GH], `<span>${label}</span>`));
-    const sy = gy + (GH - SH) / 2, sx0 = GX + (GW - (SW * 3 + AG * 2)) / 2;
+  const chip = labEl(b, 'px-chip quiz-step', null, '', 'div', 'left:946px;top:46px');
+  const hint = labEl(b, 'quiz-hint', null, '', 'div', 'left:0;right:0;top:130px');
+  /* 띠: [230,196,1140,360] 안에 빈칸 3개 (240×280) + 화살표 */
+  const BX = 230, BY = 212, BW = 1140, BH = 360, SW = 240, SH = 280, AG = 90, SX0 = (BW - (SW * 3 + AG * 2)) / 2, SY = (BH - SH) / 2 + 6;
+  const ROUND = { light: { label: '가벼운 증상 대처', hint: '가벼운 증상일 때, {{순서대로}} 넣어 볼까?' }, severe: { label: '위급한 증상 대처', hint: '위급한 증상일 때는? {{순서대로}} 넣어 보자!' } };
+  const bands = {}, slots = {};
+  const makeBand = t => {
+    const band = labEl(b, 'quiz-band ' + t, [BX, BY, BW, BH], `<span class="qb-tag">${ROUND[t].label}</span>`);
     for (let i = 0; i < 3; i++) {
-      const id = `${t}-${i}`, x = sx0 + i * (SW + AG);
-      slots[id] = labEl(b, 'quiz-slot ' + t, [x, sy, SW, SH], `<em>${i + 1}</em>`); slots[id].dataset.id = id;
-      if (i < 2) groupEls.push(labEl(b, 'cope-arrow quiz-arr ' + t, null, '', 'div', `left:${x + SW + (AG - 30) / 2}px;top:${sy + SH / 2 - 23}px`));
+      const id = `${t}-${i}`, x = SX0 + i * (SW + AG);
+      const s = document.createElement('div'); s.className = 'quiz-slot ' + t; s.dataset.id = id;
+      s.style.cssText = `left:${x}px;top:${SY}px;width:${SW}px;height:${SH}px`; band.appendChild(s); slots[id] = s;
+      if (i < 2) { const a = document.createElement('div'); a.className = 'cope-arrow quiz-arr ' + t; a.style.cssText = `left:${x + SW + (AG - 30) / 2}px;top:${SY + SH / 2 - 23}px`; band.appendChild(a); }
+      const n = document.createElement('div'); n.className = 'qb-num ' + t; n.textContent = i + 1;
+      n.style.cssText = `left:${x + SW / 2 - 26}px;top:${SY - 26}px`; band.appendChild(n);
     }
-  });
-  /* 그림마다 보이는 크기 맞추기 (구급차·병원은 조금 크게) */
+    bands[t] = band; return band;
+  };
+  /* 아래 카드 줄 */
+  const PW = 180, PH = 230, PG = 22, HY = 612;
+  const hand = labEl(b, 'quiz-hand', [140, HY - 22, 1320, PH + 44]);
+  const handPos = n => Array.from({ length: n }, (_, i) => [800 - (n * PW + (n - 1) * PG) / 2 + i * (PW + PG), HY]);
   const ISCALE = { avoid: .97, tell: .98, clinic: 1.04, call119: .99, epipen: .96, ambulance: 1.1 };
-  const home = {}; let placed = 0, selected = null;
-  const pieces = Q.pieces.map((p, i) => {
-    const r = [cells[i][0], cells[i][1], PW, PH]; home[p.id] = r;
+  const order = Q.pieces.map((_, i) => i);
+  for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+  const home = {};
+  const setR = (e, r) => { e.style.left = r[0] + 'px'; e.style.top = r[1] + 'px'; e.style.width = r[2] + 'px'; e.style.height = r[3] + 'px'; };
+  const pieces = order.map((k, i) => {
+    const p = Q.pieces[k], r = [...handPos(6)[i], PW, PH]; home[p.id] = r;
     const e = labEl(b, 'quiz-piece', r, `<img src="${IMG.cope(p.img)}" alt="" draggable="false" style="scale:${ISCALE[p.img] || 1}"><b>${p.label}</b>`, 'button');
     e.dataset.id = p.id; e.setAttribute('aria-label', p.label);
     e.style.animationDelay = i * 0.08 + 's'; replay(e, 'pop');
     return e;
   });
-  const ok = labBtn(b, '방패 만들러 가기 ›', 'left:1103px;top:842px;transform:translate(-50%,-50%);font-size:36px', 'y beat');   // 다 맞히면 오른쪽으로 모인 대처 칸 아래
+  const ok = labBtn(b, '방패 만들러 가기 ›', 'left:1056px;top:836px;transform:translate(-50%,-50%);font-size:36px', 'y beat');
   ok.hidden = true;
 
+  let round = 'light', placed = 0, selected = null;
+  const startRound = t => {
+    round = t; placed = 0;
+    chip.innerHTML = `<b class="lc">${t === 'light' ? 1 : 2}</b> / 2`;
+    hint.innerHTML = labFmt(ROUND[t].hint); replay(hint, 'pop');
+    const band = makeBand(t); replay(band, 'pop');
+    /* 남은 카드를 가운데로 다시 모아요 */
+    const left = pieces.filter(e => !e.disabled);
+    handPos(left.length).forEach(([x, y], i) => { home[left[i].dataset.id] = [x, y, PW, PH]; setR(left[i], home[left[i].dataset.id]); });
+    const hw = left.length * PW + (left.length - 1) * PG + 60; hand.style.left = (800 - hw / 2) + 'px'; hand.style.width = hw + 'px';   // 카드 줄 받침도 카드 수에 맞게
+  };
+
   const scale = () => b.getBoundingClientRect().width / 1600;
-  const toBoard = (cx, cy) => { const r = b.getBoundingClientRect(), k = r.width / 1600; return [(cx - r.left) / k, (cy - r.top) / k]; };
-  const slotAt = (x, y) => Object.values(slots).find(s => {
-    if (s.classList.contains('full')) return false;
-    const l = parseFloat(s.style.left), t = parseFloat(s.style.top), w = parseFloat(s.style.width), h = parseFloat(s.style.height);
-    return x >= l - 30 && x <= l + w + 30 && y >= t - 40 && y <= t + h + 40;
+  const slotAt = (cx, cy) => Object.values(slots).find(s => {
+    if (s.classList.contains('full') || s.closest('.done') || s.closest('.away')) return false;
+    const r = s.getBoundingClientRect(), pad = 30 * scale();
+    return cx >= r.left - pad && cx <= r.right + pad && cy >= r.top - pad && cy <= r.bottom + pad;
   });
-  const setR = (e, r) => { e.style.left = r[0] + 'px'; e.style.top = r[1] + 'px'; e.style.width = r[2] + 'px'; e.style.height = r[3] + 'px'; };
   const place = (e, s) => {
-    setR(e, [parseFloat(s.style.left), parseFloat(s.style.top), parseFloat(s.style.width), parseFloat(s.style.height)]);
-    e.classList.add('placed', e.dataset.id.split('-')[0]); e.classList.remove('sel'); e.disabled = true;
+    const band = s.parentNode;
+    band.insertBefore(e, band.querySelector('.qb-num'));   // 번호 배지는 카드 위에 보이게
+    setR(e, [parseFloat(s.style.left), parseFloat(s.style.top), SW, SH]);
+    e.classList.add('placed', round); e.classList.remove('sel'); e.disabled = true;
     s.classList.add('full', 'ok'); playSfx('check'); replay(e, 'pop'); placed++;
-    if (placed === 6) finish();
+    if (placed === 3) setTimeout(round === 'light' ? nextRound : finish, 500);
   };
   const wrong = (e, s) => { if (s) replay(s, 'shake'); playSfx('uncheck'); setR(e, home[e.dataset.id]); e.classList.remove('sel'); };
   const tryDrop = (e, s) => { if (!s) return wrong(e, null); if (s.dataset.id === e.dataset.id) place(e, s); else wrong(e, s); };
@@ -493,7 +509,7 @@ Router.screens.S38A = (app) => {
     const end = ev => {
       if (!start) return;
       e.classList.remove('drag'); start = null;
-      if (moved) { const [x, y] = toBoard(ev.clientX, ev.clientY); tryDrop(e, slotAt(x, y)); }
+      if (moved) tryDrop(e, slotAt(ev.clientX, ev.clientY));
       else {
         setR(e, home[e.dataset.id]);
         if (selected === e) { selected = null; e.classList.remove('sel'); }
@@ -502,28 +518,31 @@ Router.screens.S38A = (app) => {
     };
     e.addEventListener('pointerup', end); e.addEventListener('pointercancel', end);
   });
-  Object.values(slots).forEach(s => s.addEventListener('click', () => {
-    if (!selected || s.classList.contains('full')) return;
+  b.addEventListener('click', ev => {
+    const s = ev.target.closest('.quiz-slot'); if (!s || !selected || s.classList.contains('full')) return;
     const e = selected; selected = null; tryDrop(e, s);
-  }));
+  });
+
+  function nextRound() {
+    playSfx('fanfare');
+    Object.values(slots).forEach(s => replay(s, 'glow'));
+    setTimeout(() => { bands.light.classList.add('done', 'away'); startRound('severe'); }, 900);
+  }
   function finish() {
     LabState.quizDone = true; Store.set('labComplete', true);
     setTimeout(() => {
       playSfx('fanfare'); labConfetti();
-      title.classList.add('out');   // 칭찬은 냥박사 말풍선이 해요 (11/9)
-      /* 다 맞히면 (11/9): 그림 카드 상자는 사라지고, 대처 칸 두 묶음이 가운데로 모여요 */
-      [deck, ...trays].forEach(x => x.classList.add('out'));
-      const wrap = document.createElement('div'); wrap.className = 'quiz-wrap'; b.appendChild(wrap);
-      [...groupEls, ...Object.values(slots), ...pieces].forEach(x => wrap.appendChild(x));
-      requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('go')));
-      setTimeout(() => Object.values(slots).forEach(s => replay(s, 'glow')), 650);
-      /* 냥박사가 왼쪽에 나와 칭찬해요 (11/9) */
+      hint.classList.add('out'); chip.classList.add('out'); $('.quiz-hand', b).classList.add('out');
+      bands.severe.classList.add('done');
+      bands.light.classList.remove('away');
+      requestAnimationFrame(() => requestAnimationFrame(() => { bands.light.classList.add('sum-top'); bands.severe.classList.add('sum-bot'); }));
       setTimeout(() => {
         labChar(b, 'nyang_cheer', 470, { left: 10, bottom: 0 });
         labBubbleAt(labBubble(b, { x: 40, y: 0, w: 560, fs: 32, tail: 'bl' }), { bottom: 470, tailX: 250 }).say('대처 방법을 모두 기억했구나!<br>이제 {{나만의 방패}}를 만들러 가자!');
-      }, 500);
-      setTimeout(() => { ok.hidden = false; replay(ok, 'pop'); }, 650);
+        ok.hidden = false; replay(ok, 'pop');
+      }, 650);
     }, 350);
   }
   onTap(ok, () => { playSfx('next'); labGo('S39'); });
+  startRound('light');
 };
