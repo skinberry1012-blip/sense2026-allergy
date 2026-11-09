@@ -335,7 +335,7 @@ Router.screens['S36-3'] = (app) => {
     /* 2줄 배치 (11/9): 오른쪽에 4장 + 3장(가운데 맞춤), 왼쪽은 냥박사와 말풍선 */
     const CW = 214, GAP = 30, X0 = 600, row = i < 4 ? 0 : 1, col = row ? i - 4 : i;
     const e = labEl(b, 'lab-card', [X0 + col * (CW + GAP) + (row ? (CW + GAP) / 2 : 0), 162 + row * 266, CW, 246], `
-      <span class="cd-front"><span class="sym-c"><img src="${IMG.sym(c.id)}" alt=""></span><b class="cd-name"><i>?</i><em>${c.label}</em></b></span>`, 'button');
+      <span class="cd-front"><span class="sym-c"><img src="${IMG.sym(c.id)}" alt=""></span><b class="cd-name"><i>?</i><em>${c.label.length > 8 ? c.label.replace('·', '·<br>') : c.label}</em></b></span>`, 'button');   // 긴 이름은 · 뒤에서 줄바꿈 (두드러기· / 피부 가려움)
     e.setAttribute('aria-label', '증상 카드');
     onTap(e, () => pick(c.id));
     return e;
