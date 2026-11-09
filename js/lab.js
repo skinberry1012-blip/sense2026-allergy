@@ -247,21 +247,22 @@ Object.entries(LAB.info).forEach(([key, d]) => {
   Router.screens[key] = (app) => {
     const b = labBoard(app, LAB.bg[d.place], { dim: 'navy' });
     playSfx('open');
-    labChar(b, 'nyang_scan', 560, { left: -120, bottom: 0 }, 'no-intro flip');   // 좌우 뒤집어 스캐너가 결과 창을 비추게 (11/9)
-    const win = labEl(b, 'lab-result', [600, 26, 950, 848], `
+    labChar(b, 'nyang_scan', 560, { left: -40, bottom: 0 }, 'no-intro flip');   // 좌우 뒤집어 스캐너가 결과 창을 비추게 (11/9)
+    /* 결과 창: 폭 850, 높이는 내용에 맞추고 위아래 가운데 (11/9) */
+    const win = labEl(b, 'lab-result', [700, 34, 850, 832], `
       <div class="rs-light"></div>
       <div class="rs-screen">
         <div class="rs-head"><img src="${IMG.item(d.item)}" alt=""><div><small>발견! 알레르기 원인</small><b>${LAB.items[d.item]}</b></div></div>
         <div class="rs-box"><h3 class="lc">이런 증상이 나타날 수 있어요</h3>
           <div class="rs-syms">${d.syms.map(([s, l]) => `<div><span class="sym-c"><img src="${IMG.sym(s)}" alt=""></span><b>${l}</b></div>`).join('')}</div></div>
         <div class="rs-box"><h3 class="lg">예방법</h3><ul>${d.tips.map(t => `<li>${labFmt(t)}</li>`).join('')}</ul></div>
+        <button class="rs-ok" type="button" hidden><span class="rs-kid"><img src="assets/kid/kid_ok_tmp.png" alt=""></span><span class="rs-ok-btn">알겠어요!</span></button>
       </div>
       <i class="rs-dot"></i>`);
     const lis = $$('li', win);
-    const ok = labBtn(b, '알겠어요! ✓', 'left:1075px;bottom:122px;transform:translateX(-50%);font-size:32px', 'y');   // 화면 안 아래 가운데, 위아래 여백 두고 (11/9)
-    ok.hidden = true;
+    const ok = $('.rs-ok', win);   // 아이 얼굴 원형 배지 + '알겠어요!' (11/9)
     const timers = [];
-    const showAll = () => { timers.forEach(clearTimeout); lis.forEach(li => li.classList.add('on')); ok.hidden = false; };
+    const showAll = () => { timers.forEach(clearTimeout); lis.forEach(li => li.classList.add('on')); if (ok.hidden) { ok.hidden = false; replay(ok, 'show'); } };
     if (LAB_REDUCED()) showAll();
     else {
       lis.forEach((li, i) => timers.push(setTimeout(() => { li.classList.add('on'); playSfx('tap'); }, 700 + i * 600)));

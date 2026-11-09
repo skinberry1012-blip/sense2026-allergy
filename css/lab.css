@@ -335,3 +335,30 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 /* 원인 결과 창: 그림 칸을 조금 줄여 아래 버튼 자리 확보 (11/9) */
 .rs-head img { width:118px; height:118px; }
 .rs-head b { font-size:60px; }
+
+/* 원인 결과 창 콤팩트 (11/9): 폭 850, 증상 그림 작게, 아래에 아이 얼굴 + '알겠어요!' */
+.lab-result { gap:12px; padding:18px 22px 14px; }
+.rs-screen { padding:18px 22px; gap:12px; }
+.rs-head { gap:18px; }
+.rs-head img { width:104px; height:104px; }
+.rs-head small { font-size:24px; }
+.rs-head b { font-size:56px; line-height:1.05; }
+.rs-box { padding:12px 20px 14px; }
+.rs-box h3 { font-size:26px; margin-bottom:6px; }
+.rs-syms { gap:28px; }
+.rs-syms .sym-c { width:110px; height:106px; } .rs-syms .sym-c img { height:106px; }
+.rs-syms b { font-size:27px; }
+.rs-box li { font-size:26px; padding-left:36px; }
+.rs-box li::before { font-size:28px; }
+.rs-ok { margin-top:auto; align-self:flex-end; display:flex; align-items:center; gap:0; border:0; background:none; padding:0; cursor:pointer; }
+.rs-ok[hidden] { display:none; }
+.rs-kid { width:96px; height:96px; border-radius:50%; background:#FFF3C4; overflow:hidden; display:flex; align-items:flex-end; justify-content:center; position:relative; z-index:1;
+  box-shadow:0 0 0 5px var(--navy); }
+.rs-kid img { width:100%; height:100%; object-fit:cover; image-rendering:pixelated; }
+.rs-ok-btn { margin-left:-18px; padding:14px 30px 12px 38px; background:var(--yellow); color:var(--navy); font-family:var(--font-head); font-size:34px; white-space:nowrap;
+  box-shadow:0 -5px 0 var(--navy),0 5px 0 var(--navy),-5px 0 0 var(--navy),5px 0 0 var(--navy),0 11px 0 var(--navy); }
+.rs-ok:active .rs-ok-btn { filter:brightness(.92); }
+.rs-ok.show { animation:pxpop .35s ease-out; }
+
+.lab-result { height:auto !important; top:50% !important; transform:translateY(-50%); }
+.rs-ok { margin-top:2px; }
