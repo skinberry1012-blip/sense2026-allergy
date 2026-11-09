@@ -206,7 +206,7 @@ const SoundBtn = {
       b.addEventListener('click', () => { setSound(!Sfx.on); SoundBtn.paint(); if (Sfx.on) playSfx('tap'); });
       $('#stage').appendChild(b); SoundBtn.el = b;
     }
-    const hide = PREVIEW || screen === 'T49' || screen === 'T50';
+    const hide = true;   // 학생 화면 소리 아이콘 모두 빼기 (11/9) — 소리는 선생님 설정에서
     SoundBtn.el.hidden = hide; SoundBtn.paint();
   },
   paint() { if (!SoundBtn.el) return; SoundBtn.el.innerHTML = Sfx.on ? SPK_ON : SPK_OFF; SoundBtn.el.classList.toggle('mute', !Sfx.on); SoundBtn.el.setAttribute('aria-label', Sfx.on ? '소리 끄기' : '소리 켜기'); }

@@ -96,7 +96,14 @@ function labBubble(board, { x, y, w, name = '냥박사', staff = false, tail = '
     'div', `left:${x}px;top:${y}px;width:${w}px;font-size:${fs}px`);
   const t = $('.px-bub-txt', e);
   let skip = () => {};
-  e.say = (line, type = true) => { skip(); const h = labFmt(line); if (type) skip = labType(t, h); else { t.innerHTML = h; skip = () => {}; } };
+  /* 글 길이에 맞춰 말풍선 폭 줄이기 (11/9): 다 쓴 글을 미리 재서 폭을 정해요, w는 가장 넓을 때 */
+  const fit = h => {
+    const m = document.createElement('div'); m.className = 'px-bub-txt';
+    m.style.cssText = `position:absolute;visibility:hidden;left:0;top:0;width:max-content;max-width:${w - 62}px;font-size:${fs}px;line-height:1.5;letter-spacing:-.02em`;
+    m.innerHTML = h; board.appendChild(m); const mw = m.offsetWidth;   // 확대·축소와 상관없는 실제 폭 m.remove();
+    e.style.width = Math.max(240, Math.min(w, mw + 62 + 4)) + 'px';
+  };
+  e.say = (line, type = true) => { skip(); const h = labFmt(line); fit(h); if (type) skip = labType(t, h); else { t.innerHTML = h; skip = () => {}; } };
   e.addEventListener('click', () => skip());
   return e;
 }
@@ -221,7 +228,8 @@ Object.entries(LAB.observe).forEach(([key, d]) => {
     const b = labBoard(app, LAB.bg[d.place], { dim: 'navy' });
     playSfx('scan');
     labChar(b, 'nyang_scan', 600, { right: -70, bottom: 0 });
-    const bub = labBubbleAt(labBubble(b, { x: 380, y: 0, w: 860, fs: 40, tail: 'br' }), { bottom: 660, tailX: 806 });   // 냥박사 머리 쪽으로 (11/9)
+    const bub = labBubbleAt(labBubble(b, { x: 380, y: 0, w: 860, fs: 40, tail: 'br' }), { bottom: 660 });
+    bub.style.left = 'auto'; bub.style.right = '360px';   // 오른쪽 끝을 냥박사 쪽에 고정   // 냥박사 머리 쪽으로 (11/9)
     bub.say(d.line);
     const lens = labEl(b, 'lab-lens pulse', [250, 300, 470, 470], `<img src="${IMG.item(d.item)}" alt="${LAB.items[d.item]}">${corners()}`, 'button');
     lens.setAttribute('aria-label', LAB.items[d.item] + ' 눌러 보기');
