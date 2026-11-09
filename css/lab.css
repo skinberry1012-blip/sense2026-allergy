@@ -462,3 +462,16 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .lab-quiz .quiz-group span { left:122px; }
 .lab-quiz .quiz-slot.light { background:#FFF6D2; } .lab-quiz .quiz-slot.severe { background:#FDE8E0; }
 .lab-quiz .quiz-tray { background:rgba(255,255,255,.35); }
+/* ===== 기억 체크 (11/9 다시): 그림 카드 상자만 없애고 대처 칸 묶음 상자는 살려요 ===== */
+.lab-quiz .quiz-group.light { background:rgba(255,251,234,.86); box-shadow:0 0 0 4px rgba(242,207,91,.9), 0 8px 18px rgba(30,42,90,.08); }
+.lab-quiz .quiz-group.severe { background:rgba(255,243,239,.86); box-shadow:0 0 0 4px rgba(238,138,110,.8), 0 8px 18px rgba(201,87,58,.1); }
+.lab-quiz .quiz-group span { top:-22px; left:26px; box-shadow:0 0 0 3px #FFFDF5; }
+.lab-quiz .quiz-slot.light, .lab-quiz .quiz-slot.severe { background:rgba(255,255,255,.8); border-color:#A9B1C9; }
+.lab-quiz .quiz-slot.light em, .lab-quiz .quiz-slot.severe em { color:#B9C0D4; }
+.lab-quiz .lab-dim.cream { background:rgba(255,248,238,.66); }
+/* 안내 문구: 그림 카드 위, 두 줄(큰 글 + 작은 도움말) */
+.lab-quiz .quiz-sub { white-space:nowrap; text-align:center; font-size:28px; line-height:1.25; padding:8px 30px 7px; }
+.lab-quiz .quiz-sub small { display:block; font-family:var(--font-body); font-size:18px; color:var(--muted); }
+.lab-quiz .quiz-sub { font-size:30px; padding:10px 34px 8px; }
+.lab-quiz .quiz-sub small { font-size:21px; margin-top:2px; color:#4A5578; }
+.quiz-wrap.go { transform:translate(78px, -4px) scale(.92); }

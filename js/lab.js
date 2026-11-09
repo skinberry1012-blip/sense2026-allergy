@@ -426,11 +426,12 @@ Router.screens.S38A = (app) => {
   labPanel(b, { y: 20, title: '기억 체크!', center: true, fs: 38 });
   /* 좌우 구분 (11/9): 왼쪽 = 그림 카드 6장, 오른쪽 = 끼워 넣을 자리 (위 가벼운 · 아래 위급한)
      여백: 화면 좌우 48 · 아래 36 · 상자 사이 28 / 이름표는 상자 위 테두리에 걸쳐요 */
-  const title = labEl(b, 'quiz-sub', null, '그림을 누르고 자리를 누르거나, 끌어서 넣어 보세요!', 'div', 'left:50%;top:144px;transform:translateX(-50%)');
-  const TOP = 248, BOT = 864, L = 48, R = 1552, DW = 600, G = 28, PW = 164, PH = 210, GAP = 18;
+  const TOP = 192, BOT = 864, L = 48, R = 1552, DW = 600, G = 28, PW = 164, PH = 210, GAP = 18;
   const deck = labEl(b, 'quiz-deck', [L, TOP, DW, BOT - TOP], '<span>그림 카드</span>');
   /* 섞은 자리: 3칸 × 2줄, 상자 한가운데 */
-  const gx0 = L + (DW - (PW * 3 + GAP * 2)) / 2, gy0 = TOP + (BOT - TOP - (PH * 2 + GAP)) / 2;
+  /* 안내 문구는 그림 카드 위에 (11/9): 안내 + 카드 묶음을 왼쪽 칸 위아래 가운데로 */
+  const HINT = 96, gx0 = L + (DW - (PW * 3 + GAP * 2)) / 2, gy0 = TOP + (BOT - TOP - (PH * 2 + GAP) - HINT) / 2 + HINT;
+  const title = labEl(b, 'quiz-sub', null, '알맞은 칸에 그림을 넣어요!<small>누르거나 끌어서 옮겨요</small>', 'div', `left:${L + DW / 2}px;top:${gy0 - HINT}px;transform:translateX(-50%)`);
   const cells = Q.pieces.map((_, i) => [gx0 + (i % 3) * (PW + GAP), gy0 + Math.floor(i / 3) * (PH + GAP)]);
   for (let i = cells.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [cells[i], cells[j]] = [cells[j], cells[i]]; }
   const trays = cells.map(([x, y]) => labEl(b, 'quiz-tray', [x, y, PW, PH]));
