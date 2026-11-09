@@ -417,3 +417,10 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .lab-quiz .quiz-group.severe { background:rgba(255,243,239,.86); box-shadow:0 0 0 4px rgba(238,138,110,.8), 0 8px 18px rgba(201,87,58,.1); }
 .quiz-deck { background:rgba(255,253,245,.86); box-shadow:0 0 0 4px rgba(169,200,236,.9), 0 8px 18px rgba(30,42,90,.08); }
 .lab-quiz .quiz-slot { background:rgba(255,255,255,.8); }
+/* 기억 체크 완성 후 (11/9): 그림 카드 상자 사라짐 → 대처 칸 묶음을 가운데로 (0.86배) */
+.lab-quiz .quiz-deck, .lab-quiz .quiz-tray { transition:opacity .45s; }
+.lab-quiz .quiz-deck.out, .lab-quiz .quiz-tray.out { opacity:0; pointer-events:none; }
+.lab-board > .quiz-wrap { left:0; top:0; width:1600px; height:900px; transform-origin:0 0; transition:transform .7s cubic-bezier(.3,.8,.3,1); pointer-events:none; z-index:3; }
+.quiz-wrap > * { position:absolute; }
+.quiz-wrap.go { transform:translate(-163px, 18px) scale(.86); }
+@media (prefers-reduced-motion: reduce) { .lab-board > .quiz-wrap { transition:none; } }
