@@ -542,7 +542,7 @@ Router.screens.S48 = (app) => {
   <div class="sc outdoor s48">
     <h2 class="title-banner sm s48-tb">🏆 5일 챌린지 <em>완료!</em></h2>
     <p class="sub-pill s48-sub">5일 동안 나의 예방 <em class="pk">약속</em>을 실천했어요!</p>
-    <img class="s48-cat ${first ? 'cheer' : 'bob'}" src="${CAT('pinky_03')}" alt="">
+    <img class="s48-cat" id="s48cat" src="assets/char/staff_cheer_m.png" alt="">
     <div class="days s48-days">${c.days.map((d, i) => `<div class="day ${states[i]}">${DateK.md(d)}<br>${DateK.wd(d)}요일<div class="mark ${states[i] === 'star' && first ? 'star-pop' : ''}" style="animation-delay:${i * .15}s">${{ star: '⭐', nostar: '⭐', miss: '–' }[states[i]] || ''}</div></div>`).join('')}</div>
     <aside class="s48-box"><h3>⭐ 나의 챌린지 결과 ⭐</h3><p class="starn"><span class="bigstar">⭐</span><span>별 획득<br><b>${stars}</b> <small>/ 5일</small></span></p></aside>
     <div class="ribbon ${first ? 'pop' : ''}">축하합니다! 5일 챌린지 완료!</div>
@@ -553,6 +553,7 @@ Router.screens.S48 = (app) => {
     </div>
     <p class="warn">${stars >= 3 ? '새로 도전하면 지금 기록은 지워져요. 메달을 먼저 저장해 두세요!' : '별 3일 이상이면 메달을 받을 수 있어요. 다시 도전해 볼까요?'}</p>
   </div>`;
+  if (window.Anim) Anim.attach($('#s48cat'), 'staff_cheer', null, '_m');   // 수호냥 깡충 (11/9)
   if (first) { sessionStorage.setItem('s48Shown', '1'); playSfx('fanfare'); confetti(); }
   onTap($('#medal'), () => openMedalModal({ stars }));
   onTap($('#del'), () => { playSfx('tap'); openDeleteModal(); });
@@ -565,10 +566,11 @@ function openMedalModal({ stars }) {
   const m = Modal.open(`
     <h2 class="md-title">🏅 5일 챌린지 성공 메달 받기!</h2>
     <button class="md-x" id="mdX" aria-label="닫기">✕</button>
-    <div class="md-talk"><img src="${CAT('pinky_05')}" alt="" class="hop"><p>5일 동안 약속을 잘 지킨 나에게 주는 메달이에요.<br>마음에 드는 색을 골라 저장해 보세요!</p></div>
+    <div class="md-talk"><img src="assets/char/staff_cheer_m.png" alt="" id="mdCat"><p>5일 동안 약속을 잘 지킨 나에게 주는 메달이에요.<br>마음에 드는 색을 골라 저장해 보세요!</p></div>
     <div class="md-list" id="mdList">${Object.keys(MEDAL_COLORS).map(k => `<button class="md-card ${k === color ? 'on' : ''}" data-k="${k}" aria-label="${MEDAL_COLORS[k].label} 메달"><span class="md-chk"></span><canvas data-c="${k}"></canvas></button>`).join('')}</div>
     <button class="btn pink big md-save" id="mdSave">⬇ 선택한 메달 이미지로 저장하기 ›</button>
     <button class="link md-later" id="mdLater">다음에 저장할래요</button>`, { cls: 'medal-dim' });
+  if (window.Anim) Anim.attach($('#mdCat', m), 'staff_cheer', null, '_m');   // 수호냥 깡충 (11/9)
   $$('canvas[data-c]', m).forEach(cv => drawMedal(cv, { color: cv.dataset.c, stars, cardNo }));
   const paintBtn = () => {
     const b = $('#mdSave', m);
@@ -614,7 +616,7 @@ function openDeleteModal() {
   const m = Modal.open(`
     <div class="pop-head redbar">↻ 새로 도전할까요?</div>
     <div class="del-grid">
-      <div class="del-art"><img src="${CAT('pinky_01')}" alt=""></div>
+      <div class="del-art"><img src="assets/char/staff_hello_m.png" alt="" id="delCat"></div>
       <div>
         <p class="pop-box pink">지금까지의 <strong>약속 카드와 5일 기록이 지워지고</strong> 처음부터 다시 시작해요.</p>
         <p class="pop-box yellow">이미 저장한 <strong>카드·메달 이미지</strong>는 지워지지 않아요.</p>
@@ -622,6 +624,7 @@ function openDeleteModal() {
     </div>
     <div class="pop-btns"><button class="btn blue" data-autofocus id="dNo">아니오, 그대로 둘래요</button><button class="btn red" id="dYes">네, 새로 도전할래요</button></div>`,
     { cls: 'delete', onBack: () => {}, sfx: 'full' });
+  if (window.Anim) Anim.attach($('#delCat', m), 'staff_hello', null, '_m');   // 수호냥 손 흔들기 (11/9)
   onTap($('#dNo', m), () => { playSfx('tap'); Modal.close(); });
   onTap($('#dYes', m), () => {
     $('#dYes', m).disabled = true; playSfx('delete');

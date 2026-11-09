@@ -2,6 +2,8 @@
    anim.js — 냥박사·수호냥 움직임 (2026-11-08)
    그림 여러 장을 번갈아 보여 주는 방식 (픽셀 아트 게임처럼)
    - 연구소 화면(S00~S38A)의 labChar() 그림에 자동으로 붙어요.
+   - 약속 카드 이후 화면(S48 완료·메달·새로 도전 팝업)은 Anim.attach(img, key, null, '_m')로
+     여백을 잘라 낸 그림(_m.png, 같은 묶음은 같은 크기)을 써요. (2026-11-09)
    - 화면이 바뀌어 그림이 사라지면 저절로 멈춰요.
    - 기기 설정에서 '동작 줄이기'를 켜면 움직이지 않아요.
    움직임 순서·빠르기는 아래 ANIM 표에서 고쳐요. [그림 이름, 보여 줄 시간(ms)]
@@ -27,33 +29,33 @@ const ANIM = {
 };
 
 const Anim = {
-  src: k => `assets/char/${k}.png`,
+  src: (k, sfx = '') => `assets/char/${k}${sfx}.png`,
   cache: {},
   reduced: () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
 
   /* 그림을 미리 불러 두기 (바꿔 끼울 때 깜빡이지 않게) */
-  preload(keys) {
-    return Promise.all(keys.map(k => this.cache[k] || (this.cache[k] = new Promise(res => {
-      const im = new Image(); im.onload = im.onerror = () => res(); im.src = this.src(k);
+  preload(keys, sfx = '') {
+    return Promise.all(keys.map(k => this.cache[k + sfx] || (this.cache[k + sfx] = new Promise(res => {
+      const im = new Image(); im.onload = im.onerror = () => res(); im.src = this.src(k, sfx);
     }))));
   },
 
   /* img 하나에 움직임 붙이기. 표에 없는 그림은 숨쉬기만 (CSS) */
-  attach(img, key, holder) {
+  attach(img, key, holder, sfx = '') {
     const a = ANIM[key];
     if (holder && !holder.classList.contains('bob')) holder.classList.add('breathe');
     if (!a || this.reduced()) return;
     if (holder) holder.classList.remove('breathe');   // 그림으로 숨쉬기를 하면 CSS 숨쉬기는 빼요
     const intro = (holder && holder.classList.contains('no-intro')) ? [] : (a.intro || []);
-    if (intro.length) img.src = this.src(intro[0][0]);  // 처음 동작이 있으면 그 그림부터
+    if (intro.length) img.src = this.src(intro[0][0], sfx);  // 처음 동작이 있으면 그 그림부터
     const keys = [...new Set([...intro, ...a.loop].map(([k]) => k))];
-    this.preload(keys).then(() => {
+    this.preload(keys, sfx).then(() => {
       const steps = [...intro, ...a.loop];
       let i = 0;
       const tick = () => {
         if (!img.isConnected) return;                 // 화면이 바뀌면 멈춤
         const [k, ms] = steps[i];
-        img.src = this.src(k);
+        img.src = this.src(k, sfx);
         i = i + 1 < steps.length ? i + 1 : intro.length;   // 처음 동작은 한 번만, 나머지는 반복
         setTimeout(tick, ms);
       };
