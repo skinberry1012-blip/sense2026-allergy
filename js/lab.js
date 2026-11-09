@@ -312,18 +312,18 @@ Router.screens['S36-3'] = (app) => {
   if (labNeed12()) return;
   const C = LAB.cards;
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream' });
-  labPanel(b, { y: 22, title: '알레르기 증상 카드', center: true, fs: 36 });
+  labEl(b, 'cope-band sky', null, '알레르기 증상 카드', 'div', 'left:50%;top:34px;transform:translateX(-50%)');   // 대처 방법 화면과 같은 띠 모양 (11/9)
   const cnt = labEl(b, 'px-chip big', null, '', 'div', 'right:104px;top:30px');
   let sel = null, lockTimer;
   const cards = C.list.map((c, i) => {
-    const e = labEl(b, 'lab-card', [36 + i * 222, 150, 196, 290], `
+    const e = labEl(b, 'lab-card', [42 + i * 222, 170, 184, 300], `   // 카드 사이 38px (11/9)
       <span class="cd-front"><span class="sym-c"><img src="${IMG.sym(c.id)}" alt=""></span><b class="cd-name"><i>?</i><em>${c.label}</em></b></span>`, 'button');
     e.setAttribute('aria-label', '증상 카드');
     onTap(e, () => pick(c.id));
     return e;
   });
   labChar(b, 'nyang_explain', 360, { left: -40, bottom: 6 });
-  const bub = labBubble(b, { x: 410, y: 500, w: 620, fs: 34, tail: 'bl' });
+  const bub = labBubble(b, { x: 410, y: 540, w: 620, fs: 34, tail: 'bl' });   // 카드를 내린 만큼 아래로 (11/9)
   const lineFor = n => n >= 7 ? C.lines[7] : n >= 2 ? C.lines[2] : C.lines[n];
   const bl = labBtn(b, '<i class="lk">🔒</i> 가벼운 증상 대처 방법 ›', 'left:640px;bottom:58px;font-size:28px', 'y');
   const bs = labBtn(b, '<i class="lk">🔒</i> 위급한 증상 대처 방법 ›', 'left:1080px;bottom:58px;font-size:28px', 'c');
@@ -363,7 +363,7 @@ Router.screens['S36-3'] = (app) => {
     labEl(b, 'cope-band', null, labFmt(d.title), 'div', 'left:50%;top:34px;transform:translateX(-50%)');
     const steps = d.steps.map(([img, label], i) => {
       const s = labEl(b, 'cope-step', [110 + i * 480, 150, 420, 520], `<span class="num">${i + 1}</span><img src="${IMG.cope(img)}" alt=""><b>${label}</b>`);
-      if (i < 2) labEl(b, 'cope-arrow', null, '›', 'div', `left:${110 + i * 480 + 424}px;top:360px`);
+      if (i < 2) labEl(b, 'cope-arrow', null, '›', 'div', `left:${110 + i * 480 + 420 + 13}px;top:384px`);   // 카드 사이 한가운데
       return s;
     });
     const back = labBtn(b, '‹ 증상 카드로', 'left:110px;bottom:56px;font-size:32px', 'w', () => { playSfx('tap'); labGo('S36-3'); });

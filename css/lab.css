@@ -146,7 +146,7 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .rs-head b { font-family:var(--font-head); font-weight:400; font-size:66px; }
 .rs-box { background:#fff; border:4px solid var(--navy); padding:12px 20px; }
 .rs-box h3 { font-family:var(--font-head); font-weight:400; font-size:28px; margin-bottom:8px; }
-.rs-box h3.lg { color:var(--green); }
+.rs-box h3.lg { color:inherit; }   /* 두 칸 제목 같은 색 (11/9 점검) */
 .rs-syms { display:flex; gap:40px; }
 .rs-syms > div { display:flex; align-items:center; gap:14px; }
 .rs-syms b { font-family:var(--font-head); font-weight:400; font-size:28px; }
@@ -155,7 +155,8 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .rs-box ul { list-style:none; display:flex; flex-direction:column; gap:6px; }
 .rs-box li { font-size:28px; line-height:1.45; padding-left:30px; position:relative; opacity:0; transform:translateY(8px); transition:opacity .3s, transform .3s; }
 .rs-box li.on { opacity:1; transform:none; }
-.rs-box li::before { content:''; position:absolute; left:4px; top:.55em; width:14px; height:14px; background:var(--blue); }
+.rs-box li { padding-left:40px; }
+.rs-box li::before { content:'✓'; position:absolute; left:0; top:0; font-family:var(--font-head); font-size:30px; line-height:1.4; color:var(--green); }
 .rs-dot { position:static !important; width:28px; height:28px; border-radius:50%; background:var(--blue); border:5px solid var(--navy); }
 
 /* ---------- 완료 창 · 축하 ---------- */
@@ -185,7 +186,7 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .cd-front b { font-family:var(--font-head); font-weight:400; font-size:24px; text-align:center; line-height:1.2; word-break:keep-all; }
 /* 그림을 먼저 보여 주고, 누르면 증상 이름 (팀 점검 11/8) */
 .lab-card .cd-front { transform:none; }
-.cd-name { min-height:58px; display:flex; align-items:center; justify-content:center; width:100%; border-top:4px dashed var(--sky); padding-top:6px; }
+.cd-name { height:72px; flex:none; display:flex; align-items:center; justify-content:center; width:100%; border-top:4px dashed var(--sky); padding-top:6px; }
 .cd-name i { font-style:normal; font-size:40px; color:var(--blue); }
 .cd-name em { font-style:normal; display:none; }
 .lab-card.seen .cd-name i { display:none; } .lab-card.seen .cd-name em { display:block; animation:pxpop .35s ease-out; }
@@ -205,6 +206,7 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .cope-band { white-space:nowrap; font-family:var(--font-head); font-size:44px; padding:14px 40px 10px; background:var(--yellow);
   box-shadow:0 -5px 0 var(--navy),0 5px 0 var(--navy),-5px 0 0 var(--navy),5px 0 0 var(--navy); }
 .lab-cope.severe .cope-band { background:var(--coral); color:#fff; }
+.cope-band.sky { background:var(--sky-l, #D7ECFB); }
 .lab-cope.severe .cope-band b.lc { color:var(--yellow); }
 .cope-step { background:#fff; display:flex; flex-direction:column; align-items:center; gap:12px; padding:22px 16px;
   box-shadow:0 -5px 0 var(--navy),0 5px 0 var(--navy),-5px 0 0 var(--navy),5px 0 0 var(--navy),8px 13px 0 var(--navy); }
@@ -213,9 +215,11 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .lab-cope.severe .cope-step .num { background:var(--coral); color:#fff; }
 .cope-step img { width:330px; height:330px; image-rendering:pixelated; }
 .cope-step b { font-family:var(--font-head); font-weight:400; font-size:34px; text-align:center; }
-.cope-step.glow { animation:stepglow .6s ease-in-out 2; }
-@keyframes stepglow { 50% { box-shadow:0 0 0 10px var(--yellow),0 0 34px 12px rgba(245,200,66,.8); } }
-.cope-arrow, .quiz-arrow { font-family:var(--font-head); font-size:90px; color:var(--coral-d); }
+.cope-step.glow::after { content:''; position:absolute; inset:-14px; pointer-events:none; animation:stepglow .6s ease-in-out 2; }
+@keyframes stepglow { 0%, 100% { box-shadow:none; } 50% { box-shadow:0 0 0 8px var(--yellow),0 0 30px 10px rgba(245,200,66,.75); } }
+.quiz-arrow { font-family:var(--font-head); font-size:90px; color:var(--coral-d); }
+.cope-arrow { width:34px; height:52px; font-size:0; background:var(--navy); clip-path:polygon(0 0, 100% 50%, 0 100%); }
+.lab-cope.severe .cope-arrow { background:var(--coral-d); }
 
 /* ---------- 기억 체크 ---------- */
 .lab-quiz .lab-board { touch-action:none; }
