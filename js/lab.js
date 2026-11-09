@@ -429,7 +429,7 @@ Router.screens.S38A = (app) => {
   const TOP = 214, BOT = 872, PW = 176, PH = 214, GAP = 18;
   labEl(b, 'quiz-deck', [60, TOP, 600, BOT - TOP], '<span>그림 카드</span>');
   /* 섞은 자리: 3칸 × 2줄 */
-  const cells = Q.pieces.map((_, i) => [78 + (i % 3) * (PW + GAP), TOP + 76 + Math.floor(i / 3) * (PH + GAP)]);
+  const cells = Q.pieces.map((_, i) => [78 + (i % 3) * (PW + GAP), TOP + (BOT - TOP - (PH * 2 + GAP)) / 2 + Math.floor(i / 3) * (PH + GAP)]);   // 상자 위아래 가운데
   for (let i = cells.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [cells[i], cells[j]] = [cells[j], cells[i]]; }
   cells.forEach(([x, y]) => labEl(b, 'quiz-tray', [x, y, PW, PH]));
   /* 빈 칸 */
@@ -451,7 +451,7 @@ Router.screens.S38A = (app) => {
     e.style.animationDelay = i * 0.08 + 's'; replay(e, 'pop');
     return e;
   });
-  const ok = labBtn(b, '방패 만들러 가기 ›', 'left:360px;top:766px;transform:translateX(-50%);font-size:34px', 'y beat');   // 카드가 빠진 왼쪽 칸 아래에
+  const ok = labBtn(b, '방패 만들러 가기 ›', 'left:360px;top:510px;transform:translate(-50%,-50%);font-size:36px', 'y beat');   // 카드가 빠진 왼쪽 상자 한가운데
   ok.hidden = true;
 
   const scale = () => b.getBoundingClientRect().width / 1600;
