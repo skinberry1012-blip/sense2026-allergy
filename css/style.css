@@ -1253,3 +1253,9 @@ body.tablet .s44.s44b .preview-wrap, .s44b .s44b-card .preview-wrap { width:min(
 .s44b-side > .s44-box:first-child .box-tag { background:#fff !important; color:var(--navy) !important; border:0 !important; border-radius:0 !important;
   box-shadow:0 -3px 0 var(--navy),0 3px 0 var(--navy),-3px 0 0 var(--navy),3px 0 0 var(--navy) !important; margin:4px 0 14px 4px; padding:6px 14px 4px !important;
   font-family:var(--font-head); font-weight:400; font-size:20px !important; }
+/* 디자인 점검 반영 (11/9): 끝선 맞춤 · 고른 칸 연노랑 · ✓ 안쪽 · 이름표 22px */
+.s44b-side .buddies { padding:3px 3px 3px; }
+.s44b-side > .s44-box:first-child .box-tag { margin-left:3px !important; font-size:22px !important; }
+.s44b-side .buddy.on { background:#FFF3C4 !important; box-shadow:0 -4px 0 #F2B705,0 4px 0 #F2B705,-4px 0 0 #F2B705,4px 0 0 #F2B705 !important; }
+.s44b-side .buddy .tick { top:8px !important; right:8px !important; }
+.s44b-side > .s44-box:first-child { border-width:0 !important; }

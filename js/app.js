@@ -210,9 +210,9 @@ Router.screens.S44 = (app) => {
       <aside class="s44b-side">
         <section class="s44-box"><h3 class="box-tag">나의 수호 친구 고르기</h3><div class="buddies" id="buddies"></div></section>
         <div class="s44b-btns">
-          <button class="btn pink" id="save">⬇ 약속 카드 저장하기</button>
-          <button class="btn white" id="print">🖨 인쇄하기</button>
-          <button class="btn white" id="home">⌂ 처음으로</button>
+          <button class="btn pink" id="save">약속 카드 저장하기</button>
+          <button class="btn white" id="print">인쇄하기</button>
+          <button class="btn white" id="home">처음으로</button>
         </div>
       </aside>
       <section class="s44b-card">
