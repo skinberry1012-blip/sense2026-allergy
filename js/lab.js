@@ -540,8 +540,8 @@ Router.screens.S38A = (app) => {
       bands.light.classList.remove('away');
       requestAnimationFrame(() => requestAnimationFrame(() => { bands.light.classList.add('sum-top'); bands.severe.classList.add('sum-bot'); }));
       setTimeout(() => {
-        labChar(b, 'nyang_cheer', 470, { left: 10, bottom: 0 });
-        labBubbleAt(labBubble(b, { x: 40, y: 0, w: 560, fs: 32, tail: 'bl' }), { bottom: 470, tailX: 250 }).say('대처 방법을 모두 기억했구나!<br>이제 {{나만의 방패}}를 만들러 가자!');
+        labChar(b, 'nyang_cheer', 400, { left: -40, bottom: 6 }, 'no-intro');   // 안내하던 냥박사와 같은 크기·자리 (11/9)
+        labBubbleAt(labBubble(b, { x: 30, y: 0, w: 540, fs: 30, tail: 'bl' }), { bottom: 440, tailX: 210 }).say('대처 방법을 모두 기억했구나!<br>이제 {{나만의 방패}}를 만들러 가자!');
         ok.hidden = false; replay(ok, 'pop');
       }, 650);
     }, 350);
