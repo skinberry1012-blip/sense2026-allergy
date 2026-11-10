@@ -39,14 +39,14 @@ Router.screens.S39 = (app) => {
 Router.screens.S40 = (app) => {
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-s40' });
   labPanel(b, { sub: '나만의 알레르기 방패', title: '이름 쓰기' });
-  labChar(b, 'staff_hello', 560, { left: 40, bottom: 10 });
+  labChar(b, 'staff_hello', 560, { left: 14, bottom: 10 });   // 좌우 여백 맞춤 (11/10)
   /* 말풍선 안에 이름 칸 (11/10 다시): 수호냥이 묻고, 말풍선 안에서 바로 써요 */
   const bub = labEl(b, 'px-bub tail-l name-bub', null, `<span class="px-name s">수호냥</span>
     <div class="px-bub-txt">약속 카드에 들어갈<br>{{이름}}을 입력해 보아요!</div>
     <label class="name-px"><input id="name" type="text" maxlength="12" placeholder="이름 (번호도 쓸 수 있어요)" autocomplete="off" enterkeyhint="done" aria-label="이름"><span class="count" id="count">0/${NAME_MAX}</span></label>
-    <i class="t1"></i><i class="t2"></i>`.replace(/\{\{(.+?)\}\}/g, '<b class="lc">$1</b>'), 'div', 'left:720px;top:300px;width:700px');
+    <i class="t1"></i><i class="t2"></i>`.replace(/\{\{(.+?)\}\}/g, '<b class="lc">$1</b>'), 'div', 'left:694px;top:300px;width:700px');
   const field = $('.name-px', bub);
-  const make = labBtn(b, '내 카드 만들기 ›', 'right:180px;top:704px;font-size:38px', 'y');   // 말풍선 아래 오른쪽 끝 맞춤
+  const make = labBtn(b, '내 카드 만들기 ›', 'right:206px;top:704px;font-size:38px', 'y');   // 말풍선 아래 오른쪽 끝 맞춤
   const input = $('#name', field);
   let composing = false;
   const clean = v => v.replace(/[^가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9\- ]/g, '').replace(/^ +/, '').replace(/ {2,}/g, ' ');   // 번호·반 번호 허용 (5-3 김건강, 12번)

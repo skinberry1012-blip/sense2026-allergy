@@ -100,7 +100,7 @@ function labBubble(board, { x, y, w, name = '냥박사', staff = false, tail = '
   const fit = h => {
     const m = document.createElement('div'); m.className = 'px-bub-txt';
     m.style.cssText = `position:absolute;visibility:hidden;left:0;top:0;width:max-content;max-width:${w - 62}px;font-size:${fs}px;line-height:1.5;letter-spacing:-.02em`;
-    m.innerHTML = h; board.appendChild(m); const mw = m.offsetWidth;   // 확대·축소와 상관없는 실제 폭 m.remove();
+    m.innerHTML = h; board.appendChild(m); const mw = m.offsetWidth; m.remove();   // 확대·축소와 상관없는 실제 폭 (잰 뒤 지우기)
     e.style.width = Math.max(240, Math.min(w, mw + 62 + 4)) + 'px';
   };
   e.say = (line, type = true) => { skip(); const h = labFmt(line); fit(h); if (type) skip = labType(t, h); else { t.innerHTML = h; skip = () => {}; } };
