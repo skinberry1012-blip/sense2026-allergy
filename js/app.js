@@ -87,7 +87,7 @@ Router.screens.RULES = (app, p) => {
   const allPlaces = () => PLACES.every(done);
 
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-rules' });
-  labPanel(b, { sub: '나만의 알레르기 방패', title: '실천 약속 고르기' });
+  const pan = labPanel(b, { title: '실천 약속 고르기' }); pan.classList.add('place-panel', 'rl-panel');   // 미션 상자처럼 제목 아래 장소 배지 (11/10)
   labChar(b, 'staff_guide', 500, { left: -60, bottom: 10 });
   const bub = labBubbleAt(labBubble(b, { x: 40, y: 0, w: 470, fs: 30, tail: 'bl', name: '수호냥', staff: true }), { bottom: 470, tailX: 200 });
   const box = labEl(b, 'rl-box', [560, 156, 1000, 616]);   // 제목 아래 ~ 버튼 위 사이 가운데 (장소 고르기 2×2 · 약속 상자)
@@ -103,6 +103,12 @@ Router.screens.RULES = (app, p) => {
   };
   const render = () => {
     const pl = RULE_TABS[step][0];
+    const PSHORT = { home: '집', school: '학교', outside: '밖', mine: '나만의' };
+    const old = $('.px-steps', pan); if (old) old.remove();
+    $('div', pan).insertAdjacentHTML('beforeend', `<span class="px-steps">${RULE_TABS.map(([k], j) => {
+      const ok = k !== 'mine' && done(k);
+      return `<i class="pl-${k} ${j === step ? 'cur' : ''} ${ok ? 'ok' : ''}"><span class="no">${ok ? '✓' : j + 1}</span>${PSHORT[k]}</i>`;
+    }).join('')}</span>`);
     chip.innerHTML = `<b class="lc">${step + 1}</b> / 4`;
     let body;
     if (pl !== 'mine') {
@@ -111,11 +117,11 @@ Router.screens.RULES = (app, p) => {
     } else {
       const d = window.RULES_DATA.mine;
       body = custom.mine.map((c, j) => `<div class="ti ${c.checked ? 'on' : ''}" data-c="${j}" role="button" tabindex="0"><span class="tno">${j + 1}</span><span class="tt">${esc(c.text)}</span><button class="del" data-d="${j}" aria-label="삭제">✕</button><i class="cb ${c.checked ? 'on' : ''}"></i></div>`).join('')
-        + (custom.mine.length < MINE_MAX ? `<div class="rl-add"><p>${d.tip}</p><label class="name-px rl-in"><input id="cin" maxlength="${CUSTOM_MAX}" placeholder="${d.placeholder}" enterkeyhint="done" aria-label="나만의 약속"><span class="count" id="ccount">0/${CUSTOM_MAX}</span></label><button class="px-btn y rl-addbtn" id="cadd" type="button"><span>+ 추가</span></button></div>` : '')
+        + (custom.mine.length < MINE_MAX ? `<div class="rl-add"><p>${d.tip} <span class="rl-opt">안 적어도 돼요 · ${MINE_MAX}개까지</span></p><label class="name-px rl-in"><input id="cin" maxlength="${CUSTOM_MAX}" placeholder="${d.placeholder}" enterkeyhint="done" aria-label="나만의 약속"><span class="count" id="ccount">0/${CUSTOM_MAX}</span></label><button class="px-btn y rl-addbtn" id="cadd" type="button"><span>+ 추가</span></button></div>` : '')
         + `<p class="rl-note"><b>i</b>알레르기 종류나 병 이름 같은 건강 정보는 적지 않아요. 나만의 약속은 내 카드에만 나오고, 어디에도 보내지 않아요.</p>`;
     }
     /* 위: 장소 그림 띠 + 장소 이름, 아래: 약속 목록 */
-    box.innerHTML = `<div class="tlist rl-list"><div class="rl-pic pl-${pl}"><span>${window.RULES_DATA[pl].icon} ${RULE_TABS[step][1]}</span>${pl === 'mine' ? `<em>안 적어도 돼요 · ${MINE_MAX}개까지</em>` : ''}</div>${body}</div>`;
+    box.innerHTML = `<div class="tlist rl-list">${body}</div>`;
     const cin = $('#cin', box);
     if (cin) {
       cin.addEventListener('input', () => { $('#ccount', box).textContent = `${[...cin.value].length}/${CUSTOM_MAX}`; });
