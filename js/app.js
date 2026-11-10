@@ -90,7 +90,7 @@ Router.screens.RULES = (app, p) => {
   labPanel(b, { y: 26, title: '나만의 약속을 골라 보세요!', center: true, fs: 38 });
   labChar(b, 'staff_guide', 500, { left: -60, bottom: 10 });
   const bub = labBubbleAt(labBubble(b, { x: 40, y: 0, w: 470, fs: 30, tail: 'bl', name: '수호냥', staff: true }), { bottom: 470, tailX: 200 });
-  const box = labEl(b, 'rl-box', [560, 140, 1000, 610]);
+  const box = labEl(b, 'rl-box', [560, 132, 1000, 640]);   // 제목 아래 ~ 버튼 위 사이 가운데
   const next = labBtn(b, '카드 꾸미기로 ›', 'right:40px;bottom:46px;font-size:36px', 'y');
 
   const say = () => {
@@ -99,20 +99,20 @@ Router.screens.RULES = (app, p) => {
   };
   const render = () => {
     const pl = RULE_TABS[tab][0];
-    const tabs = RULE_TABS.map(([k, n], i) => `<button class="rl-tab pl-${k} ${i === tab ? 'cur' : ''}" data-t="${i}" role="tab" aria-selected="${i === tab}">${n}${done(k) ? ' <b>✓</b>' : ''}</button>`).join('');
+    const tabs = RULE_TABS.map(([k, n], i) => `<button class="rl-tab pl-${k} ${i === tab ? 'cur' : ''}" data-t="${i}" role="tab" aria-selected="${i === tab}">${k === 'mine' ? '✏️' : window.RULES_DATA[k].icon} ${n}${done(k) ? ' <b>✓</b>' : ''}</button>`).join('');
     const pill = k => `<span class="rpl pl-${k}">${k === 'mine' ? '나' : RULE_TABS.find(t => t[0] === k)[1]}</span>`;
     let body;
     if (pl !== 'mine') {
-      body = `<h5>${RULE_TABS[tab][1]}에서 지킬 약속<span class="hrule">하나만 골라요</span></h5>` + window.RULES_DATA[pl].rules.map(r =>
-        `<button class="ti ${rules[pl][0] === r.id ? 'on' : ''}" data-id="${r.id}">${pill(pl)}<span class="tt">${esc(r.text)}</span><i class="cb ${rules[pl][0] === r.id ? 'on' : ''}"></i></button>`).join('');
+      body = `<h5>지킬 약속을 하나 골라요</h5>` + window.RULES_DATA[pl].rules.map(r =>
+        `<button class="ti ${rules[pl][0] === r.id ? 'on' : ''}" data-id="${r.id}"><span class="tt">${esc(r.text)}</span><i class="cb ${rules[pl][0] === r.id ? 'on' : ''}"></i></button>`).join('');
     } else {
       const d = window.RULES_DATA.mine;
-      body = `<h5>나만의 약속<span class="hrule">선택 · ${MINE_MAX}개까지</span></h5>`
-        + custom.mine.map((c, j) => `<div class="ti ${c.checked ? 'on' : ''}" data-c="${j}" role="button" tabindex="0">${pill('mine')}<span class="tt">${esc(c.text)}</span><button class="del" data-d="${j}" aria-label="삭제">✕</button><i class="cb ${c.checked ? 'on' : ''}"></i></div>`).join('')
+      body = `<h5>직접 적어요<span class="hrule">안 적어도 돼요 · ${MINE_MAX}개까지</span></h5>`
+        + custom.mine.map((c, j) => `<div class="ti ${c.checked ? 'on' : ''}" data-c="${j}" role="button" tabindex="0"><span class="tt">${esc(c.text)}</span><button class="del" data-d="${j}" aria-label="삭제">✕</button><i class="cb ${c.checked ? 'on' : ''}"></i></div>`).join('')
         + (custom.mine.length < MINE_MAX ? `<div class="rl-add"><p>${d.tip}</p><label class="name-px rl-in"><input id="cin" maxlength="${CUSTOM_MAX}" placeholder="${d.placeholder}" enterkeyhint="done" aria-label="나만의 약속"><span class="count" id="ccount">0/${CUSTOM_MAX}</span></label><button class="px-btn y rl-addbtn" id="cadd" type="button"><span>+ 추가</span></button></div>` : '')
         + `<p class="rl-note"><b>i</b>알레르기 종류나 병 이름 같은 건강 정보는 적지 않아요. 나만의 약속은 내 카드에만 나오고, 어디에도 보내지 않아요.</p>`;
     }
-    box.innerHTML = `<div class="rl-tabs" role="tablist">${tabs}</div><div class="tlist rl-list">${body}</div>`;
+    box.innerHTML = `<div class="rl-wrap"><div class="rl-tabs" role="tablist">${tabs}</div><div class="tlist rl-list pl-${pl}">${body}</div></div>`;   // 장소 이름은 탭에만 (줄마다 반복하지 않아요)
     next.classList.toggle('off', !allPlaces()); next.setAttribute('aria-disabled', String(!allPlaces()));
     const cin = $('#cin', box);
     if (cin) {

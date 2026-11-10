@@ -643,3 +643,12 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .rl-list { flex:none; }
 .rl-note { margin:14px 26px 18px; }
 .rl-tab { opacity:.72; }
+/* 약속 고르기: 폴더 탭 + 목록 상자, 상자는 제목과 버튼 사이 가운데 (11/10) */
+.lab-rules .rl-box { justify-content:center; gap:0; }
+.rl-wrap { display:flex; flex-direction:column; }
+.rl-tabs { gap:8px; padding-left:24px; align-items:flex-end; position:relative; z-index:2; }
+.rl-tab { opacity:1; border-radius:16px 16px 0 0; padding:12px 28px 10px; font-size:27px; margin-bottom:-4px; box-shadow:inset 0 0 0 4px var(--navy); filter:saturate(.55) brightness(1.08); color:#4A5578; }
+.rl-tab.cur { padding:16px 32px 14px; font-size:29px; color:var(--navy); filter:none; box-shadow:inset 4px 4px 0 0 var(--navy), inset -4px 0 0 0 var(--navy); }
+.rl-list.pl-home h5 { background:#F7D667; } .rl-list.pl-school h5 { background:#A9D3F5; } .rl-list.pl-outside h5 { background:#B5DFA6; } .rl-list.pl-mine h5 { background:#D9C8F5; }
+.rl-list .hrule { color:var(--navy); }
+.rl-list .ti { padding:24px 30px; }
