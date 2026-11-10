@@ -429,3 +429,11 @@ button.cb:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
 .drawer .cov{grid-column:auto;grid-template-columns:1fr;justify-items:center;padding:8px 6px!important;gap:0}
 .drawer .cov img{width:100%;max-width:100%!important}
 .drawer .cov b{display:none}
+/* 표지 고르기 (11/10 다시): 그림을 세로로 하나씩, 오른쪽에 체크 칸 */
+.drawer .cov{grid-column:1/-1;grid-template-columns:1fr 38px;justify-items:stretch;align-items:center;gap:16px;padding:8px 14px 8px 10px!important}
+.drawer .cov img{width:100%;max-width:220px!important;justify-self:center}
+.drawer .cov .cb{width:38px;height:38px}
+.drawer .cov .cb.on::after{left:10px;top:2px;width:10px;height:19px}
+.drawer .cov{padding:6px 14px 6px 10px!important}
+.drawer .cov img{max-width:150px!important}
+.drawer:has(.cov){gap:8px}
