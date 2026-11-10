@@ -535,3 +535,51 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .quiz-band.sum-bot { transform:translate(198px, 292px) scale(.8); }
 .quiz-band.sum-top { transform:translate(90px, -36px) scale(.8); }
 .quiz-band.sum-bot { transform:translate(90px, 292px) scale(.8); }
+
+/* ===== 11/10 사용자 점검 반영 ===== */
+/* 1 활동 고르기: 카드 작게 · 모서리 살짝 둥글게 */
+.lab-choice { border-radius:28px; padding:22px 22px 26px; gap:4px; box-shadow:0 0 0 5px var(--navy), 0 10px 0 5px rgba(30,42,90,.22); }
+.lab-choice .ch-img { width:420px; height:320px; }
+.lab-choice b { font-size:44px; }
+.lab-choice small { font-size:25px; }
+.lab-choice .px-btn { margin-top:12px; font-size:30px; }
+/* 2 찾은 원인 칸: 작게 · 둥글게 · 연회색 입체 칸 */
+.lab-tray { display:flex; gap:22px; padding:14px 26px 10px; border-radius:22px; background:rgba(255,253,245,.95); box-shadow:0 0 0 4px var(--navy), 0 8px 0 4px rgba(30,42,90,.18); }
+.tray-slot { gap:4px; width:100px; }
+.ts-box { width:92px; height:86px; border-radius:16px; background:linear-gradient(#F6F7FA,#ECEEF3); box-shadow:inset 0 1px 0 #fff, 0 4px 0 #D3D7E0, 0 0 0 2px #DDE0E7; }
+.ts-box span { font-size:44px; color:#B4BAC6; }
+.ts-box img { width:74px; height:74px; }
+.tray-slot.done .ts-box { background:#fff; box-shadow:0 0 0 3px var(--green), 0 4px 0 #CFE3D2; }
+.tray-slot b { height:26px; font-size:20px; line-height:26px; white-space:nowrap; }
+/* 3 급식실 게시판: 오늘의 급식 */
+.lab-menu { background:#FFFDF5; border-radius:6px; padding:16px 26px 12px; transform:rotate(-1.2deg); box-shadow:0 0 0 3px rgba(30,42,90,.75), 4px 7px 0 rgba(30,42,90,.22); }
+.lab-menu::before, .lab-menu::after { content:''; position:absolute; top:-10px; width:22px; height:22px; border-radius:50%; background:var(--coral); box-shadow:0 0 0 3px var(--navy); }
+.lab-menu::before { left:22px; } .lab-menu::after { right:22px; }
+.lab-menu h4 { text-align:center; font-family:var(--font-head); font-weight:400; font-size:30px; color:var(--navy); margin:0 0 6px; }
+.lab-menu ul { list-style:none; margin:0; padding:8px 0 0; border-top:3px dashed rgba(30,42,90,.25); display:grid; grid-template-columns:1fr 1fr; gap:4px 26px; }
+.lab-menu li { display:flex; align-items:baseline; gap:6px; font-family:var(--font-head); font-size:26px; color:var(--navy); white-space:nowrap; }
+.lab-menu li em { font-style:normal; font-family:var(--font-body); font-size:20px; font-weight:700; color:var(--coral-d); }
+.lab-menu small { display:block; margin-top:6px; text-align:center; font-size:17px; color:var(--muted); white-space:nowrap; }
+/* 4 12가지 완료: 상자 없이 우승컵 + 후광 · 꼬리 없는 말풍선 */
+.lab-trophy { display:flex; align-items:center; justify-content:center; }
+.lab-trophy img { position:relative; width:250px; height:250px; image-rendering:pixelated; z-index:2; animation:trophyfloat 2.4s ease-in-out infinite; }
+.tr-halo { position:absolute; inset:-60px; border-radius:50%; z-index:0;
+  background:repeating-conic-gradient(from 0deg, rgba(255,214,90,.55) 0 10deg, rgba(255,214,90,0) 10deg 22deg);
+  -webkit-mask:radial-gradient(closest-side, #000 35%, transparent 100%); mask:radial-gradient(closest-side, #000 35%, transparent 100%); animation:halospin 12s linear infinite; }
+.tr-glow { position:absolute; inset:20px; border-radius:50%; z-index:1; background:radial-gradient(closest-side, rgba(255,255,255,.95), rgba(255,226,110,.7) 55%, rgba(255,226,110,0)); animation:haloglow 2.4s ease-in-out infinite; }
+@keyframes halospin { to { transform:rotate(360deg); } }
+@keyframes haloglow { 50% { transform:scale(1.08); opacity:.85; } }
+@keyframes trophyfloat { 50% { translate:0 -8px; } }
+.px-bub.tail-n i { display:none; }
+.cheer-say { white-space:nowrap; text-align:center; font-family:var(--font-head); font-size:44px; line-height:1.35; padding:4px 22px 0; }
+.cheer-say b.big { font-size:60px; }
+@media (prefers-reduced-motion: reduce) { .tr-halo, .tr-glow, .lab-trophy img { animation:none; } }
+/* 6·7 약속 카드 시작 · 이름 쓰기 (연구소 판으로, 11/10) */
+.name-px { display:flex; align-items:center; gap:14px; padding:0 30px 0 36px; background:#fff; border-radius:24px; cursor:text;
+  box-shadow:0 0 0 5px var(--navy), 0 10px 0 5px rgba(30,42,90,.18); transition:box-shadow .2s; }
+.name-px:focus-within { box-shadow:0 0 0 5px var(--navy), 0 0 0 14px rgba(245,200,66,.55), 0 10px 0 5px rgba(30,42,90,.18); }
+.name-px input { flex:1; min-width:0; border:0; outline:0; background:transparent; font-family:var(--font-head); font-size:52px; color:var(--navy); user-select:text; -webkit-user-select:text; }
+.name-px input::placeholder { font-family:var(--font-body); font-size:34px; color:#B4BAC6; }
+.name-px .count { flex:none; font-family:var(--font-head); font-size:26px; color:#9AA1B8; }
+.name-px.filled .count { color:var(--navy); }
+.name-px.shake { animation:shake .3s ease-in-out 1; }

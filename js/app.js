@@ -10,23 +10,23 @@ const CAT = k => `assets/char/${PINKY[k] || k}_t.png`;
 const pawSVG = () => '';   // 발바닥 무늬는 출입증·수첩·발견 도장에만 (팀 결정)
 const openTeacher = from => Router.go('T49', { returnTo: from });
 
-/* ===================== S39 시작 화면 ===================== */
+/* ===================== S39 시작 화면 =====================
+   연구소 화면과 같은 판(1600×900) 위에 수호냥 + 말풍선 + 버튼 (11/10) */
 Router.screens.S39 = (app) => {
-  app.innerHTML = `
-  <div class="sc room s39">
-    <h1 class="title-banner s39-tb" id="banner">${pawSVG('#fff')} 알레르기 방패 만들기 ${pawSVG('#fff')}</h1>
-    <p class="bubble big s39-bub">알레르기로부터 나를 지켜 줄<br>나만의 방패를 만들어 보자!</p>
-    <img class="s39-cat bob" src="${CAT('pinky_03')}" data-anim="staff_guide" alt="방패를 든 냥박사 연구원">
-    <button class="btn pink xl pulse s39-start" id="start">나만의 약속 카드 만들기 ›</button>
-  </div>`;
-  onTap($('#start'), () => {
+  const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-s39' });
+  labPanel(b, { y: 30, title: '알레르기 방패 만들기', center: true, fs: 40 });
+  labChar(b, 'staff_guide', 600, { left: 70, bottom: 10 });
+  const bub = labBubble(b, { x: 760, y: 250, w: 720, fs: 42, tail: 'l', name: '수호냥', staff: true });
+  bub.say('알레르기로부터 나를 지켜 줄<br>{{나만의 방패}}를 만들어 보자!');
+  const start = labBtn(b, '나만의 약속 카드 만들기 ›', 'left:780px;top:560px;font-size:40px', 'y beat');
+  onTap(start, () => {
     playSfx('next');
     if (!Store.hasRecord()) return Router.go('S40');
     const back = () => Router.go(Challenge.status() === 'ended' ? 'S47' : 'S46');
     const m = Modal.open(`
       <div class="pop-head orange">⚠ 새 약속 카드를 만들까요?</div>
       <p class="pop-body">새로 만들면 지금까지의 <b class="red">약속 카드와 챌린지 기록이 지워져요.</b></p>
-      <p class="pop-small">이미 저장한 카드·메달 이미지(PNG)는 지워지지 않아요.</p>
+      <p class="pop-small">이미 저장한 카드·다이어리 이미지(PNG)는 지워지지 않아요.</p>
       <div class="pop-btns"><button class="btn blue" data-autofocus id="mBack">내 챌린지로 돌아가기</button><button class="btn red" id="mNew">새로 만들기</button></div>`,
       { onBack: back });
     onTap($('#mBack', m), () => { playSfx('tap'); Modal.close(); back(); });
@@ -34,43 +34,39 @@ Router.screens.S39 = (app) => {
   });
 };
 
-/* ===================== S40 이름 입력 ===================== */
+/* ===================== S40 이름 입력 =====================
+   바깥 상자 없이: 수호냥 + 말풍선 + 이름 칸, 버튼은 따로 오른쪽 아래 (11/10) */
 Router.screens.S40 = (app) => {
-  app.innerHTML = `
-  <div class="sc room s40">
-    <h1 class="title-banner s40-tb">${pawSVG('#fff')} 알레르기 예방 약속 카드 ${pawSVG('#fff')}</h1>
-    <p class="sub-pill s40-sub">나만의 예방 약속을 고르고, 매일 지켜 봐요.</p>
-    <img class="s40-cat bob" src="${CAT('pinky_03')}" data-anim="staff_guide" alt="">
-      <section class="clipcard">
-        <div class="clip"></div>
-        <p class="q">1. 이름을 입력해 봐!</p>
-        <label class="name-field">
-          <input id="name" type="text" maxlength="12" placeholder="이름 (번호도 쓸 수 있어요)" autocomplete="off" enterkeyhint="done" aria-label="이름">
-          <span class="count" id="count">0/5</span><span aria-hidden="true">✏️</span>
-        </label>
-        <p class="preview empty" id="pv">👉 <span><span class="nm" id="pvName">○○</span><span id="pvJosa">의</span> 알레르기 예방 약속카드</span></p>
-        <button class="btn pink big" id="make" disabled>내 카드 만들기</button>
-      </section>
-  </div>`;
-  const input = $('#name'), make = $('#make');
+  const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-s40' });
+  labPanel(b, { y: 30, title: '알레르기 예방 약속 카드', center: true, fs: 40 });
+  labChar(b, 'staff_hello', 560, { left: 15, bottom: 10 });   // 수호냥 + 말풍선·이름 칸 묶음을 가운데로 (좌우 여백 같게)
+  const bub = labBubble(b, { x: 755, y: 300, w: 590, fs: 42, tail: 'l', name: '수호냥', staff: true });
+  bub.say('먼저 {{이름}}을 입력해 봐!');
+  const field = labEl(b, 'name-px', [755, 480, 590, 112], `
+    <input id="name" type="text" maxlength="12" placeholder="이름 (번호도 쓸 수 있어요)" autocomplete="off" enterkeyhint="done" aria-label="이름">
+    <span class="count" id="count">0/${NAME_MAX}</span>`, 'label');
+  const make = labBtn(b, '내 카드 만들기 ›', 'right:255px;top:672px;font-size:38px', 'y');   // 이름 칸과 떨어진 버튼, 오른쪽 끝 맞춤
+  const input = $('#name', field);
   let composing = false;
   const clean = v => v.replace(/[^가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9\- ]/g, '').replace(/^ +/, '').replace(/ {2,}/g, ' ');   // 번호·반 번호 허용 (5-3 김건강, 12번)
   const enforce = () => { let v = clean(input.value); if ([...v].length > NAME_MAX) v = [...v].slice(0, NAME_MAX).join(''); if (v !== input.value) input.value = v; };
   const render = () => {
-    const n = input.value.trim(), len = [...n].length;
-    $('#count').textContent = `${Math.min(len, NAME_MAX)}/${NAME_MAX}`;
-    $('#pv').classList.toggle('empty', !len);
-    $('#pvName').textContent = len ? n : '○○';
-    $('#pvJosa').textContent = len ? josaUi(n) : '의';
-    make.disabled = !len;
+    const len = [...input.value.trim()].length;
+    $('#count', field).textContent = `${Math.min(len, NAME_MAX)}/${NAME_MAX}`;
+    make.classList.toggle('off', !len); make.setAttribute('aria-disabled', String(!len));
+    field.classList.toggle('filled', !!len);
   };
   input.addEventListener('compositionstart', () => (composing = true));
   input.addEventListener('compositionend', () => { composing = false; enforce(); render(); });
   input.addEventListener('input', () => { if (!composing) enforce(); render(); });
   input.addEventListener('blur', () => { enforce(); render(); });
-  input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing && !make.disabled) make.click(); });
-  input.addEventListener('focus', () => setTimeout(() => input.scrollIntoView({ block: 'center', behavior: 'smooth' }), 300));
-  onTap(make, () => { enforce(); const n = input.value.trim(); if (!n) return; Store.set('name', n); playSfx('next'); Router.go('RULES', { tab: 0 }); });
+  input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) go(); });
+  const go = () => {
+    enforce(); const n = input.value.trim();
+    if (!n) { playSfx('full'); replay(field, 'shake'); input.focus(); return; }
+    Store.set('name', n); playSfx('next'); Router.go('RULES', { tab: 0 });
+  };
+  onTap(make, go);
   input.value = Store.get('name', ''); render();
 };
 

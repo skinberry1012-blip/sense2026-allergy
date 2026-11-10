@@ -160,13 +160,14 @@ Router.screens.S05 = (app) => {
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream' });
   labPanel(b, { y: 34, title: '무엇부터 시작할까요?', center: true, fs: 40 });
   const card = (x, cls, title, sub, pose, go, reset) => {
-    const c = labEl(b, 'lab-choice ' + cls, [x, 150, 680, 680], `
+    const c = labEl(b, 'lab-choice ' + cls, [x, 168, 560, 620], `
       <div class="ch-img"><img src="${IMG.char(pose)}" alt=""></div>
       <b>${title}</b><small>${sub}</small>
       <span class="px-btn ${cls === 'blue' ? 'y' : 'y'}"><span>시작하기 ›</span></span>`, 'button');
     onTap(c, () => { playSfx('next'); replay(c, 'pop'); if (reset) LabFound.reset(); labGo(go); });
   };
-  card(90, 'blue', '알레르기 완벽 파악', '유발 물질 확인하기', 'nyang_scan', 'S06', true);
+  /* 카드 두 장: 고르는 단위가 한눈에 보이게 상자는 두고, 크기를 줄이고 모서리를 둥글게 (11/10) */
+  card(210, 'blue', '알레르기 완벽 파악', '유발 물질 확인하기', 'nyang_scan', 'S06', true);
   card(830, 'coral', '나만의 알레르기 방패', '예방 약속 만들기', 'staff_guide', 'S39', false);
 };
 
@@ -199,13 +200,15 @@ Object.entries(LAB.places).forEach(([place, d]) => {
     });
     /* 꾸밈 그림 (꽃밭 앞 풀 덤불 등) — 스캔할 곳보다 앞, 누르면 뒤의 물건이 눌림 */
     ((LAB.deco || {})[place] || []).forEach(([src, x, y, w, h]) => labEl(b, 'lab-deco', [x, y, w, h], `<img src="${src}" alt="" draggable="false">`));
+    /* 급식실 게시판: 오늘의 메뉴 (11/10) */
+    if (d.menu) labEl(b, 'lab-menu', d.menu.r, `<h4>오늘의 급식</h4><ul>${d.menu.items.map(([m, a]) => `<li><span>${m}</span>${a ? `<em>${a}</em>` : ''}</li>`).join('')}</ul><small>${d.menu.note}</small>`);
     /* 찾은 원인 칸 */
-    const tray = labEl(b, 'lab-tray', [300, 742, 1000, 140]);
+    const tray = labEl(b, 'lab-tray', null, '', 'div', 'left:50%;bottom:16px;transform:translateX(-50%)');   // 내용에 맞춘 작은 상자 (11/10)
     d.points.forEach(pt => {
       const done = found.includes(pt.item);
       const slot = document.createElement('div');
       slot.className = 'tray-slot' + (done ? ' done' : '');
-      slot.innerHTML = `<div class="ts-box">${done ? `<img src="${IMG.item(pt.item)}" alt="">` : '<span>?</span>'}</div><b>${done ? LAB.items[pt.item] : '???'}</b>`;
+      slot.innerHTML = `<div class="ts-box">${done ? `<img src="${IMG.item(pt.item)}" alt="">` : '<span>?</span>'}</div><b>${done ? LAB.items[pt.item] : ''}</b>`;   // 이름 자리 ??? 없앰 (11/10)
       if (p.just === pt.item) replay(slot, 'pop');
       tray.appendChild(slot);
     });
@@ -306,8 +309,11 @@ Router.screens['S36-1'] = (app) => {
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream' });
   playSfx('fanfare'); labConfetti();
   labPanel(b, { y: 30, title: '냥박사의 알레르기 연구소', center: true, fs: 34 });
-  const c = labEl(b, 'lab-cheer', [450, 150, 700, 470], `<img src="${IMG.trophy}" alt=""><p>와! 알레르기 유발물질<br><b class="lc big">12가지</b>를 모두 찾았어!</p>`);
+  /* 상자 없이 우승컵 + 후광, 글은 꼬리 없는 말풍선 (11/10) */
+  const c = labEl(b, 'lab-trophy', [620, 132, 360, 360], `<i class="tr-halo"></i><i class="tr-glow"></i><img src="${IMG.trophy}" alt="">`);
   replay(c, 'pop');
+  const say = labEl(b, 'px-bub tail-n cheer-say', null, `<div class="px-bub-txt">와! 알레르기 유발물질<br><b class="lc big">12가지</b>를 모두 찾았어!</div>`, 'div', 'left:50%;top:520px;transform:translateX(-50%)');
+  replay(say, 'pop');
   labChar(b, 'nyang_cheer', 520, { left: -50, bottom: 20 });
   labChar(b, 'staff_cheer', 495, { right: -60, bottom: 20 });   // 냥박사와 비슷하게 보이도록 약 0.95배 (11/9)
   setTimeout(() => playSfx('whistle'), 1000);
@@ -319,10 +325,15 @@ Router.screens['S36-2'] = (app) => {
   if (labNeed12()) return;
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream' });
   labPanel(b, { y: 30, title: '냥박사의 알레르기 연구소', center: true, fs: 34 });
-  labEl(b, 'lab-cheer guide', [440, 170, 720, 440], `<p>이제 [알레르기 증상 카드 7개]를<br>하나씩 눌러 보자!</p><small>증상을 모두 확인한 다음,<br>{{대처 방법}}도 함께 알아보자!</small>`.replace(/\[([^\]]+)\]/g, '<b class="lb">$1</b>').replace(/\{\{(.+?)\}\}/g, '<b class="lc">$1</b>'));
   labChar(b, 'nyang_explain', 520, { left: -50, bottom: 20 });
   labChar(b, 'staff_guide', 495, { right: -60, bottom: 20 });   // 냥박사와 비슷하게 보이도록 약 0.95배 (11/9)
-  labBtn(b, '알겠어요! ›', 'left:50%;bottom:90px;transform:translateX(-50%);font-size:40px', 'y', () => { playSfx('next'); labGo('S36-3'); });
+  /* 상자 없이 말풍선 두 개로 주고받기 (11/10) */
+  const b1 = labBubbleAt(labBubble(b, { x: 300, y: 0, w: 760, fs: 40, tail: 'bl' }), { bottom: 540, tailX: 70 });
+  const b2 = labBubbleAt(labBubble(b, { x: 0, y: 0, w: 740, fs: 36, tail: 'br', name: '수호냥', staff: true }), { bottom: 330 });
+  b2.style.left = 'auto'; b2.style.right = '330px'; b2.hidden = true;
+  b1.say('이제 [알레르기 증상 카드 7개]를<br>하나씩 눌러 보자!');
+  setTimeout(() => { if (!b2.isConnected) return; b2.hidden = false; replay(b2, 'pop'); b2.say('증상을 모두 확인한 다음,<br>{{대처 방법}}도 함께 알아보자!'); }, LAB_REDUCED() ? 0 : 1500);
+  labBtn(b, '다음 ›', 'left:50%;bottom:70px;transform:translateX(-50%);font-size:40px', 'y', () => { playSfx('next'); labGo('S36-3'); });
 };
 
 /* ===================== S36-3 증상 카드 (뒤집기) ===================== */
