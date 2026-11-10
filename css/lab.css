@@ -703,3 +703,36 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .rl-pic em { position:relative; font-style:normal; font-family:var(--font-head); font-size:24px; color:var(--navy); background:rgba(255,255,255,.85); border-radius:999px; padding:6px 18px 4px; }
 .rl-list .ti { padding:22px 30px; }
 .rl-step { white-space:nowrap; }
+/* 약속 고르기 11/10 최종안: 2×2 그림 카드 + 누르면 뜨는 약속 상자 */
+.lab-rules .rl-box.grid { justify-content:center; }
+.rl-card .pic { flex:1; }
+.rl-card em { font-size:21px; }
+.rl-card:not(.done):not(.pl-mine) { animation:none; }
+.rl-card.now { animation:cardsoft 2.4s ease-in-out infinite; box-shadow:0 0 0 5px var(--navy), 0 0 0 11px var(--yellow), 0 12px 0 9px rgba(30,42,90,.18); }
+.rl-pop { position:absolute; inset:0; z-index:30; background:rgba(30,42,90,.42); display:flex; align-items:center; justify-content:center; padding-left:380px; }
+.rl-pop[hidden] { display:none; }
+.rl-popbox { width:1080px; background:#fff; border-radius:24px; overflow:hidden; box-shadow:0 0 0 5px var(--navy), 0 14px 0 5px rgba(30,42,90,.3); }
+.rl-pophead { position:relative; height:150px; background:center/cover no-repeat; border-bottom:4px solid var(--navy); display:flex; align-items:flex-end; gap:16px; padding:0 26px 18px; }
+.rl-pophead.pl-home { background-image:url(../assets/bg/bg_home.png); background-position:30% 62%; }
+.rl-pophead.pl-school { background-image:url(../assets/bg/bg_cafeteria.png); background-position:50% 58%; }
+.rl-pophead.pl-outside { background-image:url(../assets/bg/bg_playground.png); background-position:40% 72%; }
+.rl-pophead.pl-mine { background:#EDE4FB; }
+.rl-pophead span { background:#fff; border-radius:999px; padding:8px 26px 6px; font-family:var(--font-head); font-size:34px; color:var(--navy); box-shadow:0 0 0 4px var(--navy), 0 6px 0 4px rgba(30,42,90,.2); }
+.rl-pophead em { font-style:normal; font-family:var(--font-head); font-size:24px; color:var(--navy); background:rgba(255,255,255,.9); border-radius:999px; padding:6px 18px 4px; margin-bottom:6px; }
+.rl-x { position:absolute; right:18px; top:18px; width:56px; height:56px; border-radius:50%; border:4px solid var(--navy); background:#fff; color:var(--navy); font-size:26px; cursor:pointer; }
+.rl-popbox .rl-list { box-shadow:none; border-radius:0; }
+.rl-popbox .rl-list .ti { padding:24px 30px; }
+.rl-popfoot { display:flex; justify-content:space-between; padding:18px 26px 24px; border-top:3px dashed #E9DFC9; }
+.rl-popfoot .px-btn { position:relative; font-size:30px; }
+.rl-popfoot .px-btn.off { opacity:.45; }
+/* 11/10: 카드 여백 · 약속 상자는 그림 없이 (수호냥 + 말풍선 + 체크리스트 상자) */
+.rl-card { height:270px; }
+.rl-grid { gap:28px 32px; }
+.lab-rules .lab-char, .lab-rules .px-bub { z-index:31; }
+.rl-pop { background:rgba(255,248,238,.72); padding-left:420px; padding-right:40px; }
+.rl-popbox { width:1060px; }
+.rl-pophead, .rl-pophead.pl-home, .rl-pophead.pl-school, .rl-pophead.pl-outside, .rl-pophead.pl-mine { height:auto; background:var(--sky); align-items:center; padding:18px 26px; }
+.rl-pophead span { font-size:32px; padding:6px 24px 4px; box-shadow:0 0 0 3px var(--navy); }
+.rl-pophead em { margin:0; background:#fff; }
+.rl-x { top:50%; transform:translateY(-50%); width:52px; height:52px; }
+.rl-card { height:250px; }
