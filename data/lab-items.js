@@ -121,9 +121,9 @@ window.LAB = {
 
   /* 대처 방법 (S37 가벼운 · S38 위급한) — 수호냥은 나오지 않음 */
   cope: {
-    S37: { type: 'light',  title: '가벼운 알레르기 증상, {{이렇게}} 대처해요!', other: 'S38', otherLabel: '위급한 증상 대처 방법 ›',
+    S37: { type: 'light',  title: '가벼운 증상 대처법', other: 'S38', otherLabel: '위급한 증상 대처 방법 ›',
            steps: [['avoid', '원인물질 피하기'], ['tell', '어른에게 알리기'], ['clinic', '병원에서 진료받기']] },
-    S38: { type: 'severe', title: '위급한 알레르기 반응, {{이렇게}} 대처해요!', other: 'S37', otherLabel: '가벼운 증상 대처 방법 ›',
+    S38: { type: 'severe', title: '위급한 반응 대처법', other: 'S37', otherLabel: '가벼운 증상 대처 방법 ›',
            steps: [['call119', '119 신고하기'], ['epipen', '에피네프린 자가주사 돕기'], ['ambulance', '병원으로 이송하기']] }
   },
 

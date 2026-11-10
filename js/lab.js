@@ -109,8 +109,9 @@ function labBubble(board, { x, y, w, name = '냥박사', staff = false, tail = '
 }
 /* 안내판 B (연구실 화면) */
 function labPanel(board, { x, y, w = null, sub = '', title, center = false, fs = 36 }) {
-  const st = center ? `left:50%;top:${y}px;transform:translateX(-50%)` : `left:${x}px;top:${y}px`;
-  return labEl(board, 'px-panel', null, `<div>${sub ? `<small>${sub}</small>` : ''}<b style="font-size:${fs}px">${labFmt(title)}</b></div>`, 'div', st + (w ? `;width:${w}px` : ''));
+  /* 11/10: 제목은 모든 화면 왼쪽 위 같은 자리 (A-1 두 겹 테두리 · 주아 진하게). 진행 숫자 등은 오른쪽 위 */
+  const st = 'left:34px;top:30px';
+  return labEl(board, 'px-panel', null, `<div>${sub ? `<small>${sub}</small>` : ''}<b>${labFmt(title)}</b></div>`, 'div', st + (w ? `;width:${w}px` : ''));
 }
 /* 모서리 표시 (스캔할 곳) */
 const corners = () => '<i class="c1"></i><i class="c2"></i><i class="c3"></i><i class="c4"></i>';
@@ -147,7 +148,7 @@ Object.entries(LAB.story).forEach(([key, d], i) => {
   Router.screens[key] = (app) => {
     Bgm.stop();
     const b = labBoard(app, LAB.bg.lab, { dim: 'soft-r' });
-    labEl(b, 'px-chip', null, `이야기 ${i + 1} / 4`, 'div', 'left:28px;top:26px');
+    labEl(b, 'sym-cnt top-cnt', null, `이야기 <b class="lc">${i + 1}</b> / 4`, 'div', 'right:40px;top:40px');   // 진행 숫자는 오른쪽 위 (11/10)
     labChar(b, d.pose, 640, { left: 30, bottom: 8 }, 'bob');   // 이전·처음 버튼과 안 겹치게 오른쪽으로 (11/10)
     const bub = labBubble(b, { x: 680, y: 230, w: 860, fs: 42, tail: 'l' });   // 냥박사 얼굴 옆에 붙임 (11/9)
     bub.say(d.line);
@@ -158,9 +159,9 @@ Object.entries(LAB.story).forEach(([key, d], i) => {
 /* ===================== S05 활동 선택 ===================== */
 Router.screens.S05 = (app) => {
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream' });
-  labPanel(b, { y: 34, title: '무엇부터 시작할까요?', center: true, fs: 40 });
+  labPanel(b, { title: '무엇부터 시작할까요?' });
   const card = (x, cls, title, sub, pose, go, reset) => {
-    const c = labEl(b, 'lab-choice ' + cls, [x, 168, 560, 620], `
+    const c = labEl(b, 'lab-choice ' + cls, [x, 190, 560, 620], `
       <div class="ch-img"><img src="${IMG.char(pose)}" alt=""></div>
       <b>${title}</b><small>${sub}</small>
       <span class="px-btn ${cls === 'blue' ? 'y' : 'y'}"><span>시작하기 ›</span></span>`, 'button');
@@ -182,7 +183,7 @@ Object.entries(LAB.places).forEach(([place, d]) => {
     const PICON = { home: '🏠', school: '🍴', ground: '⚽' };
     $('div', pan).insertAdjacentHTML('beforeend', `<span class="px-steps">${Object.entries(LAB.places).map(([k, q]) =>
       `<i class="pl-${k} ${k === place ? 'cur' : ''} ${LabFound.count(k) >= 4 ? 'ok' : ''}">${PICON[k]} ${q.name}${LabFound.count(k) >= 4 ? ' ✓' : ''}</i>`).join('')}</span>`);
-    labEl(b, 'sym-cnt place-cnt', null, `<b class="lc">${n}</b> / 4`, 'div', 'right:48px;top:35px');   // 증상 카드처럼 알약 배지 (11/10)
+    labEl(b, 'sym-cnt place-cnt top-cnt', null, `<b class="lc">${n}</b> / 4`, 'div', 'right:40px;top:40px');   // 증상 카드처럼 알약 배지 (11/10)
     /* 힌트 버튼은 뺐어요 (11/10): 찾을 물건이 처음부터 노란 빛·물결·모서리로 강조돼 있어요 */
     /* 스캔할 곳 */
     const spots = d.points.map((pt, i) => {
@@ -302,7 +303,7 @@ Router.screens['S36-1'] = (app) => {
   Store.set('labComplete', true);
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream' });
   playSfx('fanfare'); labConfetti();
-  labPanel(b, { y: 30, title: '냥박사의 알레르기 연구소', center: true, fs: 34 });
+  labPanel(b, { sub: '알레르기 완벽 파악', title: '연구 완료!' });
   /* 상자 없이 우승컵 + 후광, 글은 꼬리 없는 말풍선 (11/10) */
   const c = labEl(b, 'lab-trophy', [620, 132, 360, 360], `<i class="tr-halo"></i><i class="tr-glow"></i><img src="${IMG.trophy}" alt="">`);
   replay(c, 'pop');
@@ -318,7 +319,7 @@ Router.screens['S36-1'] = (app) => {
 Router.screens['S36-2'] = (app) => {
   if (labNeed12()) return;
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream' });
-  labPanel(b, { y: 30, title: '냥박사의 알레르기 연구소', center: true, fs: 34 });
+  labPanel(b, { sub: '알레르기 완벽 파악', title: '증상 카드 안내' });
   labChar(b, 'nyang_explain', 520, { left: -50, bottom: 20 });
   labChar(b, 'staff_guide', 495, { right: -60, bottom: 20 });   // 냥박사와 비슷하게 보이도록 약 0.95배 (11/9)
   /* 상자 없이 말풍선 두 개로 주고받기 (11/10) */
@@ -337,13 +338,13 @@ Router.screens['S36-3'] = (app) => {
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream' });
   /* 네모 줄이기 (11/9): 제목은 상자 없이 글씨만, 확인 수는 제목 옆 작은 글씨 */
   /* 제목은 다른 연구소 화면과 같은 상자 그대로, 확인 수는 오른쪽 위 둥근 배지 (11/9) */
-  labPanel(b, { y: 22, title: '알레르기 증상 카드', center: true, fs: 36 });
-  const cnt = labEl(b, 'sym-cnt', null, '', 'div', 'right:110px;top:34px');
+  labPanel(b, { sub: '알레르기 완벽 파악', title: '알레르기 증상 카드' });
+  const cnt = labEl(b, 'sym-cnt top-cnt', null, '', 'div', 'right:40px;top:40px');
   let sel = null, lockTimer;
   const cards = C.list.map((c, i) => {
     /* 2줄 배치 (11/9): 오른쪽에 4장 + 3장(가운데 맞춤), 왼쪽은 냥박사와 말풍선 */
     const CW = 214, GAP = 30, X0 = 600, row = i < 4 ? 0 : 1, col = row ? i - 4 : i;
-    const e = labEl(b, 'lab-card', [X0 + col * (CW + GAP) + (row ? (CW + GAP) / 2 : 0), 162 + row * 266, CW, 246], `
+    const e = labEl(b, 'lab-card', [X0 + col * (CW + GAP) + (row ? (CW + GAP) / 2 : 0), 190 + row * 266, CW, 246], `
       <span class="cd-front"><span class="sym-c"><img src="${IMG.sym(c.id)}" alt=""></span><b class="cd-name"><i>?</i><em>${c.label.length > 8 ? c.label.replace('·', '·<br>') : c.label}</em></b></span>`, 'button');   // 긴 이름은 · 뒤에서 줄바꿈 (두드러기· / 피부 가려움)
     e.setAttribute('aria-label', '증상 카드');
     onTap(e, () => pick(c.id));
@@ -388,11 +389,10 @@ Router.screens['S36-3'] = (app) => {
     const d = LAB.cope[key];
     const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-cope ' + d.type });
     LabState.copeSeen[d.type] = true;
-    labPanel(b, { y: 22, title: d.title, center: true, fs: 36 });   // 연구소 공통 제목 부품 (11/9)
+    const pan = labPanel(b, { sub: '알레르기 완벽 파악', title: d.title });   // 연구소 공통 제목 부품 (11/9)
     if (d.type === 'severe') {   /* 위급 화면: 제목 양옆에 깜빡이는 픽셀 경광등 (11/9) */
       const SIREN = "<svg viewBox='0 0 16 13' shape-rendering='crispEdges' aria-hidden='true'><g class='rays'><rect x='2' y='1' width='1' height='1' fill='#F5C842'/><rect x='13' y='1' width='1' height='1' fill='#F5C842'/><rect x='3' y='2' width='1' height='1' fill='#F5C842'/><rect x='7' y='2' width='1' height='1' fill='#F5C842'/><rect x='8' y='2' width='1' height='1' fill='#F5C842'/><rect x='12' y='2' width='1' height='1' fill='#F5C842'/><rect x='4' y='3' width='1' height='1' fill='#F5C842'/><rect x='11' y='3' width='1' height='1' fill='#F5C842'/></g><g class='lamp'><rect x='6' y='4' width='1' height='1' fill='#1E2A5A'/><rect x='7' y='4' width='1' height='1' fill='#1E2A5A'/><rect x='8' y='4' width='1' height='1' fill='#1E2A5A'/><rect x='9' y='4' width='1' height='1' fill='#1E2A5A'/><rect x='5' y='5' width='1' height='1' fill='#1E2A5A'/><rect x='6' y='5' width='1' height='1' fill='#E5402B'/><rect x='7' y='5' width='1' height='1' fill='#E5402B'/><rect x='8' y='5' width='1' height='1' fill='#E5402B'/><rect x='9' y='5' width='1' height='1' fill='#E5402B'/><rect x='10' y='5' width='1' height='1' fill='#1E2A5A'/><rect x='4' y='6' width='1' height='1' fill='#1E2A5A'/><rect x='5' y='6' width='1' height='1' fill='#E5402B'/><rect x='6' y='6' width='1' height='1' fill='#FFD9D2'/><rect x='7' y='6' width='1' height='1' fill='#E5402B'/><rect x='8' y='6' width='1' height='1' fill='#E5402B'/><rect x='9' y='6' width='1' height='1' fill='#E5402B'/><rect x='10' y='6' width='1' height='1' fill='#E5402B'/><rect x='11' y='6' width='1' height='1' fill='#1E2A5A'/><rect x='4' y='7' width='1' height='1' fill='#1E2A5A'/><rect x='5' y='7' width='1' height='1' fill='#E5402B'/><rect x='6' y='7' width='1' height='1' fill='#FFD9D2'/><rect x='7' y='7' width='1' height='1' fill='#E5402B'/><rect x='8' y='7' width='1' height='1' fill='#E5402B'/><rect x='9' y='7' width='1' height='1' fill='#E5402B'/><rect x='10' y='7' width='1' height='1' fill='#E5402B'/><rect x='11' y='7' width='1' height='1' fill='#1E2A5A'/><rect x='4' y='8' width='1' height='1' fill='#1E2A5A'/><rect x='5' y='8' width='1' height='1' fill='#E5402B'/><rect x='6' y='8' width='1' height='1' fill='#E5402B'/><rect x='7' y='8' width='1' height='1' fill='#E5402B'/><rect x='8' y='8' width='1' height='1' fill='#E5402B'/><rect x='9' y='8' width='1' height='1' fill='#E5402B'/><rect x='10' y='8' width='1' height='1' fill='#E5402B'/><rect x='11' y='8' width='1' height='1' fill='#1E2A5A'/><rect x='4' y='9' width='1' height='1' fill='#1E2A5A'/><rect x='5' y='9' width='1' height='1' fill='#E5402B'/><rect x='6' y='9' width='1' height='1' fill='#E5402B'/><rect x='7' y='9' width='1' height='1' fill='#E5402B'/><rect x='8' y='9' width='1' height='1' fill='#E5402B'/><rect x='9' y='9' width='1' height='1' fill='#E5402B'/><rect x='10' y='9' width='1' height='1' fill='#E5402B'/><rect x='11' y='9' width='1' height='1' fill='#1E2A5A'/><rect x='3' y='10' width='1' height='1' fill='#1E2A5A'/><rect x='4' y='10' width='1' height='1' fill='#1E2A5A'/><rect x='5' y='10' width='1' height='1' fill='#1E2A5A'/><rect x='6' y='10' width='1' height='1' fill='#1E2A5A'/><rect x='7' y='10' width='1' height='1' fill='#1E2A5A'/><rect x='8' y='10' width='1' height='1' fill='#1E2A5A'/><rect x='9' y='10' width='1' height='1' fill='#1E2A5A'/><rect x='10' y='10' width='1' height='1' fill='#1E2A5A'/><rect x='11' y='10' width='1' height='1' fill='#1E2A5A'/><rect x='12' y='10' width='1' height='1' fill='#1E2A5A'/><rect x='3' y='11' width='1' height='1' fill='#1E2A5A'/><rect x='4' y='11' width='1' height='1' fill='#8A93AE'/><rect x='5' y='11' width='1' height='1' fill='#8A93AE'/><rect x='6' y='11' width='1' height='1' fill='#8A93AE'/><rect x='7' y='11' width='1' height='1' fill='#8A93AE'/><rect x='8' y='11' width='1' height='1' fill='#8A93AE'/><rect x='9' y='11' width='1' height='1' fill='#8A93AE'/><rect x='10' y='11' width='1' height='1' fill='#8A93AE'/><rect x='11' y='11' width='1' height='1' fill='#8A93AE'/><rect x='12' y='11' width='1' height='1' fill='#1E2A5A'/><rect x='3' y='12' width='1' height='1' fill='#1E2A5A'/><rect x='4' y='12' width='1' height='1' fill='#1E2A5A'/><rect x='5' y='12' width='1' height='1' fill='#1E2A5A'/><rect x='6' y='12' width='1' height='1' fill='#1E2A5A'/><rect x='7' y='12' width='1' height='1' fill='#1E2A5A'/><rect x='8' y='12' width='1' height='1' fill='#1E2A5A'/><rect x='9' y='12' width='1' height='1' fill='#1E2A5A'/><rect x='10' y='12' width='1' height='1' fill='#1E2A5A'/><rect x='11' y='12' width='1' height='1' fill='#1E2A5A'/><rect x='12' y='12' width='1' height='1' fill='#1E2A5A'/></g></svg>";
-      labEl(b, 'cope-siren', null, SIREN, 'div', 'left:300px;top:14px');
-      labEl(b, 'cope-siren r', null, SIREN, 'div', 'right:300px;top:14px');
+      labEl(b, 'cope-siren', null, SIREN, 'div', `left:${34 + pan.offsetWidth + 22}px;top:24px`);   // 제목 바로 오른쪽 (11/10)
     }
     const steps = d.steps.map(([img, label], i) => {
       const s = labEl(b, 'cope-step', [130 + i * 470, 216, 400, 470], `<span class="num">${i + 1}</span><img src="${IMG.cope(img)}" alt=""><b>${label}</b>`);   // 둥근 카드, 제목과 버튼 사이 가운데 (위아래 94px, 11/9)
@@ -430,8 +430,8 @@ Router.screens.S38A = (app) => {
   const Q = LAB.quiz;
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-quiz rounds' });
   playSfx('open');
-  const panel = labPanel(b, { y: 20, title: '대처 방법 기억하기', center: true, fs: 38 });
-  const chip = labEl(b, 'px-chip quiz-step', null, '', 'div', `left:${800 + panel.offsetWidth / 2 + 18}px;top:46px`);
+  labPanel(b, { sub: '알레르기 완벽 파악', title: '대처 방법 기억하기' });
+  const chip = labEl(b, 'sym-cnt top-cnt quiz-step', null, '', 'div', 'right:40px;top:40px');
   /* 냥박사가 왼쪽에서 판마다 안내해요 (11/9) */
   const guide = labChar(b, 'nyang_explain', 400, { left: 20, bottom: 6 });   // 보이는 몸 왼쪽 끝 = 화면 왼쪽 48px (오른쪽 여백과 같게)
   const bub = labBubbleAt(labBubble(b, { x: 48, y: 0, w: 480, fs: 30, tail: 'bl' }), { bottom: 440, tailX: 276 });

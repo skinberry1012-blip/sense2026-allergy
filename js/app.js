@@ -14,11 +14,11 @@ const openTeacher = from => Router.go('T49', { returnTo: from });
    연구소 화면과 같은 판(1600×900) 위에 수호냥 + 말풍선 + 버튼 (11/10) */
 Router.screens.S39 = (app) => {
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-s39' });
-  labPanel(b, { y: 30, title: '알레르기 방패 만들기', center: true, fs: 40 });
+  labPanel(b, { sub: '나만의 알레르기 방패', title: '방패 만들기' });
   labChar(b, 'staff_guide', 600, { left: 70, bottom: 10 });
-  const bub = labBubble(b, { x: 760, y: 250, w: 720, fs: 42, tail: 'l', name: '수호냥', staff: true });
+  const bub = labBubble(b, { x: 760, y: 330, w: 720, fs: 42, tail: 'l', name: '수호냥', staff: true });   // 수호냥 몸 가운데 높이에 맞춤 (11/10)
   bub.say('알레르기로부터 나를 지켜 줄<br>{{나만의 방패}}를 만들어 보자!');
-  const start = labBtn(b, '나만의 약속 카드 만들기 ›', 'left:780px;top:560px;font-size:40px', 'y beat');
+  const start = labBtn(b, '나만의 약속 카드 만들기 ›', 'left:780px;top:640px;font-size:40px', 'y beat');
   onTap(start, () => {
     playSfx('next');
     if (!Store.hasRecord()) return Router.go('S40');
@@ -38,15 +38,15 @@ Router.screens.S39 = (app) => {
    바깥 상자 없이: 수호냥 + 말풍선 + 이름 칸, 버튼은 따로 오른쪽 아래 (11/10) */
 Router.screens.S40 = (app) => {
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-s40' });
-  labPanel(b, { y: 30, title: '알레르기 예방 약속 카드', center: true, fs: 40 });
+  labPanel(b, { sub: '나만의 알레르기 방패', title: '이름 쓰기' });
   labChar(b, 'staff_hello', 560, { left: 40, bottom: 10 });
   /* 말풍선 안에 이름 칸 (11/10 다시): 수호냥이 묻고, 말풍선 안에서 바로 써요 */
   const bub = labEl(b, 'px-bub tail-l name-bub', null, `<span class="px-name s">수호냥</span>
     <div class="px-bub-txt">약속 카드에 들어갈<br>{{이름}}을 입력해 보아요!</div>
     <label class="name-px"><input id="name" type="text" maxlength="12" placeholder="이름 (번호도 쓸 수 있어요)" autocomplete="off" enterkeyhint="done" aria-label="이름"><span class="count" id="count">0/${NAME_MAX}</span></label>
-    <i class="t1"></i><i class="t2"></i>`.replace(/\{\{(.+?)\}\}/g, '<b class="lc">$1</b>'), 'div', 'left:720px;top:236px;width:700px');
+    <i class="t1"></i><i class="t2"></i>`.replace(/\{\{(.+?)\}\}/g, '<b class="lc">$1</b>'), 'div', 'left:720px;top:300px;width:700px');
   const field = $('.name-px', bub);
-  const make = labBtn(b, '내 카드 만들기 ›', 'right:180px;top:640px;font-size:38px', 'y');   // 말풍선 아래 오른쪽 끝 맞춤
+  const make = labBtn(b, '내 카드 만들기 ›', 'right:180px;top:704px;font-size:38px', 'y');   // 말풍선 아래 오른쪽 끝 맞춤
   const input = $('#name', field);
   let composing = false;
   const clean = v => v.replace(/[^가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9\- ]/g, '').replace(/^ +/, '').replace(/ {2,}/g, ' ');   // 번호·반 번호 허용 (5-3 김건강, 12번)
@@ -87,7 +87,7 @@ Router.screens.RULES = (app, p) => {
   const allPlaces = () => PLACES.every(done);
 
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-rules' });
-  labPanel(b, { y: 26, title: '나만의 약속을 골라 보세요!', center: true, fs: 38 });
+  labPanel(b, { sub: '나만의 알레르기 방패', title: '약속 고르기' });
   labChar(b, 'staff_guide', 500, { left: -60, bottom: 10 });
   const bub = labBubbleAt(labBubble(b, { x: 40, y: 0, w: 470, fs: 30, tail: 'bl', name: '수호냥', staff: true }), { bottom: 470, tailX: 200 });
   const box = labEl(b, 'rl-box', [560, 156, 1000, 616]);   // 제목 아래 ~ 버튼 위 사이 가운데 (장소 고르기 2×2 · 약속 상자)
@@ -95,7 +95,7 @@ Router.screens.RULES = (app, p) => {
 
   /* 순서대로 (11/10): 집 → 학교 → 밖 → 나만의 약속(선택) → 카드 꾸미기. 하나 고르면 다음 장소로 넘어가요 */
   let step = Math.max(0, Math.min(3, p.step != null ? p.step | 0 : (PLACES.findIndex(pl => !done(pl)) + 1 || 4) - 1));
-  const chip = labEl(b, 'px-chip quiz-step rl-step', null, '', 'div', 'top:46px');
+  const chip = labEl(b, 'sym-cnt top-cnt rl-step', null, '', 'div', 'right:40px;top:40px');
   const say = () => {
     const k = RULE_TABS[step][0];
     if (k === 'mine') return bub.say(allPlaces() ? '내가 지킬 약속을<br>{{직접}} 적어도 좋아!' : '집 · 학교 · 밖에서<br>하나씩 먼저 정해 줘!', false);
@@ -104,7 +104,6 @@ Router.screens.RULES = (app, p) => {
   const render = () => {
     const pl = RULE_TABS[step][0];
     chip.innerHTML = `<b class="lc">${step + 1}</b> / 4`;
-    chip.style.left = (800 + $('.px-panel', b).offsetWidth / 2 + 18) + 'px';
     let body;
     if (pl !== 'mine') {
       body = window.RULES_DATA[pl].rules.map((r, n) =>

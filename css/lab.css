@@ -710,3 +710,18 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .lab-dim.cream, .lab-quiz .lab-dim.cream, .lab-quiz.rounds .lab-dim.cream { background:rgba(30,42,90,.27); }
 .lab-dim.soft-r { background:linear-gradient(90deg,rgba(255,248,238,0) 35%,rgba(255,248,238,.4)); }
 .lab-dim.navy { background:rgba(30,42,90,.55); }
+/* ===== 제목 상자 A-1 (11/10): 왼쪽 위 · 크림 바탕 · 남색-노랑-남색 두 겹 · 주아 진하게 · 파트 칩 ===== */
+.px-panel { background:#FFFDF6 !important; padding:0 !important; border-radius:22px;
+  box-shadow:0 0 0 4px var(--navy),0 0 0 9px var(--yellow),0 0 0 13px var(--navy),0 12px 0 13px rgba(30,42,90,.28) !important; }
+.px-panel > div { background:none !important; padding:14px 26px 12px 18px !important; flex-direction:row !important; align-items:center; gap:14px !important; text-align:left; }
+.px-panel b { font-size:38px !important; color:var(--navy); -webkit-text-stroke:1.2px var(--navy); line-height:1.1; }
+.px-panel small { font-size:20px !important; line-height:1; color:var(--navy) !important; background:var(--sky) !important; border-radius:999px; padding:7px 16px 5px !important; box-shadow:none !important; }
+.px-panel:not(:has(small)) > div { padding-left:26px !important; }
+/* 장소 탐색 과제 상자: 세로 배치 유지 */
+.place-panel > div { flex-direction:column !important; align-items:center; gap:6px !important; padding:14px 26px 14px !important; }
+.place-panel b { font-size:34px !important; }
+.place-panel small { background:#fff !important; color:var(--blue) !important; box-shadow:0 0 0 2px rgba(47,77,168,.35) !important; }
+/* 오른쪽 위 진행 숫자: 모두 같은 남색 알약 */
+.top-cnt { font-size:28px; padding:8px 22px 6px; }
+.top-cnt b.lc { font-size:32px; color:var(--yellow); }
+.cope-siren.r { display:none; }
