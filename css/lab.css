@@ -703,3 +703,6 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .rl-pic em { position:relative; font-style:normal; font-family:var(--font-head); font-size:24px; color:var(--navy); background:rgba(255,255,255,.85); border-radius:999px; padding:6px 18px 4px; }
 .rl-list .ti { padding:22px 30px; }
 .rl-step { white-space:nowrap; }
+/* 배경 누르기 통일 (11/10): 밝은 크림 대신 남색으로 살짝 어둡게 — 글·상자·캐릭터가 또렷하게.
+   장소 탐색(원본 그대로)과 스캔·결과(남색 .48)는 그대로 */
+.lab-dim.cream, .lab-dim.soft-r, .lab-quiz .lab-dim.cream, .lab-quiz.rounds .lab-dim.cream { background:rgba(30,42,90,.38); }
