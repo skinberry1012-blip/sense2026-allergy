@@ -750,3 +750,7 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 /* 다 맞힌 뒤 두 띠 (11/10): 이름표가 커져서 띠 사이를 벌리고 조금 작게 */
 .quiz-band.sum-top { transform:translate(90px, -46px) scale(.78); }
 .quiz-band.sum-bot { transform:translate(90px, 292px) scale(.78); }
+/* 약속 고르기 정리 (11/10): 상자 입체감, 고른 줄 노랑 */
+.lab-rules .rl-list { box-shadow:0 0 0 4px var(--navy), 0 9px 0 4px rgba(30,42,90,.3), 0 18px 24px rgba(30,42,90,.2); }
+.rl-list .ti.on { background:#FFF3C8; }
+.rl-list .ti.on .tno { background:var(--yellow); color:var(--navy); }
