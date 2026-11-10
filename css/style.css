@@ -1314,3 +1314,6 @@ body:not(.tablet) .install.talk { zoom:.55; }
 .s44-title > div { display:flex; }
 body.tablet .s44-top { padding:16px 0 6px 18px; }
 .s44-top { margin-bottom:14px; }
+/* 카드 꾸미기 (11/10): 인쇄하기 · 처음으로 한 줄 (다이어리처럼) */
+.s44b-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:0 4px; }
+.s44b-btns .s44b-row .btn { margin:0 !important; width:100% !important; }
