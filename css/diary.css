@@ -416,3 +416,4 @@ button.cb:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
 .btns .pbtn{font-size:24px;padding:8px}
 #dz{pointer-events:none}
 #dz .diary,#dz .stk{pointer-events:auto}
+.brow{display:flex;gap:10px}.brow .pbtn{flex:1}

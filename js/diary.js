@@ -161,7 +161,7 @@ Router.screens.S46 = (app, p = {}) => {
         ${bub ? `<div class="sbub">${bub}</div>` : ''}
         <div class="tabs"><button data-side="cover" class="${sideTab === 'cover' ? 'on' : ''}">표지</button><button data-side="stk" class="${sideTab === 'stk' ? 'on' : ''}">스티커</button>${cfg.photo !== false ? '<button data-side="photo">내 사진</button>' : ''}</div>
         <div class="drawer" id="drawer"></div>
-        <div class="btns">${!c ? '<button class="pbtn c" id="go">챌린지 시작하기 ›</button>' : ended ? '<button class="pbtn c" id="again">새로 도전하기 ›</button>' : ''}<button class="pbtn" id="print">인쇄하기</button></div>
+        <div class="btns">${!c ? '<button class="pbtn c" id="go">챌린지 시작하기 ›</button>' : ended ? '<button class="pbtn c" id="again">새로 도전하기 ›</button>' : ''}<div class="brow"><button class="pbtn" id="saveImg">이미지 저장</button><button class="pbtn" id="print">인쇄하기</button></div></div>
       </div>
       <div id="dz">${dyDiary(m, look)}${look.placed.map(dyStk).join('')}</div>`;
     paintDrawer();
@@ -199,6 +199,7 @@ Router.screens.S46 = (app, p = {}) => {
     const go = q('#go'); if (go) onTap(go, start);
     const ag = q('#again'); if (ag) onTap(ag, () => { playSfx('tap'); Router.go('S39'); });   // 지우기 확인은 S39에서 한 번만 (11/10)
     onTap(q('#print'), printDiary);
+    onTap(q('#saveImg'), saveImage);
   }
   /* 판 안 클릭은 한곳에서 */
   W.addEventListener('click', e => {
@@ -321,6 +322,20 @@ Router.screens.S46 = (app, p = {}) => {
     obs.observe(document.body, { childList: true, subtree: true });
   }
 
+  /* ---------- 이미지 저장 (11/10): 다이어리 + 스티커를 그림 한 장(PNG)으로
+     섀도 DOM 안 모양을 SVG(foreignObject)에 통째로 담아 canvas에 그려요. 그림·글꼴은 모두 data URL로 넣어야 그려져요. */
+  let saving = false;
+  async function saveImage() {
+    if (saving) return; saving = true; playSfx('tap');
+    const btn = q('#saveImg'); if (btn) btn.textContent = '만드는 중…';
+    try {
+      const cv = await dyRender(dyModel(live() || Challenge.plan(cfg)), look);
+      await saveCanvasPNG(cv, `챌린지다이어리_${(Store.get('name', '') || '나').replace(/[^\w가-힣-]/g, '')}.png`);
+      playSfx('save'); toast('다이어리 이미지를 저장했어요.', 1800);
+    } catch (e) { toast(e && e.name === 'AbortError' ? '저장이 취소됐어요.' : '저장하지 못했어요. 다시 눌러 주세요.', 2500); }
+    saving = false; const b2 = q('#saveImg'); if (b2) b2.textContent = '이미지 저장';
+  }
+
   /* ---------- 인쇄 (A4 가로) : 종이용 양식 — 잉크 아끼는 표지, 메달·진행 막대 없이, 맨 아래 확인란 ---------- */
   function printDiary() {
     playSfx('tap');
@@ -343,4 +358,47 @@ Router.screens.S46 = (app, p = {}) => {
   if (c0) { const m0 = dyModel(c0); if (m0.got >= m0.n && !c0.cele.done) { c0.cele.done = true; Store.set('challenge', c0); setTimeout(() => cele(true), 500); } else if (m0.got >= c0.min && c0.min < m0.n && !c0.cele.min) { c0.cele.min = true; Store.set('challenge', c0); setTimeout(() => cele(false), 500); } }
 };
 Router.screens.S47 = Router.screens.S46;
+
+/* ---------- 다이어리를 canvas로 (이미지 저장) ---------- */
+const dyDataURL = (() => { const memo = {}; return url => memo[url] || (memo[url] = fetch(url).then(r => { if (!r.ok) throw new Error(url); return r.blob(); })
+  .then(b => new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = rej; fr.readAsDataURL(b); }))); })();
+/* 글꼴: 구글 글꼴 CSS에서 다이어리 글자가 들어 있는 조각만 골라 data URL로 (못 받으면 기본 글꼴로) */
+async function dyFontCSS(text) {
+  try {
+    const href = (document.querySelector('link[href*="fonts.googleapis.com/css"]') || {}).href; if (!href) return '';
+    const css = await (await fetch(href)).text();
+    const codes = [...new Set([...text].map(ch => ch.codePointAt(0)))];
+    const hit = rng => rng.split(',').some(r => { r = r.trim().replace(/^U\+/i, ''); const [a, b] = r.split('-'); const lo = parseInt(a.replace(/\?/g, '0'), 16), hi = b ? parseInt(b, 16) : parseInt(a.replace(/\?/g, 'F'), 16); return codes.some(c => c >= lo && c <= hi); });
+    const blocks = (css.match(/@font-face\s*{[^}]*}/g) || []).filter(bk => { const m = bk.match(/unicode-range:\s*([^;]+);/); return !m || hit(m[1]); });
+    const out = await Promise.all(blocks.map(async bk => { const u = (bk.match(/url\(([^)]+)\)/) || [])[1]; if (!u) return ''; try { return bk.replace(u, await dyDataURL(u.replace(/['"]/g, ''))); } catch (e) { return ''; } }));
+    return out.join('\n');
+  } catch (e) { return ''; }
+}
+async function dyRender(m, look, scale = 1.5) {
+  const X = 380, Y = 0, W = 1220, H = 900;   // 왼쪽 도구 칸은 빼고 다이어리 쪽만
+  let css = await (await fetch('./css/diary.css')).text();
+  const abs = u => new URL(u, location.href.replace(/[^/]*$/, '') + 'css/').href;
+  for (const u of [...new Set((css.match(/url\(([^)]+)\)/g) || []).map(x => x.slice(4, -1).replace(/['"]/g, '')))]) { try { css = css.split(`url(${u})`).join(`url(${await dyDataURL(abs(u))})`); } catch (e) {} }
+  css = css.replace(':host{', '.dyroot{');
+  const box = document.createElement('div');
+  box.innerHTML = `${DY_STAR_DEF}<div class="dyb"><div id="dz">${dyDiary(m, look)}${look.placed.map(dyStk).join('')}</div></div>`;
+  box.querySelectorAll('.stk .x').forEach(x => x.remove());
+  for (const im of box.querySelectorAll('img')) { const s = im.getAttribute('src'); if (s && !s.startsWith('data:')) try { im.setAttribute('src', await dyDataURL(s)); } catch (e) {} }
+  for (const im of box.querySelectorAll('image')) { const s = im.getAttribute('href'); if (s && !s.startsWith('data:')) try { im.setAttribute('href', await dyDataURL(s)); } catch (e) {} }
+  const font = await dyFontCSS(box.textContent);
+  const root = document.createElement('div'); root.className = 'dyroot'; root.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
+  root.style.cssText = `width:1600px;height:900px;position:relative;background:#F8EFE2;transform:translate(${-X}px,${-Y}px)`;
+  root.innerHTML = `<style>${font}\n${css}\n.dyb{background:none}</style>` + box.innerHTML;
+  const xhtml = new XMLSerializer().serializeToString(root);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"><foreignObject x="0" y="0" width="1600" height="900">${xhtml}</foreignObject></svg>`;
+  const img = new Image();
+  await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); });
+  try { await img.decode(); } catch (e) {}
+  await new Promise(r => setTimeout(r, 120));   // 글꼴이 그려질 틈
+  const cv = document.createElement('canvas'); cv.width = W * scale; cv.height = H * scale;
+  const g = cv.getContext('2d'); g.fillStyle = '#F8EFE2'; g.fillRect(0, 0, cv.width, cv.height);
+  g.drawImage(img, 0, 0, cv.width, cv.height);
+  g.drawImage(img, 0, 0, cv.width, cv.height);
+  return cv;
+}
 Router.screens.S48 = Router.screens.S46;
