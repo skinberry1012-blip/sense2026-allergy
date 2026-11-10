@@ -161,7 +161,7 @@ Router.screens.S46 = (app, p = {}) => {
         ${bub ? `<div class="sbub">${bub}</div>` : ''}
         <div class="tabs"><button data-side="cover" class="${sideTab === 'cover' ? 'on' : ''}">표지</button><button data-side="stk" class="${sideTab === 'stk' ? 'on' : ''}">스티커</button>${cfg.photo !== false ? '<button data-side="photo">내 사진</button>' : ''}</div>
         <div class="drawer" id="drawer"></div>
-        <div class="btns">${!c ? '<button class="pbtn c" id="go">챌린지 시작하기 ›</button>' : ended ? '<button class="pbtn c" id="again">새로 도전하기 ›</button>' : ''}<div class="brow"><button class="pbtn" id="saveImg">이미지 저장</button><button class="pbtn" id="print">인쇄하기</button></div></div>
+        <div class="btns">${!c ? '<button class="pbtn c" id="go">챌린지 시작하기 ›</button>' : ended ? '<button class="pbtn c" id="again">새로 도전하기 ›</button>' : ''}<div class="brow"><button class="pbtn c" id="saveImg">이미지 저장</button><button class="pbtn" id="print">인쇄하기</button></div></div>
       </div>
       <div id="dz">${dyDiary(m, look)}${look.placed.map(dyStk).join('')}</div>`;
     paintDrawer();
