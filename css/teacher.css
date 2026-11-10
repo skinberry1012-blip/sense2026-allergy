@@ -116,3 +116,22 @@
 .tgx .tc-linkrow { display:flex; gap:12px; align-items:center; }
 .tgx .tc-link { flex:1; min-width:0; border:2px solid var(--tc-line); border-radius:10px; background:#fff; padding:10px 14px; font-size:15px; line-height:1.4; word-break:break-all; }
 .tgx .tc-share .tc-sec .tc-btn.sm { align-self:flex-start; }
+/* 02 챌린지 다이어리 (11/10) */
+.tgx .tc-dy { gap:16px; overflow-y:auto; padding-right:6px; }
+.tgx .tc-dy .tc-sec { gap:8px; }
+.tgx .tc-inl { flex-direction:row !important; align-items:center; gap:14px !important; flex-wrap:wrap; }
+.tgx .tc-inl .tc-h { width:170px; flex:none; }
+.tgx .tc-inl small { font-size:15px; color:var(--muted); }
+.tgx .tc-step { display:inline-flex; align-items:center; border:2px solid var(--navy); border-radius:10px; overflow:hidden; background:#fff; flex:none; }
+.tgx .tc-step button { width:44px; height:40px; border:0; background:#fff; color:var(--navy); font-family:var(--font-head); font-size:24px; }
+.tgx .tc-step button:disabled { color:#C4C8D4; }
+.tgx .tc-step b { min-width:70px; height:40px; display:grid; place-items:center; border-left:2px solid var(--navy); border-right:2px solid var(--navy); font-family:var(--font-head); font-weight:400; font-size:20px; color:var(--navy); }
+.tgx .tc-dy .tc-row { flex-wrap:wrap; gap:10px; }
+.tgx .tc-txt { position:relative; display:block; }
+.tgx .tc-txt input { padding-right:70px; }
+.tgx .tc-txt input::placeholder { color:#B4BAC6; }
+.tgx .tc-cnt { position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:13px; color:var(--muted); pointer-events:none; }
+.tgx .tc-sample { align-self:flex-start; border:0; background:var(--tc-soft); color:var(--navy); border-radius:999px; padding:4px 12px; font-size:14px; cursor:pointer; text-align:left; }
+.tgx .tc-pr { display:grid; grid-template-columns:76px 1fr; gap:8px; align-items:start; }
+.tgx .tc-pr > span { font-family:var(--font-head); font-size:17px; color:var(--navy); padding-top:12px; }
+.tgx .tc-pr > div { display:flex; flex-direction:column; gap:6px; min-width:0; }

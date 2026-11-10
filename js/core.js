@@ -72,9 +72,11 @@ const DateK = {
    학생 화면(?test 없음)은 실제 날짜 그대로예요. */
 const TestMode = {
   on: false,
-  idx(c) { const s = Store.get('testDay', null); return (s && c && s.first === c.days[0]) ? s.idx : 0; },
-  day(c) { const i = TestMode.idx(c); return i < c.days.length ? c.days[i] : DateK.add(c.days[c.days.length - 1], 1); },
-  next() { const c = Store.get('challenge', null); if (!c) return; Store.set('testDay', { first: c.days[0], idx: Math.min(TestMode.idx(c) + 1, c.days.length) }); }
+  first(c) { return c.mode === 'free' ? c.start : c.days[0]; },
+  len(c) { return c.mode === 'free' ? c.weeks * 7 : c.days.length; },
+  idx(c) { const s = Store.get('testDay', null); return (s && c && s.first === TestMode.first(c)) ? s.idx : 0; },
+  day(c) { const i = TestMode.idx(c); if (c.mode === 'free') return DateK.add(c.start, i); return i < c.days.length ? c.days[i] : DateK.add(c.days[c.days.length - 1], 1); },
+  next() { const c = Store.get('challenge', null); if (!c) return; Store.set('testDay', { first: TestMode.first(c), idx: Math.min(TestMode.idx(c) + 1, TestMode.len(c)) }); }
 };
 
 /* ---------- 고른 수칙 (집 → 학교 → 밖, 각 장소 안에서는 고른 순서) ---------- */
@@ -92,38 +94,57 @@ function selectedRules() {
 const needCount = n => Math.max(1, n - 1);   // 하나까지는 못 지켜도 별 (3개→2 · 7개→6, 팀 점검 11/8)
 
 /* ---------- 챌린지 계산 ---------- */
+/* ---------- 챌린지 다이어리 (11/10) ----------
+   선생님 설정(Config.diary)에서 횟수 1~10 · 진행 방식 · 성공 메달 기준을 정하고, 시작할 때 그 값을 챌린지에 복사해 둬요.
+   row(이어서) = 시작 다음 날부터 학교 가는 날 count번 / free(자유롭게) = 오늘부터 weeks주 안에 아무 날 count번(하루 한 번)
+   log[날짜][수칙 id] = 'O' | 'X' — 하루에 하나라도 체크하면 그날은 '한 날', 지킨 수가 needCount 이상이면 별 */
+const DY_DEF = { count: 5, mode: 'row', weeks: 2, min: 3, promise: '', praiseMin: '', praiseDone: '', photo: true, tsign: 't' };
+const DyCfg = () => Object.assign({}, DY_DEF, Config.get().diary || {});
 const Challenge = {
   get() { return Store.get('challenge', null); },
-  create() {
-    const c = { days: DateK.nextSchoolDays(DateK.today(), 5), log: {}, stars: [] };
-    Store.set('challenge', c); return c;
+  plan(cfg = DyCfg(), from = DateK.today()) {
+    const n = Math.max(1, Math.min(10, cfg.count | 0)), c = { v: 2, mode: cfg.mode === 'free' ? 'free' : 'row', count: n, min: Math.max(1, Math.min(n, cfg.min | 0)),
+      weeks: Math.max(1, Math.min(4, cfg.weeks | 0)), promise: cfg.promise || '', praiseMin: cfg.praiseMin || '', praiseDone: cfg.praiseDone || '', tsign: cfg.tsign || 't', log: {}, stars: [], cele: {} };
+    if (c.mode === 'row') c.days = DateK.nextSchoolDays(from, n);
+    else { c.start = from; c.end = DateK.add(from, c.weeks * 7 - 1); c.days = []; }
+    return c;
   },
-  dayComplete(c, d, rules = selectedRules()) { const l = c.log[d] || {}; return rules.length > 0 && rules.every(r => ['O','X'].includes(l[r.id])); },
+  create(cfg) { const c = Challenge.plan(cfg); Store.set('challenge', c); return c; },
+  touched(c, d) { return !!d && Object.keys(c.log[d] || {}).length > 0; },
   oCount(c, d) { return Object.values(c.log[d] || {}).filter(v => v === 'O').length; },
+  isStar(c, d, rules = selectedRules()) { return Challenge.touched(c, d) && Challenge.oCount(c, d) >= needCount(rules.length); },
+  /* 칸 n개의 날짜 (자유롭게는 체크한 날만 차례로 채우고 나머지는 null) */
+  slots(c) {
+    if (c.mode !== 'free') return c.days.slice();
+    const done = Object.keys(c.log).filter(d => Challenge.touched(c, d)).sort();
+    return Array.from({ length: c.count }, (_, i) => done[i] || null);
+  },
+  todayIdx(c) {
+    const t = DateK.today(), sl = Challenge.slots(c);
+    if (c.mode !== 'free') return sl.indexOf(t);
+    const i = sl.indexOf(t); if (i >= 0) return i;
+    const used = sl.filter(Boolean).length;
+    return (t >= c.start && t <= c.end && used < c.count) ? used : -1;
+  },
+  starCount(c) { const rules = selectedRules(); return Challenge.slots(c).filter(d => Challenge.isStar(c, d, rules)).length; },
   status(c = Challenge.get()) {
     if (!c) return 'none';
-    const t = DateK.today(), first = c.days[0], last = c.days[c.days.length - 1];
-    if (t > last) return 'ended';
-    if (t === last && Challenge.dayComplete(c, last)) return 'ended';
-    if (t < first) return 'before';
-    if (c.days.includes(t)) return 'active';
-    return 'rest';
+    if (!c.v) return 'ended';   // 예전 5일 챌린지 기록
+    const t = DateK.today(), stars = Challenge.starCount(c);
+    if (stars >= c.count) return 'ended';
+    if (c.mode !== 'free') {
+      if (t > c.days[c.days.length - 1]) return 'ended';
+      if (t < c.days[0]) return 'before';
+      return c.days.includes(t) ? 'active' : 'rest';
+    }
+    if (t > c.end) return 'ended';
+    return Challenge.todayIdx(c) >= 0 ? 'active' : 'ended';
   },
-  /* 날짜 칸 상태: star / nostar / miss / today / future */
-  dayState(c, d) {
-    const t = DateK.today(), rules = selectedRules();
-    if (Challenge.dayComplete(c, d, rules)) return Challenge.oCount(c, d) >= needCount(rules.length) ? 'star' : 'nostar';
-    if (d < t) return 'miss';
-    if (d === t) return 'today';
-    return 'future';
-  },
-  recompute(c, d) {
-    const rules = selectedRules();
-    c.stars = c.stars.filter(x => x !== d);
-    if (Challenge.dayComplete(c, d, rules) && Challenge.oCount(c, d) >= needCount(rules.length)) c.stars.push(d);
-    c.stars.sort(); Store.set('challenge', c); return c;
-  },
-  nextCheckDay(c) { const t = DateK.today(); return c.days.find(d => d > t) || null; }
+  nextCheckDay(c) { const t = DateK.today(); return c.mode === 'free' ? null : (c.days.find(d => d > t) || null); },
+  /* 예전 화면·선생님 미리 보기와 맞추는 이름 */
+  dayComplete(c, d) { return Challenge.touched(c, d); },
+  dayState(c, d) { if (Challenge.touched(c, d)) return Challenge.isStar(c, d) ? 'star' : 'nostar'; const t = DateK.today(); return d < t ? 'miss' : d === t ? 'today' : 'future'; },
+  recompute(c) { Store.set('challenge', c); return c; }
 };
 
 /* ---------- 화면 이동 + 뒤로 가기 ---------- */

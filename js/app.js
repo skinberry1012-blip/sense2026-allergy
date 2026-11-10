@@ -22,7 +22,7 @@ Router.screens.S39 = (app) => {
   onTap(start, () => {
     playSfx('next');
     if (!Store.hasRecord()) return Router.go('S40');
-    const back = () => Router.go(Challenge.status() === 'ended' ? 'S47' : 'S46');
+    const back = () => Router.go('S46');
     const m = Modal.open(`
       <div class="pop-head orange">⚠ 새 약속 카드를 만들까요?</div>
       <p class="pop-body">새로 만들면 지금까지의 <b class="red">약속 카드와 챌린지 기록이 지워져요.</b></p>
@@ -293,7 +293,6 @@ Router.screens.S44 = (app) => {
     catch (e) { toast(e && e.name === 'AbortError' ? '카드 저장이 취소됐어요. 다시 눌러 주세요.' : '저장하지 못했어요. 다시 눌러 주세요.', 2500); return; }
     st.step = 4; playSfx('save'); render();
     Store.set('design', st.design); Store.set('buddy', st.buddy);
-    if (!Challenge.get()) Challenge.create();
     Router.go('S46', { install: !isStandalone() });
   });
   render();
@@ -352,281 +351,7 @@ function openInstallModal() {
   onTap($('#iX', m), () => closeInstall(true));
 }
 
-/* ===================== S46 일일 실천 체크 (S47 구도 + 체크 팝업) ===================== */
-const isKept = v => v === 'O';
-const markOf = v => v === 'O' ? ['o','⭕'] : v === 'X' ? ['x','❌'] : ['n',''];
-Router.screens.S46 = (app, p) => {
-  const c = Challenge.get();
-  if (!c) return Router.go('S39', {}, { replace: true });
-  const status = Challenge.status(c);
-  if (status === 'ended') return Router.go('S47', {}, { replace: true });
-  const rules = selectedRules(), t = DateK.today(), need = needCount(rules.length), name = Store.get('name', '');
-  const locked = status !== 'active';
-  app.innerHTML = `
-  <div class="sc outdoor s47 s46n">
-    <h1 class="title-banner sm s47-tb">오늘 <em>${esc(name)}${josaNeun(name)}</em> 몇 개나 지켰을까?</h1>
-    <p class="sub-pill s47-sub">${locked ? '오늘은 체크하지 않는 날이에요' : '👆 약속 카드를 눌러 오늘 실천을 체크해요!'}</p>
-    <div class="bubble sm s46-bubble">내가 정한 약속을<br>오늘도 잘 지켜볼까요?</div>
-    <aside class="s47-left"><img class="s47-cat" src="${CAT('pinky_03')}" data-anim="staff_guide" alt=""><div class="selbox" id="todaybox"></div></aside>
-    <section class="s47-center">
-      <div class="days" id="days"></div>
-      <p class="legend"><span>⭐ 별 받음</span><span class="gray">⭐ 했지만 별 없음</span><span>– 체크 안 함</span><span>빈칸 아직</span></p>
-      <div class="list-card" id="list"></div>
-    </section>
-    <aside class="s47-side"><div class="statbox" id="stats"></div><div class="resultbox" id="result"></div></aside>
-    <div class="s46n-foot">
-      <div class="resbar"><button class="btn pink big" id="res"></button><p class="hint" id="resHint"></p></div>
-    </div>
-    <p class="footer-line s46n-line">🔒 내 기록은 이 기기에만 저장돼요 <span class="dot">·</span> <button class="link" id="restart">↺ 처음부터 다시 하기</button></p>
-  </div>`;
-
-  const render = () => {
-    const cc = Challenge.get(), log = cc.log[t] || {};
-    $('#days').innerHTML = cc.days.map(d => {
-      const s = Challenge.dayState(cc, d), mk = { star: '⭐', nostar: '⭐', miss: '–' }[s] || '';
-      return `<div class="day ${s} ${d === t ? 'is-today sel' : ''}"><div class="mark">${mk}</div>${DateK.md(d)}<br>${DateK.wd(d)}요일</div>`;
-    }).join('');
-    const states = cc.days.map(d => Challenge.dayState(cc, d));
-    const done = states.filter(s => s === 'star' || s === 'nostar').length, stars = states.filter(s => s === 'star').length;
-    $('#stats').innerHTML = `<h3>📋 나의 챌린지 현황</h3><p>✅ 완료한 날짜 <b>${done}<small> / 5일</small></b></p><p>⭐ 별 받은 날짜 <b>${stars}<small> / 5일</small></b></p>`;
-    const o = rules.filter(r => isKept(log[r.id])).length, answered = rules.filter(r => log[r.id]).length, all = answered === rules.length;
-    const ts = Challenge.dayState(cc, t), tm = { star: '⭐', nostar: '⭐', today: '📋' }[ts] || '🌙';
-    $('#todaybox').innerHTML = `<h3>오늘</h3><p class="seld">${DateK.md(t)}<br>${DateK.wd(t)}요일</p><div class="selmark ${ts}">${tm}</div>`;
-    if (locked) {
-      const next = Challenge.nextCheckDay(cc);
-      const msg = status === 'before' ? `<b>내일부터 시작해요!</b>첫 체크는 <em class="inl">${DateK.short(cc.days[0])}</em>에 만나요.`
-        : `<b>오늘은 쉬는 날이에요</b>주말과 공휴일에는 체크하지 않아요.<br>다음 체크는 <em class="inl">${next ? DateK.short(next) : '-'}</em>에 만나요!`;
-      $('#list').innerHTML = `<h2>📋 오늘 실천한 약속</h2><div class="empty">${msg}</div>`;
-      $('#result').innerHTML = `<h3>오늘의 실천 결과</h3><div class="big dash">🌙</div><span class="msg soft">쉬는 날</span>`;
-      $('#res').innerHTML = '📊 나의 <em>챌린지 기록</em> 보기 ›'; $('#res').disabled = false;
-      $('#resHint').textContent = '지난 기록은 결과 화면에서 날짜를 눌러 볼 수 있어요';
-      return;
-    }
-    $('#list').innerHTML = `<h2>📋 오늘 실천한 약속 <span class="ck-btn">✏️ ${answered ? '체크 고치기' : '눌러서 체크하기'}</span></h2><div class="scroll">` +
-      rules.map(r => { const [k, m] = markOf(log[r.id]); return `<div class="rule-res"><p class="t">${r.mine ? '<span class="mine">나만의</span>' : ''}${esc(r.text)}</p><span class="res ${k}">${m}</span></div>`; }).join('') + '</div>';
-    $('#list').classList.add('tapcard');
-    $('#result').innerHTML = all
-      ? `<h3>오늘의 실천 결과</h3><p class="n"><b>${o}</b> / ${rules.length}개 지켰어요!</p><div class="big ${o >= need ? '' : 'gray'}">⭐</div><span class="msg ${o >= need ? '' : 'soft'}">${o >= need ? '잘 실천했어요!' : '다음엔 조금 더!'}</span>`
-      : `<h3>오늘의 실천 결과</h3><p class="goal-t">약속 ${rules.length}개 중 <b>${need}개</b> 지키면 ⭐</p><p class="now">지금 ⭕ ${o}개 · 남은 약속 ${rules.length - answered}개</p><div class="big gray">⭐</div><span class="msg soft">체크 중</span>`;
-    $('#res').disabled = !all; $('#res').innerHTML = '📊 오늘의 <em>실천 결과</em> 보기 ›';
-    $('#resHint').textContent = all ? '오늘 약속을 모두 체크했어요!' : `약속을 모두 체크하면 결과를 볼 수 있어요 (남은 약속 ${rules.length - answered}개)`;
-  };
-
-  const openCheck = () => {
-    const cc = Challenge.get(), draft = { ...(cc.log[t] || {}) };
-    const row = r => { const s = r.type === 'situ' && !r.mine, v = draft[r.id];
-      return `<div class="ck-row"><p class="t">${r.mine ? '<span class="mine">나만의</span>' : ''}${esc(r.text)}${s ? `<button class="help" data-help="${r.id}" aria-label="도움말 보기" aria-expanded="false">?</button>` : ''}</p>
-      <div class="ox"><button class="o ${v === 'O' ? 'on' : ''}" data-id="${r.id}" data-v="O"><i>⭕</i>지켰어요</button><button class="x ${v === 'X' ? 'on' : ''}" data-id="${r.id}" data-v="X"><i>❌</i>못 지켰어요</button></div></div>`; };
-    const w = Modal.open(`<div class="ck-head"><img class="ck-cat" src="${CAT('pinky_02')}" data-anim="staff_heart" alt=""><h2>📋 오늘 실천한 <em>약속</em></h2><button class="ck-x" id="ckX" aria-label="닫기">✕</button></div>
-      <p class="ck-sub">약속을 하나씩 읽고 오늘 실천한 대로 눌러요 <span id="ckN"></span></p>
-      <div class="ck-list" id="ckList">${rules.map(row).join('')}</div>
-      <div class="ck-foot"><button class="btn white" id="ckClose">취소</button><button class="btn pink big" id="ckSave">✔ 저장하기</button></div>`, { cls: 'check-dim' });
-    const upd = () => { $('#ckN', w).textContent = `${rules.filter(r => draft[r.id]).length} / ${rules.length} 체크`; };
-    const tip = document.createElement('div'); tip.className = 'help-tip'; tip.setAttribute('role', 'tooltip');
-    tip.innerHTML = '<button class="tip-x" aria-label="닫기">✕</button>💡 오늘 이런 상황이 없었나요?<br>그런 일이 생기면 꼭 하겠다고 다짐했다면<br><b>[⭕ 지켰어요]</b>를 눌러요.';
-    let openHelp = null;
-    const closeTip = () => { if (!openHelp) return; const hb = $(`[data-help="${openHelp}"]`, w); if (hb) { hb.classList.remove('on'); hb.setAttribute('aria-expanded', 'false'); } tip.remove(); openHelp = null; };
-    const showTip = hb => {
-      closeTip(); openHelp = hb.dataset.help; hb.classList.add('on'); hb.setAttribute('aria-expanded', 'true');
-      const modal = $('.modal', w); modal.appendChild(tip);
-      const mr = modal.getBoundingClientRect(), br = hb.getBoundingClientRect(), sc = mr.width / modal.offsetWidth || 1;
-      const x = (br.left + br.width / 2 - mr.left) / sc, y = (br.top - mr.top) / sc;
-      tip.style.left = Math.max(16, x - 260) + 'px'; tip.style.top = Math.max(10, y - tip.offsetHeight - 14) + 'px';
-      tip.style.setProperty('--tail', (x - Math.max(16, x - 260)) + 'px');
-    };
-    w.addEventListener('click', e => {
-      const hb = e.target.closest('[data-help]');
-      if (hb) { e.stopPropagation(); if (openHelp === hb.dataset.help) closeTip(); else { playSfx('tap'); showTip(hb); } return; }
-      if (e.target.closest('.tip-x') || !e.target.closest('.help-tip')) closeTip();
-      const b = e.target.closest('[data-v]'); if (!b) return;
-      if (draft[b.dataset.id] !== b.dataset.v) { playSfx(b.dataset.v === 'O' ? 'check' : 'uncheck'); replay(b, 'pop'); if (b.dataset.v === 'O') replay($('.ck-cat', w), 'hop'); }
-      draft[b.dataset.id] = b.dataset.v; b.parentNode.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); upd();
-    });
-    $('#ckList', w).addEventListener('scroll', closeTip);
-    onTap($('#ckX', w), () => { playSfx('tap'); Modal.close(); });
-    onTap($('#ckClose', w), () => { playSfx('tap'); Modal.close(); });
-    onTap($('#ckSave', w), () => { const c2 = Challenge.get(); c2.log[t] = draft; Store.set('challenge', c2); Challenge.recompute(c2, t); Modal.close(); playSfx('save'); render(); $$('#list .res').forEach((r, i) => { r.style.animationDelay = i * .1 + 's'; replay(r, 'pop'); }); toast('저장했어요!'); if (TestMode.on) TestBar.update(); });
-    upd();
-  };
-  $('#list').addEventListener('click', () => { if (!locked) openCheck(); });
-  onTap($('#res'), () => { playSfx('next'); Router.go('S47', { sel: locked ? null : t }); });
-  onTap($('#del'), () => openDeleteModal());
-  onTap($('#restart'), () => Router.go('S39'));
-  render();
-  if (p.check && !locked) openCheck();
-  if (p.install && !isStandalone()) openInstallModal();
-};
-
-/* ===================== S47 5일 실천 챌린지 결과 ===================== */
-Router.screens.S47 = (app, p) => {
-  const c = Challenge.get();
-  if (!c) return Router.go('S39', {}, { replace: true });
-  const status = Challenge.status(c), ended = status === 'ended', t = DateK.today();
-  const rules = selectedRules(), need = needCount(rules.length);
-  let sel = p.sel && c.days.includes(p.sel) ? p.sel : ended ? c.days[4] : (c.days.includes(t) ? t : ([...c.days].reverse().find(d => d < t) || c.days[0]));
-  app.innerHTML = `
-  <div class="sc outdoor s47">
-    <h1 class="title-banner sm s47-tb">📊 5일 실천 <em>챌린지</em> 결과</h1>
-    <p class="sub-pill s47-sub">나의 5일 실천 기록을 확인해요!</p>
-    <aside class="s47-left">
-      <img class="s47-cat" src="${CAT('pinky_03')}" data-anim="staff_guide" alt="">
-      <div class="selbox" id="selbox"></div>
-    </aside>
-    <section class="s47-center">
-      <div class="days" id="days"></div>
-      <p class="legend"><span>⭐ 별 받음</span><span class="gray">⭐ 했지만 별 없음</span><span>– 체크 안 함</span><span>빈칸 아직</span></p>
-      <div class="list-card" id="list"></div>
-    </section>
-    <aside class="s47-side"><div class="statbox" id="stats"></div><div class="resultbox" id="result"></div></aside>
-    <nav class="s47-foot ${ended ? 'ended' : ''}">
-      ${ended ? '' : '<button class="btn white big" id="back">‹ 오늘의 체크로 돌아가기</button>'}
-      <button class="btn pink big" id="final" ${ended ? '' : 'disabled'}>${ended ? '🏆 5일 챌린지 <em>최종 결과</em> 보기 ›' : '🔒 5일 챌린지 최종 결과 보기'}</button>
-    </nav>
-    <p class="hint s47-hint">${ended ? '5일 챌린지가 끝났어요! 최종 결과를 확인해 보세요.' : `최종 결과는 5일 챌린지가 끝나면 볼 수 있어요 (마지막 날: ${DateK.short(c.days[4])})`}</p>
-  </div>`;
-  const render = () => {
-    $('#days').innerHTML = c.days.map(d => {
-      const s = Challenge.dayState(c, d), mk = { star: '⭐', nostar: '⭐', miss: '–' }[s] || '';
-      return `<button class="day ${s} ${d === t ? 'is-today' : ''} ${d === sel ? 'sel' : ''}" data-d="${d}" ${s === 'future' ? 'disabled' : ''}><div class="mark">${mk}</div>${DateK.md(d)}<br>${DateK.wd(d)}요일</button>`;
-    }).join('');
-    const states = c.days.map(d => Challenge.dayState(c, d));
-    const done = states.filter(s => s === 'star' || s === 'nostar').length, stars = states.filter(s => s === 'star').length;
-    $('#stats').innerHTML = `<h3>📋 나의 챌린지 현황</h3><p>✅ 완료한 날짜 <b>${done}<small> / 5일</small></b></p><p>⭐ 별 받은 날짜 <b>${stars}<small> / 5일</small></b></p>`;
-    const log = c.log[sel] || {}, label = DateK.short(sel), isT = sel === t;
-    const ss = Challenge.dayState(c, sel);
-    const mk = { star: '⭐', nostar: '⭐', miss: '–', today: '📋', future: '🕒' }[ss] || '';
-    $('#selbox').innerHTML = `<h3>선택한 날짜</h3><p class="seld">${DateK.md(sel)}<br>${DateK.wd(sel)}요일</p><div class="selmark ${ss}">${mk}</div>`;
-    const complete = Challenge.dayComplete(c, sel, rules);
-    if (complete) {
-      const o = rules.filter(r => isKept(log[r.id])).length, ok = o >= need;
-      $('#list').innerHTML = `<h2>${isT ? '오늘' : label} 실천한 약속 <span>${label}</span></h2><div class="scroll">` +
-        rules.map(r => `<div class="rule-res"><p class="t">${r.mine ? '<span class="mine">나만의</span>' : ''}${esc(r.text)}</p><span class="res ${markOf(log[r.id])[0]}">${markOf(log[r.id])[1]}</span></div>`).join('') + '</div>';
-      $('#result').innerHTML = `<h3>${isT ? '오늘의' : label} 실천 결과</h3><p class="n"><b>${o}</b> / ${rules.length}개 지켰어요!</p><div class="big ${ok ? '' : 'gray'}">⭐</div><span class="msg ${ok ? '' : 'soft'}">${ok ? '잘 실천했어요!' : '다음엔 조금 더!'}</span><p class="need">${rules.length}개 중 ${need}개 지키면 별</p>`;
-    } else if (sel > t) {
-      $('#list').innerHTML = `<h2>${label} 실천한 약속 <span>${label}</span></h2><div class="empty"><b>아직 시작 전이에요</b><p>이날이 되면 약속을 체크할 수 있어요.<br>첫 체크는 <em class="inl">${DateK.short(c.days[0])}</em>에 만나요!</p></div>`;
-      $('#result').innerHTML = `<h3>${label} 실천 결과</h3><div class="big dash">🕒</div><span class="msg soft">아직이에요</span>`;
-    } else if (isT) {
-      $('#list').innerHTML = `<h2>오늘 실천한 약속 <span>${label}</span></h2><div class="empty"><b>아직 체크 중이에요</b>오늘의 체크로 돌아가 약속을 모두 체크해 주세요.</div>`;
-      $('#result').innerHTML = `<h3>오늘의 실천 결과</h3><div class="big gray">⭐</div><span class="msg soft">체크 중</span>`;
-    } else {
-      $('#list').innerHTML = `<h2>${label} 실천한 약속 <span>${label}</span></h2><div class="empty"><b>이날은 체크하지 않았어요</b>지난 날짜는 다시 체크할 수 없어요.<br>오늘의 약속을 꼭 체크해 주세요!</div>`;
-      $('#result').innerHTML = `<h3>${label} 실천 결과</h3><div class="big dash">–</div><span class="msg soft">기록 없음</span>`;
-    }
-  };
-  $('#days').addEventListener('click', e => { const b = e.target.closest('[data-d]'); if (!b || b.disabled) return; sel = b.dataset.d; playSfx('tap'); render(); });
-  onTap($('#back'), () => { playSfx('tap'); Router.go('S46'); });
-  onTap($('#final'), () => { if (ended) { playSfx('next'); Router.go('S48'); } });
-  render();
-  /* 오늘 별을 처음 받았으면 한 번만 별 연출 + 소리 (promiseCard.starShown) */
-  const ts = Challenge.dayState(c, t), shown = Store.get('starShown', []);
-  if (ts === 'star' && !shown.includes(t)) {
-    Store.set('starShown', [...shown, t]); playSfx('star');
-    [$(`#days [data-d="${t}"] .mark`), $('#result .big')].forEach(el => replay(el, 'star-pop'));
-  } else if (ts === 'nostar') replay($('.s47-cat'), 'nod');
-};
-
-/* ===================== S48 5일 챌린지 완료 ===================== */
-let savedCompleteThisSession = false;
-Router.screens.S48 = (app) => {
-  const c = Challenge.get();
-  if (!c) return Router.go('S39', {}, { replace: true });
-  if (Challenge.status(c) !== 'ended') return Router.go('S47', {}, { replace: true });
-  const name = Store.get('name', '');
-  const states = c.days.map(d => Challenge.dayState(c, d)), stars = states.filter(s => s === 'star').length;
-  const line = stars === 5 ? '⭐ 별 5개! <b>완벽해요!</b>' : stars >= 3 ? `⭐ 별 ${stars}개! <b>잘했어요!</b>` : `별 ${stars}개 · <b>다음에 다시 도전해요!</b>`;
-  const first = !sessionStorage.getItem('s48Shown');
-  app.innerHTML = `
-  <div class="sc outdoor s48">
-    <h2 class="title-banner sm s48-tb">🏆 5일 챌린지 <em>완료!</em></h2>
-    <p class="sub-pill s48-sub">5일 동안 나의 예방 <em class="pk">약속</em>을 실천했어요!</p>
-    <img class="s48-cat" src="assets/char/staff_cheer_m.png" alt="" data-anim="staff_cheer">
-    <div class="days s48-days">${c.days.map((d, i) => `<div class="day ${states[i]}">${DateK.md(d)}<br>${DateK.wd(d)}요일<div class="mark ${states[i] === 'star' && first ? 'star-pop' : ''}" style="animation-delay:${i * .15}s">${{ star: '⭐', nostar: '⭐', miss: '–' }[states[i]] || ''}</div></div>`).join('')}</div>
-    <aside class="s48-box"><h3>⭐ 나의 챌린지 결과 ⭐</h3><p class="starn"><span class="bigstar">⭐</span><span>별 획득<br><b>${stars}</b> <small>/ 5일</small></span></p></aside>
-    <div class="ribbon ${first ? 'pop' : ''}">축하합니다! 5일 챌린지 완료!</div>
-    <p class="ribbon-line">${line}</p>
-    <div class="s48-btns ${stars >= 3 ? '' : 'one'}">
-      <button class="btn white big" id="del">↻ 새로 도전하기</button>
-      ${stars >= 3 ? '<button class="btn blue big pulse" id="medal">🏅 챌린지 성공 메달 받기 ›</button>' : ''}
-    </div>
-    <p class="warn">${stars >= 3 ? '새로 도전하면 지금 기록은 지워져요. 메달을 먼저 저장해 두세요!' : '별 3일 이상이면 메달을 받을 수 있어요. 다시 도전해 볼까요?'}</p>
-  </div>`;
-  if (first) { sessionStorage.setItem('s48Shown', '1'); playSfx('fanfare'); confetti(); }
-  onTap($('#medal'), () => openMedalModal({ stars }));
-  onTap($('#del'), () => { playSfx('tap'); openDeleteModal(); });
-};
-
-/* ===================== S48-2 챌린지 성공 메달 받기 (S48 위 팝업) ===================== */
-function openMedalModal({ stars }) {
-  const cardNo = Store.get('cardNo', ''), board = Config.get().board;
-  let color = 'coral', savedColor = null;
-  const m = Modal.open(`
-    <h2 class="md-title">🏅 5일 챌린지 성공 메달 받기!</h2>
-    <button class="md-x" id="mdX" aria-label="닫기">✕</button>
-    <div class="md-talk"><img src="assets/char/staff_cheer_m.png" alt="" data-anim="staff_cheer"><p>5일 동안 약속을 잘 지킨 나에게 주는 메달이에요.<br>마음에 드는 색을 골라 저장해 보세요!</p></div>
-    <div class="md-list" id="mdList">${Object.keys(MEDAL_COLORS).map(k => `<button class="md-card ${k === color ? 'on' : ''}" data-k="${k}" aria-label="${MEDAL_COLORS[k].label} 메달"><span class="md-chk"></span><canvas data-c="${k}"></canvas></button>`).join('')}</div>
-    <button class="btn pink big md-save" id="mdSave">⬇ 선택한 메달 이미지로 저장하기 ›</button>
-    <button class="link md-later" id="mdLater">다음에 저장할래요</button>`, { cls: 'medal-dim' });
-  $$('canvas[data-c]', m).forEach(cv => drawMedal(cv, { color: cv.dataset.c, stars, cardNo }));
-  const paintBtn = () => {
-    const b = $('#mdSave', m);
-    if (savedColor === color) b.innerHTML = board ? '📌 선생님 게시판에 올리기 ›' : '✔ 저장 완료! 다른 색도 저장하기';
-    else b.innerHTML = '⬇ 선택한 메달 이미지로 저장하기 ›';
-    b.classList.toggle('green', savedColor === color && !!board);
-  };
-  $('#mdList', m).addEventListener('click', e => {
-    const b = e.target.closest('[data-k]'); if (!b || b.dataset.k === color) return;
-    color = b.dataset.k; playSfx('tab');
-    $$('.md-card', m).forEach(x => x.classList.toggle('on', x === b)); replay(b, 'pop'); paintBtn();
-  });
-  const save = async () => {
-    const cv = document.createElement('canvas');
-    await drawMedal(cv, { color, stars, cardNo });
-    try {
-      await saveCanvasPNG(cv, `challenge-medal_${cardNo}.png`);
-      savedColor = color; playSfx('save'); replay($(`.md-card[data-k="${color}"]`, m), 'shine-once');
-      toast('메달을 저장했어요! 기록을 지워도 이 이미지는 남아요.', 2200); paintBtn();
-    } catch (e) { toast(e && e.name === 'AbortError' ? '저장이 취소됐어요.' : '저장하지 못했어요. 다시 눌러 주세요.'); }
-  };
-  onTap($('#mdSave', m), async () => {
-    if (savedColor === color && board) { playSfx('next'); return window.open(board, '_blank', 'noopener'); }
-    if (savedColor === color && !board) { savedColor = null; paintBtn(); }
-    await save();
-  });
-  const close = () => { playSfx('tap'); Modal.close(); };
-  onTap($('#mdX', m), close); onTap($('#mdLater', m), close);
-  m.addEventListener('click', e => { if (e.target === m) close(); });
-}
-
-/* 색종이 (S48 진입 때 한 번) */
-function confetti() {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const box = document.createElement('div'); box.className = 'confetti';
-  const cols = ['#E05429', '#ffd43b', '#4fa0ff', '#4fcf6a', '#899AE1'];
-  for (let i = 0; i < 36; i++) { const s = document.createElement('i'); s.style.left = Math.random() * 100 + '%'; s.style.background = cols[i % 5]; s.style.animationDelay = Math.random() * .6 + 's'; s.style.transform = `rotate(${Math.random() * 360}deg)`; box.appendChild(s); }
-  $('#app').appendChild(box); setTimeout(() => box.remove(), 3200);
-}
-
-/* ===================== S48-2 기록 삭제 확인 팝업 (S46·S48 공통) ===================== */
-function openDeleteModal() {
-  const m = Modal.open(`
-    <div class="pop-head redbar">↻ 새로 도전할까요?</div>
-    <div class="del-grid">
-      <div class="del-art"><img src="assets/char/staff_hello_m.png" alt="" data-anim="staff_hello"></div>
-      <div>
-        <p class="pop-box pink">지금까지의 <strong>약속 카드와 5일 기록이 지워지고</strong> 처음부터 다시 시작해요.</p>
-        <p class="pop-box yellow">이미 저장한 <strong>카드·메달 이미지</strong>는 지워지지 않아요.</p>
-      </div>
-    </div>
-    <div class="pop-btns"><button class="btn blue" data-autofocus id="dNo">아니오, 그대로 둘래요</button><button class="btn red" id="dYes">네, 새로 도전할래요</button></div>`,
-    { cls: 'delete', onBack: () => {}, sfx: 'full' });
-  onTap($('#dNo', m), () => { playSfx('tap'); Modal.close(); });
-  onTap($('#dYes', m), () => {
-    $('#dYes', m).disabled = true; playSfx('delete');
-    Store.clearAll(); signatureImg = null; savedCompleteThisSession = false;
-    Modal.close();
-    Router.go('S39', {}, { replace: true });   // 새로 도전하기 → 약속 카드 만들기부터 (팀 점검 11/8)
-  });
-}
+/* S46~S48 (5일 챌린지 체크·결과·메달)은 챌린지 다이어리(js/diary.js)로 바뀌었어요 (11/10) */
 
 /* ===================== S49 선생님 설정 (탭 2개 · 큰 미리 보기) — 2026-11-09 새 구도 =====================
    참고: 확정 그림 모음 16쪽 시안 (한 줄 제목 · 접는 탭 · 번호 붙은 칸)
@@ -637,11 +362,11 @@ const DEMO_BASE = 'https://skinberry1012-blip.github.io/sense2026-allergy/';   /
 /* 미리 보기에서 열어 볼 화면 (연구소 · 약속 카드) */
 const PREVIEW_STEPS = {
   lab:  [['S00', '처음'], ['S01', '이야기'], ['S05', '활동 고르기'], ['S06', '집 3-1'], ['S15', '급식실 3-2'], ['S24', '운동장 3-3'], ['S36-3', '증상 카드'], ['S37', '대처 방법'], ['S38A', '기억 체크']],
-  card: [['S39', '시작'], ['S40', '이름'], ['RULES', '약속 고르기'], ['S44', '카드 꾸미기'], ['S46', '5일 체크'], ['S47', '결과'], ['S48', '완료']]
+  card: [['S39', '시작'], ['S40', '이름'], ['RULES', '약속 고르기'], ['S44', '카드 꾸미기'], ['S46', '다이어리'], ['S47', '성공 메달'], ['S48', '완성']]
 };
 const T_FLOW = {
-  class: ['연구소 · 알레르기 원인 12가지 찾기', '증상 카드 · 대처 방법 익히기', '나만의 예방 약속 카드 만들기', '5일 실천 체크 → 메달 받기'],
-  event: ['나만의 예방 약속 카드 만들기', '5일 실천 체크 → 메달 받기']
+  class: ['연구소 · 알레르기 원인 12가지 찾기', '증상 카드 · 대처 방법 익히기', '나만의 예방 약속 카드 만들기', '챌린지 다이어리 꾸미기 → 매일 체크 → 메달'],
+  event: ['나만의 예방 약속 카드 만들기', '챌린지 다이어리 꾸미기 → 매일 체크 → 메달']
 };
 Router.screens.T49 = (app, p) => {
   const returnTo = p.returnTo || 'S00';
@@ -650,7 +375,11 @@ Router.screens.T49 = (app, p) => {
   const local = location.protocol === 'file:' || ['localhost', '127.0.0.1', ''].includes(location.hostname);
   const base = local ? DEMO_BASE : location.origin + location.pathname;
   const okBoard = () => d.board && isHttps(d.board);
-  const query = () => '?mode=' + (d.mode === 'event' ? 'event' : 'class') + (okBoard() ? '&board=' + encodeURIComponent(d.board) : '') + (d.sound === 'off' ? '&sound=off' : '') + (d.bgm === 'off' ? '&bgm=off' : '');
+  const dy = () => Object.assign({}, DY_DEF, d.dy || {});
+  /* 챌린지 다이어리 설정도 학생 링크에 담아요: dy=횟수.방식.주.성공기준.사진.확인란 · 문구는 dp(약속) dm(성공 칭찬) dd(완성 칭찬) */
+  const dyQuery = () => { const y = dy(); return `&dy=${y.count}.${y.mode === 'free' ? 'f' : 'r'}.${y.weeks}.${y.min}.${y.photo === false ? 0 : 1}.${y.tsign === 'n' ? 'n' : 't'}`
+    + (y.promise.trim() ? '&dp=' + encodeURIComponent(y.promise.trim()) : '') + (y.praiseMin.trim() ? '&dm=' + encodeURIComponent(y.praiseMin.trim()) : '') + (y.praiseDone.trim() ? '&dd=' + encodeURIComponent(y.praiseDone.trim()) : ''); };
+  const query = () => '?mode=' + (d.mode === 'event' ? 'event' : 'class') + (okBoard() ? '&board=' + encodeURIComponent(d.board) : '') + (d.sound === 'off' ? '&sound=off' : '') + (d.bgm === 'off' ? '&bgm=off' : '') + dyQuery();
   const urlOf = () => base + query();
   const modeName = () => d.mode === 'event' ? '행사용' : '수업용';
   app.innerHTML = `<div class="sc tgx">
@@ -658,7 +387,7 @@ Router.screens.T49 = (app, p) => {
       <h1 class="tc-title">냥박사의 알레르기 연구소 <span>선생님 설정</span></h1>
       <p class="tc-sub">학생에게 QR을 나눠 주기 전에 정해 주세요</p>
     </header>
-    <nav class="tc-tabs" role="tablist"><button class="tc-tab" data-t="1" role="tab"><b>01</b> 기본 설정</button><button class="tc-tab" data-t="2" role="tab"><b>02</b> QR 코드와 공유</button></nav>
+    <nav class="tc-tabs" role="tablist"><button class="tc-tab" data-t="1" role="tab"><b>01</b> 기본 설정</button><button class="tc-tab" data-t="2" role="tab"><b>02</b> 챌린지 다이어리</button><button class="tc-tab" data-t="3" role="tab"><b>03</b> QR 코드와 공유</button></nav>
     <section class="tc-panel" id="panel"></section>
   </div>`;
   const viewName = () => step[view];
@@ -671,6 +400,7 @@ Router.screens.T49 = (app, p) => {
   const seg = (k, opts, cur) => `<span class="tc-seg" data-k="${k}">${opts.map(([v, n]) => `<button data-v="${v}" class="${v === cur ? 'on' : ''}">${n}</button>`).join('')}</span>`;
   const paintSeg = (k, v) => $$(`.tc-seg[data-k="${k}"] button`).forEach(x => x.classList.toggle('on', x.dataset.v === v));
   const drawPrev = () => {
+    if (tab === 2) { $('#pv').src = `index.html${query()}&preview=1&view=${step.dy || 'S46'}`; fitFrame(); return; }
     if (tab !== 1) return;
     if (d.mode === 'event' && view === 'lab') view = 'card';
     paintSeg('view', view);
@@ -722,11 +452,11 @@ Router.screens.T49 = (app, p) => {
         <section class="tc-sec">
           <h2 class="tc-h"><i>3</i>결과 공유 게시판 <em>선택</em></h2>
           <label class="tc-url" id="uf"><span class="sr">게시판 주소</span><input type="url" inputmode="url" id="board" placeholder="예: https://padlet.com/…" value="${esc(d.board)}"></label>
-          <p class="tc-help" id="err">5일 챌린지 메달 이미지를 올릴 패들렛·띵커벨 보드 주소예요.</p>
+          <p class="tc-help" id="err">챌린지 다이어리 이미지를 올릴 패들렛·띵커벨 보드 주소예요.</p>
         </section>
         <section class="tc-device">
           <button class="tc-btn sm danger" id="wipe">이 기기 기록 지우기</button>
-          <p>학생 기록(이름·약속·5일 체크)은 <b>이 기기에만</b> 저장되고 서버로 보내지 않아요. 공용 기기는 수업 뒤 지워 주세요.</p>
+          <p>학생 기록(이름·약속·다이어리 체크·사진)은 <b>이 기기에만</b> 저장되고 서버로 보내지 않아요. 공용 기기는 수업 뒤 지워 주세요.</p>
         </section>
       </div>
       <div class="tc-col tc-pv">
@@ -736,14 +466,14 @@ Router.screens.T49 = (app, p) => {
         <div class="tc-steps" id="steps" aria-label="열어 볼 화면"></div>
         <div class="tc-frame" id="frame"><iframe id="pv" title="학생 화면 미리 보기"></iframe></div>
         <p class="tc-help" id="pvcap"></p>
-        <div class="tc-foot"><button class="tc-btn" id="reset">기본값으로</button><button class="tc-btn pri" id="toNext">다음 · QR 만들기 ›</button></div>
+        <div class="tc-foot"><button class="tc-btn" id="reset">기본값으로</button><button class="tc-btn pri" id="toNext">다음 · 챌린지 다이어리 ›</button></div>
       </div>`;
       $('#modes').addEventListener('click', e => { const b = e.target.closest('[data-m]'); if (!b) return; d.mode = b.dataset.m; Draft.set(d); view = d.mode === 'event' ? 'card' : 'lab';
         $$('#modes button').forEach(x => x.classList.toggle('on', x === b)); drawPrev(); });
       $('#board').addEventListener('change', e => { d.board = e.target.value.trim(); Draft.set(d);
         const bad = d.board && !isHttps(d.board); $('#uf').classList.toggle('bad', !!bad);
         $('#err').classList.toggle('bad', !!bad);
-        $('#err').textContent = bad ? 'https로 시작하는 주소를 넣어 주세요.' : '5일 챌린지 메달 이미지를 올릴 패들렛·띵커벨 보드 주소예요.'; });
+        $('#err').textContent = bad ? 'https로 시작하는 주소를 넣어 주세요.' : '챌린지 다이어리 이미지를 올릴 패들렛·띵커벨 보드 주소예요.'; });
       $('#steps').addEventListener('click', e => { const b = e.target.closest('[data-s]'); if (!b) return; step[view] = b.dataset.s; drawPrev(); });
       $$('.tc-seg').forEach(g => g.addEventListener('click', e => {
         const x = e.target.closest('[data-v]'); if (!x || x.disabled) return; const k = g.dataset.k;
@@ -753,13 +483,52 @@ Router.screens.T49 = (app, p) => {
       }));
       onTap($('#wipe'), () => {
         const m = Modal.open(`<div class="pop-head redbar">이 기기의 기록을 모두 지울까요?</div>
-          <p class="pop-body">이 기기에 저장된 <b class="red">약속 카드·5일 기록·연구소 진행</b>이 모두 지워져요.<br>다음 학생이 처음부터 시작할 수 있어요.</p>
+          <p class="pop-body">이 기기에 저장된 <b class="red">약속 카드·다이어리(사진 포함)·연구소 진행</b>이 모두 지워져요.<br>다음 학생이 처음부터 시작할 수 있어요.</p>
           <div class="pop-btns"><button class="btn blue" data-autofocus id="wNo">취소</button><button class="btn red" id="wYes">모두 지우기</button></div>`, { sfx: 'full' });
         onTap($('#wNo', m), () => Modal.close());
         onTap($('#wYes', m), () => { playSfx('delete'); Store.clearAll(); try { sessionStorage.clear(); } catch (e) {} Modal.close(); toast('이 기기의 기록을 모두 지웠어요.'); });
       });
       onTap($('#toNext'), () => { tab = 2; draw(); });
-      onTap($('#reset'), () => { d = { mode: 'class', board: '', sound: 'on', bgm: 'on' }; Draft.set(d); view = 'lab'; draw(); toast('기본값으로 되돌렸어요'); });
+      onTap($('#reset'), () => { d = { mode: 'class', board: '', sound: 'on', bgm: 'on', dy: d.dy }; Draft.set(d); view = 'lab'; draw(); toast('기본값으로 되돌렸어요'); });
+    } else if (tab === 2) {
+      /* 02 챌린지 다이어리 (11/10 시안) */
+      const y = dy();
+      const step1 = (k, v, unit, min, max) => `<span class="tc-step" data-k="${k}"><button data-d="-1" ${v <= min ? 'disabled' : ''} aria-label="줄이기">−</button><b>${v}${unit}</b><button data-d="1" ${v >= max ? 'disabled' : ''} aria-label="늘리기">+</button></span>`;
+      const txt = (k, max, ph, sample) => `<label class="tc-url tc-txt"><span class="sr">${ph}</span><input id="dy_${k}" maxlength="${max}" placeholder="${ph}" value="${esc(y[k])}"><span class="tc-cnt" id="cn_${k}">${[...y[k]].length}/${max}</span></label>
+        <button class="tc-sample" data-fill="${k}" data-text="${esc(sample)}">예: ${esc(sample)}</button>`;
+      $('#panel').innerHTML = `
+      <div class="tc-col tc-set tc-dy">
+        <section class="tc-sec tc-inl"><h2 class="tc-h"><i>1</i>챌린지 횟수</h2>${step1('count', y.count, '회', 1, 10)}<small>1~10회 · 기본 5회</small></section>
+        <section class="tc-sec tc-inl"><h2 class="tc-h"><i>2</i>성공 메달</h2>${step1('min', Math.min(y.min, y.count), '일', 1, y.count)}<small>별을 이만큼 모으면 성공 메달</small></section>
+        <section class="tc-sec"><h2 class="tc-h"><i>3</i>진행 방식</h2>
+          <div class="tc-row">${seg('dmode', [['row', '이어서'], ['free', '자유롭게']], y.mode)}${y.mode === 'free' ? seg('weeks', [['1', '1주'], ['2', '2주'], ['3', '3주'], ['4', '4주']], String(y.weeks)) : ''}</div>
+          <p class="tc-help">${y.mode === 'free' ? `오늘부터 ${y.weeks}주 안에 아무 날이나 ${y.count}번 (주말도 돼요, 하루 한 번)` : `시작한 다음 날부터 학교 가는 날 ${y.count}번 이어서`}</p></section>
+        <section class="tc-sec tc-inl"><h2 class="tc-h"><i>4</i>사진 찍기</h2>${seg('dphoto', [['1', '켜기'], ['0', '끄기']], y.photo === false ? '0' : '1')}<small>끄면 수호냥 그림만 골라요</small></section>
+        <section class="tc-sec"><h2 class="tc-h"><i>5</i>선생님 약속 <em>선택</em></h2>${txt('promise', 20, '다 완성하면 받을 약속을 입력하세요', '다 완성하면 선생님이 간식을 쏠게요!')}</section>
+        <section class="tc-sec"><h2 class="tc-h"><i>6</i>선생님 칭찬</h2>
+          <div class="tc-pr"><span>${Math.min(y.min, y.count)}일 성공</span><div>${txt('praiseMin', 40, '비워 두면 예시 문구가 나와요', DY_SAMPLE.min)}</div></div>
+          <div class="tc-pr"><span>완성</span><div>${txt('praiseDone', 40, '비워 두면 예시 문구가 나와요', DY_SAMPLE.done)}</div></div></section>
+        <section class="tc-sec tc-inl"><h2 class="tc-h"><i>7</i>인쇄 확인란</h2>${seg('dsign', [['t', '선생님 서명'], ['n', '냥박사 도장']], y.tsign === 'n' ? 'n' : 't')}<small>종이로 할 때 맨 아래</small></section>
+      </div>
+      <div class="tc-col tc-pv">
+        <div class="tc-pvhead"><h2 class="tc-h">미리 보기</h2>${seg('dstep', [['S46', '매일 체크'], ['S47', '성공 메달'], ['S48', '완성']], step.dy || 'S46')}</div>
+        <div class="tc-frame" id="frame"><iframe id="pv" title="챌린지 다이어리 미리 보기"></iframe></div>
+        <p class="tc-help">학생은 약속 카드를 저장한 뒤 이 다이어리를 꾸미고 [챌린지 시작하기]를 눌러요.</p>
+        <div class="tc-foot"><button class="tc-btn" id="reset2">기본값으로</button><button class="tc-btn pri" id="toNext2">다음 · QR 코드와 공유 ›</button></div>
+      </div>`;
+      const setY = (k, v, redraw = true) => { d.dy = Object.assign(dy(), { [k]: v }); if (d.dy.min > d.dy.count) d.dy.min = d.dy.count; Draft.set(d); if (redraw) draw(); };
+      $$('.tc-step').forEach(g => g.addEventListener('click', e => { const x = e.target.closest('[data-d]'); if (!x || x.disabled) return; const k = g.dataset.k; setY(k, Math.max(1, Math.min(k === 'min' ? dy().count : 10, dy()[k] + +x.dataset.d))); }));
+      $$('.tc-seg').forEach(g => g.addEventListener('click', e => {
+        const x = e.target.closest('[data-v]'); if (!x) return; const k = g.dataset.k, v = x.dataset.v;
+        if (k === 'dstep') { step.dy = v; paintSeg('dstep', v); drawPrev(); return; }
+        if (k === 'dmode') setY('mode', v); else if (k === 'weeks') setY('weeks', +v); else if (k === 'dphoto') setY('photo', v === '1'); else if (k === 'dsign') setY('tsign', v);
+      }));
+      ['promise', 'praiseMin', 'praiseDone'].forEach(k => { const i = $('#dy_' + k);
+        i.addEventListener('input', () => { $('#cn_' + k).textContent = `${[...i.value].length}/${i.maxLength}`; setY(k, i.value, false); });
+        i.addEventListener('change', () => drawPrev()); });
+      $$('[data-fill]').forEach(bt => onTap(bt, () => { const k = bt.dataset.fill, i = $('#dy_' + k); i.value = bt.dataset.text; setY(k, i.value, false); $('#cn_' + k).textContent = `${[...i.value].length}/${i.maxLength}`; drawPrev(); }));
+      onTap($('#reset2'), () => { d.dy = Object.assign({}, DY_DEF); Draft.set(d); draw(); toast('기본값으로 되돌렸어요'); });
+      onTap($('#toNext2'), () => { tab = 3; draw(); });
     } else {
       $('#panel').innerHTML = `
       <div class="tc-col tc-qrcol">
@@ -775,6 +544,7 @@ Router.screens.T49 = (app, p) => {
           <ol class="tc-flow">${T_FLOW[d.mode === 'event' ? 'event' : 'class'].map(s => `<li>${s}</li>`).join('')}</ol>
           <dl class="tc-facts">
             <div><dt>소리</dt><dd>효과음 ${d.sound === 'off' ? '끄기' : '켜기'} · 대기 음악 ${d.bgm === 'off' ? '끄기' : '켜기'}</dd></div>
+            <div><dt>챌린지</dt><dd>${(() => { const y = dy(); return `${y.mode === 'free' ? `${y.weeks}주 안에 자유롭게` : '학교 가는 날 이어서'} ${y.count}회 · ${Math.min(y.min, y.count)}일 성공 메달${y.promise.trim() ? ' · 선생님 약속 있음' : ''}`; })()}</dd></div>
             <div><dt>결과 게시판</dt><dd>${okBoard() ? `<span class="ok">연결됨</span> ${esc(d.board)}` : '<span class="no">없음</span> 메달은 학생 기기에만 저장돼요'}</dd></div>
           </dl>
         </section>
@@ -792,20 +562,20 @@ Router.screens.T49 = (app, p) => {
       onTap($('#qrBig'), () => full('학생 접속 QR 코드', urlOf()));
       onTap($('#qrSave'), saveQR);
       onTap($('#edit'), () => { tab = 1; draw(); });
-      onTap($('#prev'), () => { tab = 1; draw(); });
+      onTap($('#prev'), () => { tab = 2; draw(); });
       onTap($('#done'), () => Router.go(returnTo));
     }
     drawPrev();
   };
   const full = (title, text, warn) => {
-    const m = Modal.open(`<h3 class="${warn ? 'warn' : ''}">${title}</h3><div class="qr-big">${QR.toSVG(text)}</div><p>${warn ? '5일 챌린지를 마친 뒤 메달 이미지를 올릴 때 쓰세요' : '태블릿 카메라로 찍어 주세요'}</p><button class="btn white" data-autofocus id="qc">✕ 닫기</button>`, { cls: 'qr-full', sfx: null });
+    const m = Modal.open(`<h3 class="${warn ? 'warn' : ''}">${title}</h3><div class="qr-big">${QR.toSVG(text)}</div><p>${warn ? '챌린지를 마친 뒤 다이어리 이미지를 올릴 때 쓰세요' : '태블릿 카메라로 찍어 주세요'}</p><button class="btn white" data-autofocus id="qc">✕ 닫기</button>`, { cls: 'qr-full', sfx: null });
     onTap($('#qc', m), () => Modal.close());
   };
   $('.tc-tabs').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (!b) return; tab = +b.dataset.t; draw(); });
   window.addEventListener('resize', fitFrame);
   draw();
 };
-Router.screens.T50 = (app, p) => Router.screens.T49(app, { ...p, tab: 2 });
+Router.screens.T50 = (app, p) => Router.screens.T49(app, { ...p, tab: 3 });
 
 /* 미리 보기용 예시 기록 (preview 키에만 저장) */
 function seedPreview(view) {
@@ -820,13 +590,14 @@ function seedPreview(view) {
     if (view === 'S38A') LabState.copeSeen = { light: true, severe: true };
   }
   if (view === 'S46' || view === 'S47' || view === 'S48') {
-    const real = DateK.override; DateK.override = '2026-11-04';
-    const c = Challenge.create ? Challenge.create() : null;
-    const cc = Challenge.get(), ids = selectedRules().map(r => r.id);
-    const upto = view === 'S48' ? 5 : 2;
-    cc.days.slice(0, upto).forEach((d, i) => { cc.log[d] = {}; ids.forEach((id, j) => cc.log[d][id] = (i === 1 && j === 1) ? 'X' : 'O'); });
-    Store.set('challenge', cc); cc.days.slice(0, upto).forEach(d => Challenge.recompute(Challenge.get(), d));
-    DateK.override = view === 'S48' ? '2026-11-20' : cc.days[2]; void c; void real;
+    /* 다이어리 미리 보기: S46 = 2일 한 뒤 3일째 · S47 = 성공 메달까지 · S48 = 완성 (축하 창은 이미 본 것으로) */
+    DateK.override = '2026-11-04';
+    const cc = Challenge.create(), ids = selectedRules().map(r => r.id);
+    const upto = view === 'S48' ? cc.count : view === 'S47' ? cc.min : 2;
+    const dates = cc.mode === 'free' ? Array.from({ length: cc.count }, (_, i) => DateK.add(cc.start, i * 2)) : cc.days;   // 자유롭게: 이틀에 한 번 한 것처럼
+    dates.slice(0, upto).forEach((d, i) => { cc.log[d] = {}; ids.forEach((id, j) => cc.log[d][id] = (view === 'S46' && i === 1 && j === 1) ? 'X' : 'O'); });
+    cc.cele = { min: true, done: true }; Store.set('challenge', cc);
+    DateK.override = view === 'S48' ? dates[cc.count - 1] : dates[Math.min(upto, cc.count - 1)];
   }
 }
 
@@ -841,12 +612,12 @@ const TestBar = {
       b.addEventListener('click', e => {
         if (!e.target.closest('[data-tnext]')) return;
         TestMode.next(); const s = Challenge.status();
-        Router.go(s === 'ended' ? 'S47' : 'S46', {}, { replace: true });
+        Router.go('S46', {}, { replace: true });
       });
     }
     const c = Challenge.get();
     if (!c) { TestBar.el.innerHTML = '🧪 점검 모드 · 약속 카드를 만들면 챌린지를 바로 시작해요'; return; }
-    const i = TestMode.idx(c), n = c.days.length, ended = Challenge.status(c) === 'ended';
+    const i = TestMode.idx(c), n = TestMode.len(c), ended = Challenge.status(c) === 'ended';
     const btn = 'style="border:0;border-radius:8px;padding:4px 10px;background:#FFB199;color:#252E52;font:700 13px sans-serif;cursor:pointer"';
     TestBar.el.innerHTML = ended
       ? `🧪 점검 모드 · ${n}회 완료`
@@ -860,13 +631,18 @@ const TestBar = {
   if (qs.has('test')) TestMode.on = true; // 점검 모드: 체크를 하루씩 바로 넘겨 보기
   if (/^\d{4}-\d{2}-\d{2}$/.test(qs.get('today') || '')) DateK.override = qs.get('today'); // 테스트용 날짜
   /* 1) 교사 링크의 설정을 이 기기에 저장 */
-  const fromLink = qs.has('mode') || qs.has('board') || qs.has('sound') || qs.has('bgm');   // QR·공유 링크로 들어온 학생 기기
+  const fromLink = qs.has('mode') || qs.has('board') || qs.has('sound') || qs.has('bgm') || qs.has('dy');   // QR·공유 링크로 들어온 학생 기기
   let configured = false; try { configured = localStorage.getItem(CFG_KEY) !== null; } catch (e) {}
-  if (qs.has('mode') || qs.has('board') || qs.has('sound') || qs.has('bgm')) {
+  if (fromLink) {
     const board = qs.get('board') || '';
-    Config.set({ mode: qs.get('mode') === 'event' ? 'event' : 'class', board: isHttps(board) ? board : '', bgm: qs.get('bgm') !== 'off' });
+    const cfg = { mode: qs.get('mode') === 'event' ? 'event' : 'class', board: isHttps(board) ? board : '', bgm: qs.get('bgm') !== 'off' };
+    /* 챌린지 다이어리 설정 (선생님 링크 dy · dp · dm · dd) */
+    const dyv = (qs.get('dy') || '').split('.');
+    if (dyv.length >= 6) cfg.diary = { count: Math.max(1, Math.min(10, +dyv[0] || 5)), mode: dyv[1] === 'f' ? 'free' : 'row', weeks: Math.max(1, Math.min(4, +dyv[2] || 2)), min: Math.max(1, +dyv[3] || 3), photo: dyv[4] !== '0', tsign: dyv[5] === 'n' ? 'n' : 't',
+      promise: (qs.get('dp') || '').slice(0, 20), praiseMin: (qs.get('dm') || '').slice(0, 40), praiseDone: (qs.get('dd') || '').slice(0, 40) };
+    Config.set(cfg);
     if (!PREVIEW) setSound(qs.get('sound') !== 'off');
-    qs.delete('mode'); qs.delete('board'); qs.delete('sound'); qs.delete('bgm');
+    ['mode', 'board', 'sound', 'bgm', 'dy', 'dp', 'dm', 'dd'].forEach(k => qs.delete(k));
   }
   /* 선생님 설정은 전용 주소로만: 사이트 주소 뒤 ?teacher (학생 화면에는 들어가는 길 없음) */
   const teacher = qs.has('teacher') || location.hash === '#teacher'; qs.delete('teacher');
@@ -883,7 +659,7 @@ const TestBar = {
   if (PREVIEW) { seedPreview(qs.get('view')); Router.go(qs.get('view') || 'S00', {}, { replace: true }); return; }
   /* 4) 시작 화면 판단 */
   const st = Challenge.status();
-  const first = st === 'ended' ? 'S47' : st !== 'none' ? 'S46' : Config.get().mode === 'event' ? 'S39' : 'S00';
+  const first = st !== 'none' ? 'S46' : Config.get().mode === 'event' ? 'S39' : 'S00';
   /* 선생님 화면 먼저 (팀 점검 11/8): 주소만으로 연 기기(QR 설정·학생 기록 없음)는 선생님 설정부터.
      QR·공유 링크로 들어온 학생 기기는 바로 학생 화면. 선생님 기기에서 다시 열 때는 주소 뒤 ?teacher */
   const teacherFirst = !fromLink && !configured && !Store.hasRecord() && LabFound.total() === 0;

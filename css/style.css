@@ -1261,3 +1261,6 @@ body.tablet .s44.s44b .preview-wrap, .s44b .s44b-card .preview-wrap { width:min(
 .s44b-side > .s44-box:first-child { border-width:0 !important; }
 /* 수호냥 칸 테두리 연하게 (11/9): 큰 칸은 그대로, 고르지 않은 칸 테두리만 옅은 남색 2px */
 .s44b-side .buddy:not(.on) { box-shadow:0 -2px 0 rgba(30,42,90,.4),0 2px 0 rgba(30,42,90,.4),-2px 0 0 rgba(30,42,90,.4),2px 0 0 rgba(30,42,90,.4) !important; }
+/* 챌린지 다이어리 인쇄 (A4 가로, 11/10) */
+.dy-print { width:1196px; height:810px; }
+@media print { .dy-print { zoom:.86; } }

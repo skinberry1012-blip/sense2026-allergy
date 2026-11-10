@@ -583,3 +583,5 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .name-px .count { flex:none; font-family:var(--font-head); font-size:26px; color:#9AA1B8; }
 .name-px.filled .count { color:var(--navy); }
 .name-px.shake { animation:shake .3s ease-in-out 1; }
+/* 챌린지 다이어리 (11/10) */
+.lab-board > .dy-host { left:0; top:0; width:1600px; height:900px; z-index:3; }

@@ -1,7 +1,7 @@
 /* 서비스 워커 — 화면 파일을 저장해 두어 인터넷이 끊겨도 앱이 열려요.
    ※ 파일을 고쳐서 다시 올릴 때는 아래 VERSION 숫자를 하나 올려 주세요. (예: v1 → v2)
    ※ 학생 기록은 여기 저장되지 않아요 (기록은 각 기기의 LocalStorage에만). */
-const VERSION = 'v56-staff-size3';
+const VERSION = 'v57-diary';
 const CACHE = 'allergy-shield-' + VERSION;
 const FILES = [
   './',
@@ -18,6 +18,8 @@ const FILES = [
   './icons/icon-192.png',
   './icons/icon-512.png',
   './js/app.js',
+  './js/diary.js',
+  './css/diary.css',
   './js/card.js',
   './js/core.js',
   './js/anim.js',
@@ -126,7 +128,41 @@ const FILES = [
   './assets/sym/nose.png',
   './assets/sym/rash.png',
   './assets/sym/stomach.png',
-  './assets/sym/swelling.png'
+  './assets/sym/swelling.png',
+  './assets/diary/diary_mint.png',
+  './assets/diary/diary_mint_ink.png',
+  './assets/diary/diary_navy.png',
+  './assets/diary/diary_navy_ink.png',
+  './assets/diary/diary_pink.png',
+  './assets/diary/diary_pink_ink.png',
+  './assets/diary/medal_blue.png',
+  './assets/diary/medal_coral.png',
+  './assets/diary/memo_note.png',
+  './assets/diary/memo_short.png',
+  './assets/diary/memo_short_flip.png',
+  './assets/diary/memo_wide.png',
+  './assets/diary/memo_wide_flip.png',
+  './assets/diary/nyang_cheer.png',
+  './assets/diary/nyang_explain.png',
+  './assets/diary/nyang_hello.png',
+  './assets/diary/photo_frame.png',
+  './assets/diary/staff_cheer.png',
+  './assets/diary/staff_guide.png',
+  './assets/diary/staff_heart.png',
+  './assets/diary/staff_hello.png',
+  './assets/diary/staff_thumb.png',
+  './assets/diary/stk_ball.png',
+  './assets/diary/stk_crown.png',
+  './assets/diary/stk_dino.png',
+  './assets/diary/stk_heart.png',
+  './assets/diary/stk_mask.png',
+  './assets/diary/stk_rainbow.png',
+  './assets/diary/stk_ribbon.png',
+  './assets/diary/stk_rocket.png',
+  './assets/diary/stk_shield.png',
+  './assets/diary/stk_soap.png',
+  './assets/diary/stk_star.png',
+  './assets/diary/stk_unicorn.png'
 ];
 
 self.addEventListener('install', e => {
