@@ -581,7 +581,7 @@ Router.screens.T49 = (app, p) => {
           <div class="tc-linkrow"><div class="tc-link" id="lnk">${esc(urlOf())}</div><button class="tc-btn" id="copy">링크 복사</button></div>
           ${okBoard() ? '<button class="tc-btn sm" id="bqr">결과 게시판 QR 보기</button>' : ''}</div>
       </section>
-      <div class="tc-foot tc-foot3"><button class="tc-btn" id="prev">‹ 이전</button><button class="tc-btn pri" id="done">설정 완료 · 학생 화면 열기 ›</button></div>`;
+      <div class="tc-foot tc-foot3"><button class="tc-btn" id="prev">‹ 이전</button><button class="tc-btn sm tc-here" id="useHere">이 기기를 학생용으로 쓰기</button><button class="tc-btn pri" id="done">설정 완료</button></div>`;
       onTap($('#copy'), async () => { if (await copyText(urlOf(), $('#lnk'))) toast('링크를 복사했어요.', 1800); });
       onTap($('#bqr'), () => full('결과 게시판 QR (접속용 아님)', d.board, true));
       onTap($('#qr'), () => full('학생 접속 QR 코드', urlOf()));
@@ -590,10 +590,24 @@ Router.screens.T49 = (app, p) => {
       onTap($('#edit'), () => { tab = 1; draw(); });
       onTap($('#prev'), () => { tab = 2; draw(); });
       /* [설정 완료] (11/10 최종): 이 기기에도 설정을 적용해요 — 부스 태블릿처럼 선생님 설정에서 행사용을 고른 기기는 계속 행사용 */
+      /* [설정 완료] (11/10): 학생은 QR로 자기 태블릿에서 들어오니, 선생님 화면에 그대로 머물러요 */
       onTap($('#done'), () => {
-        Config.set(Object.assign(Config.get(), { mode: d.mode === 'event' ? 'event' : 'class', board: okBoard() ? d.board : '', bgm: d.bgm !== 'off' }));
-        setSound(d.sound !== 'off');
-        Router.go(d.mode === 'event' ? 'S39' : (returnTo === 'S39' ? 'S00' : returnTo));
+        const m = Modal.open(`<div class="pop-head">설정을 마쳤어요</div><p class="pop-body">학생에게 <b>QR 코드</b>를 보여 주거나 <b>링크</b>를 보내 주세요.<br>학생은 자기 태블릿으로 QR을 찍어 들어와요.</p>
+          <div class="pop-btns"><button class="btn white" id="dOk">닫기</button><button class="btn pink" data-autofocus id="dQr">QR 크게 보기</button></div>`);
+        onTap($('#dOk', m), () => Modal.close());
+        onTap($('#dQr', m), () => { Modal.close(); full('학생 접속 QR 코드', urlOf()); });
+      });
+      /* [이 기기를 학생용으로 쓰기] (11/10): 행사 부스처럼 이 태블릿을 학생에게 직접 건넬 때만 — 이 기기에 설정을 적용하고 학생 화면으로 */
+      onTap($('#useHere'), () => {
+        const m = Modal.open(`<div class="pop-head">이 기기를 학생용으로 쓸까요?</div><p class="pop-body">행사 부스처럼 <b>이 태블릿을 학생에게 직접 건넬 때</b>만 써요.<br>학생 화면에는 선생님 설정으로 가는 버튼이 없어요.<br>선생님 화면은 주소 뒤에 <b>?teacher</b>를 붙여 다시 열어요.</p>
+          <div class="pop-btns"><button class="btn white" data-autofocus id="hNo">아니요</button><button class="btn pink" id="hYes">학생용으로 쓰기</button></div>`);
+        onTap($('#hNo', m), () => Modal.close());
+        onTap($('#hYes', m), () => {
+          Modal.close();
+          Config.set(Object.assign(Config.get(), { mode: d.mode === 'event' ? 'event' : 'class', board: okBoard() ? d.board : '', bgm: d.bgm !== 'off' }));
+          setSound(d.sound !== 'off');
+          Router.go(d.mode === 'event' ? 'S39' : (returnTo === 'S39' ? 'S00' : returnTo));
+        });
       });
     }
     drawPrev();
