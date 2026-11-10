@@ -129,7 +129,7 @@ const labGo = (to, p = {}, o = {}) => Router.go(to, p, o);
 Router.screens.S00 = (app) => {
   const b = labBoard(app, LAB.bg.entrance, { cls: 'lab-s00' });
   labEl(b, 'lab-sign', [378, 222, 842, 172], `<div><span class="px-tag">냥박사의</span><b><em>알레르기</em> 연구소</b></div>`);
-  labEl(b, 'lab-org', null, 'SENSE<small>(초등보건교육연구회)</small>', 'div', 'left:36px;top:26px');   // 연구회 이름 (11/11)
+  labEl(b, 'lab-org', null, 'SENSE<small>(초등보건교육연구회)</small>');   // 연구회 이름 (11/11)
   labChar(b, 'nyang_welcome', 560, { left: -40, bottom: 22 });
   labChar(b, 'staff_hello', 530, { right: -20, bottom: 22 });   // 머리·모자가 커서 냥박사의 약 0.95배로 맞춰요 (11/9)
   const go = labBtn(b, '입장하기 ›', 'left:50%;bottom:64px;transform:translateX(-50%);font-size:52px;padding:20px 64px 16px', 'y shine beat');
