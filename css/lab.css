@@ -732,3 +732,4 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .place-panel .px-steps i.ok .no { background:var(--green); }
 /* 기억 체크 띠 이름표 크게 (11/10) */
 .qb-tag { top:-32px; left:28px; font-size:36px; padding:9px 34px 6px; box-shadow:0 0 0 4px #FFFDF5, 0 0 0 7px rgba(30,42,90,.18); }
+.qb-tag { top:-44px; }   /* 이름표를 띠 위로 더 올림, 띠는 18px 내림 (11/10) */
