@@ -514,6 +514,8 @@ Router.screens.T49 = (app, p) => {
         </section>
         <div class="tc-foot"><button class="tc-btn" id="prev">‹ 이전</button><button class="tc-btn pri" id="done">설정 완료 · 학생 화면 열기 ›</button></div>
       </div>`;
+      /* QR 칸 높이 = 오른쪽 칸 높이 (제목 줄·아래 버튼 줄 맞춤, 11/10) */
+      requestAnimationFrame(() => { const qc = $('.tc-qrcol'), sh = $('.tc-share'); if (qc && sh) qc.style.height = sh.offsetHeight + 'px'; });
       onTap($('#copy'), async () => { if (await copyText(urlOf(), $('#lnk'))) toast('링크를 복사했어요.', 1800); });
       onTap($('#bqr'), () => full('결과 게시판 QR (접속용 아님)', d.board, true));
       onTap($('#qr'), () => full('학생 접속 QR 코드', urlOf()));

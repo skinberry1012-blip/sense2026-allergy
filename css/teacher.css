@@ -172,3 +172,6 @@
 .tgx .tc-panel.t3 { grid-template-columns:420px 800px; justify-content:center; column-gap:72px; }
 /* 03 탭: 요약 상자 폭을 글에 맞게 줄이고(620), 링크는 한 줄로 잘라 보이기(복사 버튼 있음) */
 .tgx .tc-panel.t3 { grid-template-columns:420px 620px; column-gap:80px; }
+/* 03 탭: 'QR 코드' 제목 줄 = '설정 요약' 제목 줄, QR 버튼 아래끝 = 이전·설정 완료 버튼 아래끝 */
+.tgx .tc-panel.t3 .tc-qrcol { align-self:stretch; justify-content:space-between; padding-top:20px; gap:0; }
+.tgx .tc-panel.t3 .tc-qrcol { align-self:center; }
