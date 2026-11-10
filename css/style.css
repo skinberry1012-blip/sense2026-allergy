@@ -1347,3 +1347,7 @@ body.tablet .s44-top { padding-left:0; }
 .s44b-btns .ev-pass { margin-top:6px !important; }
 .ev-bigmodal .modal, .modal-dim.ev-bigmodal > * { max-width:min(1180px, 94vw) !important; width:auto; }
 .ev-big { padding:6px 18px 0; } .ev-big img { display:block; width:100%; max-height:70vh; object-fit:contain; border-radius:8px; box-shadow:0 6px 20px rgba(30,42,90,.18); }
+/* 휴대폰 가로 (11/10): 화면은 1600×900 판을 줄여 보여 주는데, 좁은 화면용 규칙(760px 이하)이 카드 꾸미기 순서를 바꿔
+   카드가 왼쪽 아래로 작아지고 수호냥 칸이 커지던 문제 — 판으로 보여 줄 때(body.tablet)는 태블릿과 같은 배치 */
+body.tablet .s44b-card { order:0; }
+body.tablet .s44b-side .buddies { grid-template-columns:repeat(2,1fr); }

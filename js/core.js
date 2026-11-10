@@ -308,7 +308,7 @@ const Stage = {
   W: 1600, H: 900,
   fit() {
     const w = window.innerWidth, h = window.innerHeight;
-    const tablet = w >= 700 && (w >= h || w >= 900);
+    const tablet = (w >= h && w >= 480) || w >= 900;   // 11/10: 폭 700 미만 가로 휴대폰(갤럭시 S9+ 658, 아이폰 SE 667)도 판을 줄여 보여 줘요 — 카드 꾸미기·다이어리가 세로 휴대폰 배치로 깨지던 문제
     document.body.classList.toggle('tablet', tablet);
     document.body.classList.toggle('phone', !tablet);
     const st = document.getElementById('stage');
