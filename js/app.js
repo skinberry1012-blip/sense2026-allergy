@@ -90,60 +90,74 @@ Router.screens.RULES = (app, p) => {
   labPanel(b, { y: 26, title: '나만의 약속을 골라 보세요!', center: true, fs: 38 });
   labChar(b, 'staff_guide', 500, { left: -60, bottom: 10 });
   const bub = labBubbleAt(labBubble(b, { x: 40, y: 0, w: 470, fs: 30, tail: 'bl', name: '수호냥', staff: true }), { bottom: 470, tailX: 200 });
-  const box = labEl(b, 'rl-box', [560, 132, 1000, 640]);   // 제목 아래 ~ 버튼 위 사이 가운데
-  const next = labBtn(b, '카드 꾸미기로 ›', 'right:40px;bottom:46px;font-size:36px', 'y');
+  const box = labEl(b, 'rl-box', [560, 156, 1000, 616]);   // 제목 아래 ~ 버튼 위 사이 가운데 (장소 고르기 2×2 · 약속 상자)
+  const next = labBtn(b, '다음 ›', 'right:40px;bottom:46px;font-size:36px', 'y');
 
+  /* 순서대로 (11/10): 집 → 학교 → 밖 → 나만의 약속(선택) → 카드 꾸미기. 하나 고르면 다음 장소로 넘어가요 */
+  let step = Math.max(0, Math.min(3, p.step != null ? p.step | 0 : (PLACES.findIndex(pl => !done(pl)) + 1 || 4) - 1));
+  const chip = labEl(b, 'px-chip quiz-step rl-step', null, '', 'div', 'top:46px');
   const say = () => {
-    const left = PLACES.filter(pl => !done(pl)).map(pl => ({ home: '집', school: '학교', outside: '밖' })[pl]);
-    bub.say(left.length ? `장소마다 {{1가지씩}} 골라 봐!<br>남은 곳: ${left.join(' · ')}` : '좋아! 직접 약속을 적을 수도 있어.<br>다 됐으면 {{카드 꾸미기}}로 가자!', false);
+    const k = RULE_TABS[step][0];
+    if (k === 'mine') return bub.say(allPlaces() ? '내가 지킬 약속을<br>{{직접}} 적어도 좋아!' : '집 · 학교 · 밖에서<br>하나씩 먼저 정해 줘!', false);
+    bub.say(done(k) ? '좋아! {{다음}}을 눌러<br>다른 장소로 가 보자!' : '여기서 꼭 지킬 것을<br>{{하나}} 정해 봐!', false);
   };
   const render = () => {
-    const pl = RULE_TABS[tab][0];
-    const tabs = RULE_TABS.map(([k, n], i) => `<button class="rl-tab pl-${k} ${i === tab ? 'cur' : ''}" data-t="${i}" role="tab" aria-selected="${i === tab}">${window.RULES_DATA[k].icon} ${n}${done(k) ? ' <b>✓</b>' : ''}</button>`).join('');
-    const pill = k => `<span class="rpl pl-${k}">${k === 'mine' ? '나' : RULE_TABS.find(t => t[0] === k)[1]}</span>`;
+    const pl = RULE_TABS[step][0];
+    chip.innerHTML = `<b class="lc">${step + 1}</b> / 4`;
+    chip.style.left = (800 + $('.px-panel', b).offsetWidth / 2 + 18) + 'px';
     let body;
     if (pl !== 'mine') {
-      body = `<h5>지킬 약속을 하나 골라요</h5>` + window.RULES_DATA[pl].rules.map((r, n) =>
+      body = window.RULES_DATA[pl].rules.map((r, n) =>
         `<button class="ti ${rules[pl][0] === r.id ? 'on' : ''}" data-id="${r.id}"><span class="tno">${n + 1}</span><span class="tt">${esc(r.text)}</span><i class="cb ${rules[pl][0] === r.id ? 'on' : ''}"></i></button>`).join('');
     } else {
       const d = window.RULES_DATA.mine;
-      body = `<h5>직접 적어요<span class="hrule">안 적어도 돼요 · ${MINE_MAX}개까지</span></h5>`
-        + custom.mine.map((c, j) => `<div class="ti ${c.checked ? 'on' : ''}" data-c="${j}" role="button" tabindex="0"><span class="tno">${j + 1}</span><span class="tt">${esc(c.text)}</span><button class="del" data-d="${j}" aria-label="삭제">✕</button><i class="cb ${c.checked ? 'on' : ''}"></i></div>`).join('')
+      body = custom.mine.map((c, j) => `<div class="ti ${c.checked ? 'on' : ''}" data-c="${j}" role="button" tabindex="0"><span class="tno">${j + 1}</span><span class="tt">${esc(c.text)}</span><button class="del" data-d="${j}" aria-label="삭제">✕</button><i class="cb ${c.checked ? 'on' : ''}"></i></div>`).join('')
         + (custom.mine.length < MINE_MAX ? `<div class="rl-add"><p>${d.tip}</p><label class="name-px rl-in"><input id="cin" maxlength="${CUSTOM_MAX}" placeholder="${d.placeholder}" enterkeyhint="done" aria-label="나만의 약속"><span class="count" id="ccount">0/${CUSTOM_MAX}</span></label><button class="px-btn y rl-addbtn" id="cadd" type="button"><span>+ 추가</span></button></div>` : '')
         + `<p class="rl-note"><b>i</b>알레르기 종류나 병 이름 같은 건강 정보는 적지 않아요. 나만의 약속은 내 카드에만 나오고, 어디에도 보내지 않아요.</p>`;
     }
-    box.innerHTML = `<div class="rl-wrap"><div class="rl-tabs" role="tablist">${tabs}</div><div class="tlist rl-list pl-${pl}">${body}</div></div>`;   // 장소 이름은 탭에만 (줄마다 반복하지 않아요)
-    next.classList.toggle('off', !allPlaces()); next.setAttribute('aria-disabled', String(!allPlaces()));
+    /* 위: 장소 그림 띠 + 장소 이름, 아래: 약속 목록 */
+    box.innerHTML = `<div class="tlist rl-list"><div class="rl-pic pl-${pl}"><span>${window.RULES_DATA[pl].icon} ${RULE_TABS[step][1]}</span>${pl === 'mine' ? `<em>안 적어도 돼요 · ${MINE_MAX}개까지</em>` : ''}</div>${body}</div>`;
     const cin = $('#cin', box);
     if (cin) {
       cin.addEventListener('input', () => { $('#ccount', box).textContent = `${[...cin.value].length}/${CUSTOM_MAX}`; });
       cin.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) add(); });
       onTap($('#cadd', box), add);
     }
+    prev.hidden = step === 0;
+    if (step > 0) $('span', prev).textContent = `‹ ${RULE_TABS[step - 1][1]}`;
+    const last = pl === 'mine';
+    $('span', next).textContent = last ? '카드 꾸미기로 ›' : '다음 ›';
+    const ok = last ? allPlaces() : done(pl);
+    next.classList.toggle('off', !ok); next.setAttribute('aria-disabled', String(!ok));
     say();
   };
+  const prev = labBtn(b, '‹', 'left:560px;bottom:46px;font-size:30px', 'w');
   const add = () => {
     const cin = $('#cin', box), v = (cin.value || '').trim(); if (!v) { playSfx('full'); replay(cin.parentNode, 'shake'); return; }
     const all = [...custom.mine.map(c => c.text), ...PLACES.flatMap(pl => window.RULES_DATA[pl].rules.map(r => r.text))];
     if (all.includes(v)) return toast('이미 있는 약속이에요.');
     custom.mine.push({ id: 'c' + Date.now().toString(36), text: v, checked: true }); save(); playSfx('check'); render();
   };
+  const go = n => { step = n; render(); replay(box, 'pop'); };
   box.addEventListener('click', e => {
-    const t = e.target.closest('[data-t]'); if (t) { if (+t.dataset.t !== tab) { tab = +t.dataset.t; playSfx('tab'); render(); } return; }
     const d = e.target.closest('[data-d]'); if (d) { e.stopPropagation(); custom.mine.splice(+d.dataset.d, 1); save(); playSfx('uncheck'); return render(); }
     const row = e.target.closest('.ti'); if (!row) return;
-    const pl = RULE_TABS[tab][0];
+    const pl = RULE_TABS[step][0];
     if (row.dataset.id) {
       const on = rules[pl][0] === row.dataset.id;
-      rules[pl] = on ? [] : [row.dataset.id]; playSfx(on ? 'uncheck' : 'check'); save();
-      render();
-      if (!on && tab < 2) setTimeout(() => { if (Router.current && Router.current.s === 'RULES' && tab < 2 && done(PLACES[tab])) { tab++; render(); } }, 450);   // 다음 장소로
+      rules[pl] = on ? [] : [row.dataset.id]; playSfx(on ? 'uncheck' : 'check'); save(); render();
       return;
     }
-    const c = custom.mine[+row.dataset.c]; c.checked = !c.checked; save(); playSfx(c.checked ? 'check' : 'uncheck'); render();
+    const cc = custom.mine[+row.dataset.c]; cc.checked = !cc.checked; save(); playSfx(cc.checked ? 'check' : 'uncheck'); render();
   });
+  onTap(prev, () => { if (step > 0) { playSfx('tap'); go(step - 1); } });
   onTap(next, () => {
-    if (!allPlaces()) { playSfx('full'); replay(next, 'shake'); tab = PLACES.findIndex(pl => !done(pl)); render(); return toast('집 · 학교 · 밖에서 하나씩 골라 주세요.'); }
+    const pl = RULE_TABS[step][0];
+    if (pl !== 'mine') {
+      if (!done(pl)) { playSfx('full'); replay(next, 'shake'); return toast('약속을 하나 골라 주세요.'); }
+      playSfx('next'); return go(step + 1);
+    }
+    if (!allPlaces()) { playSfx('full'); replay(next, 'shake'); go(PLACES.findIndex(x => !done(x))); return toast('집 · 학교 · 밖에서 하나씩 골라 주세요.'); }
     playSfx('next'); Router.go('S44');
   });
   render();

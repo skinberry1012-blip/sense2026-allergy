@@ -671,3 +671,35 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .rl-tab, .rl-tab.pl-home, .rl-tab.pl-school, .rl-tab.pl-outside, .rl-tab.pl-mine { border-radius:14px 14px 0 0; padding:12px 28px 10px; font-size:26px; background:#EADBC6; color:#6B6F86; box-shadow:none; translate:none; }
 .rl-tab.cur { background:#FFFDF8 !important; color:var(--navy); padding:14px 30px 12px; translate:none; box-shadow:inset 3px 0 0 var(--navy), inset -3px 0 0 var(--navy), inset 0 3px 0 var(--navy), inset 0 -3px 0 var(--navy); }
 .rl-tab.cur b { color:var(--green); }
+/* 약속 고르기: 장소 고르기 2×2 그림 카드 → 누르면 그 장소 약속 상자 (11/10) */
+.rl-grid { display:grid; grid-template-columns:1fr 1fr; gap:26px 30px; }
+.rl-card { position:relative; height:288px; border:0; padding:0; border-radius:22px; background:#fff; cursor:pointer; text-align:left; overflow:visible;
+  display:flex; flex-direction:column; box-shadow:0 0 0 4px var(--navy), 0 8px 0 4px rgba(30,42,90,.18); transition:transform .15s; }
+.rl-card:active { transform:translateY(3px); }
+.rl-card .pic { flex:1; border-radius:18px 18px 0 0; background-size:cover; background-position:center; border-bottom:3px solid var(--navy); }
+.rl-card.pl-home .pic { background-image:url(../assets/bg/bg_home.png); background-position:30% 62%; }
+.rl-card.pl-school .pic { background-image:url(../assets/bg/bg_cafeteria.png); background-position:50% 58%; }
+.rl-card.pl-outside .pic { background-image:url(../assets/bg/bg_playground.png); background-position:40% 72%; }
+.rl-card.pl-mine .pic { background:radial-gradient(circle at 50% 55%, #fff 0 22%, transparent 23%), #EDE4FB; position:relative; }
+.rl-card.pl-mine .pic::after { content:'⭐'; position:absolute; left:50%; top:50%; transform:translate(-50%,-46%); font-size:54px; }
+.rl-card b { display:block; padding:12px 22px 0; font-family:var(--font-head); font-weight:400; font-size:30px; color:var(--navy); }
+.rl-card b small { font-size:18px; color:#8A7FB0; background:#EDE4FB; border-radius:999px; padding:2px 10px; vertical-align:middle; }
+.rl-card em { display:block; padding:2px 22px 14px; font-style:normal; font-size:20px; color:#8A93AE; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.rl-card.done em { color:var(--coral-d); }
+.rl-card > i { position:absolute; right:-12px; top:-12px; width:50px; height:50px; border-radius:50%; background:var(--green); color:#fff; font-style:normal; font-family:var(--font-head); font-size:30px; display:grid; place-items:center; box-shadow:0 0 0 4px #fff; }
+.rl-card:not(.done):not(.pl-mine) { animation:cardsoft 2.4s ease-in-out infinite; }
+.rl-back { align-self:flex-start; margin:0 0 16px 4px; border:0; background:#fff; color:var(--navy); font-family:var(--font-head); font-size:26px; padding:10px 22px 8px; border-radius:12px; cursor:pointer; box-shadow:0 0 0 3px var(--navy), 0 5px 0 3px rgba(30,42,90,.18); }
+.rl-box.grid { justify-content:center; }
+/* 약속 고르기 — 순서대로 한 박스 (11/10): 위 장소 그림 + 아래 약속 목록 */
+.lab-rules .rl-box { justify-content:flex-start; }
+.rl-list { flex:none; }
+.rl-pic { position:relative; height:150px; flex:none; background:center 60%/cover no-repeat; border-bottom:4px solid var(--navy); display:flex; align-items:flex-end; justify-content:space-between; padding:0 22px 16px; }
+.rl-pic.pl-home { background-image:url(../assets/bg/bg_home.png); }
+.rl-pic.pl-school { background-image:url(../assets/bg/bg_cafeteria.png); }
+.rl-pic.pl-outside { background-image:url(../assets/bg/bg_playground.png); }
+.rl-pic.pl-mine { background:#E6DAFA; }
+.rl-pic.pl-mine::before { content:'⭐'; position:absolute; left:50%; top:12px; font-size:96px; opacity:.5; }
+.rl-pic span { position:relative; background:#fff; border-radius:999px; padding:8px 26px 6px; font-family:var(--font-head); font-size:32px; color:var(--navy); box-shadow:0 0 0 4px var(--navy), 0 6px 0 4px rgba(30,42,90,.2); }
+.rl-pic em { position:relative; font-style:normal; font-family:var(--font-head); font-size:24px; color:var(--navy); background:rgba(255,255,255,.85); border-radius:999px; padding:6px 18px 4px; }
+.rl-list .ti { padding:22px 30px; }
+.rl-step { white-space:nowrap; }
