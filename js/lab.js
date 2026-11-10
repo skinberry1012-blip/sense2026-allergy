@@ -180,8 +180,8 @@ Object.entries(LAB.places).forEach(([place, d]) => {
     /* 장소 미션 3가지 표시 (집 3-1 · 급식실 3-2 · 운동장 3-3) */
     const PICON = { home: '🏠', school: '🍴', ground: '⚽' };
     $('div', pan).insertAdjacentHTML('beforeend', `<span class="px-steps">${Object.entries(LAB.places).map(([k, q]) =>
-      `<i class="${k === place ? 'cur' : ''} ${LabFound.count(k) >= 4 ? 'ok' : ''}">${PICON[k]} ${q.name} 3-${q.no}${LabFound.count(k) >= 4 ? ' ✓' : ''}</i>`).join('')}</span>`);
-    labEl(b, 'px-chip big', null, `찾은 원인 <b class="lc">${n}</b> / 4`, 'div', 'right:190px;top:26px');
+      `<i class="${k === place ? 'cur' : ''} ${LabFound.count(k) >= 4 ? 'ok' : ''}">${PICON[k]} ${q.name}${LabFound.count(k) >= 4 ? ' ✓' : ''}</i>`).join('')}</span>`);
+    labEl(b, 'px-chip big', null, `찾은 원인 <b class="lc">${n}</b>개`, 'div', 'right:190px;top:26px');   // 숫자 하나만 (팀 점검 11/10)
     const hint = labEl(b, 'px-icon y', null, '<svg viewBox="0 0 24 24" fill="none" stroke="#1E2A5A" stroke-width="2.5"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5V16h8v-2.5A6 6 0 0 0 12 3z"/></svg>', 'button', 'right:104px;top:26px');
     hint.setAttribute('aria-label', '힌트');
     /* 스캔할 곳 */

@@ -585,3 +585,11 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .name-px.shake { animation:shake .3s ease-in-out 1; }
 /* 챌린지 다이어리 (11/10) */
 .lab-board > .dy-host { left:0; top:0; width:1600px; height:900px; z-index:3; }
+/* 이름 쓰기: 말풍선 안 이름 칸 (11/10 다시) */
+.name-bub { font-size:40px; }
+.name-bub .px-bub-txt { line-height:1.4; padding:0 6px; }
+.name-bub .t1 { top:120px !important; }
+.name-bub .name-px { position:relative; height:96px; margin:20px 4px 6px; border-radius:18px; background:#FFFBEA; box-shadow:0 0 0 4px var(--navy), inset 0 4px 0 rgba(30,42,90,.08); }
+.name-bub .name-px:focus-within { box-shadow:0 0 0 4px var(--navy), 0 0 0 12px rgba(245,200,66,.55); }
+.name-bub .name-px input { font-size:46px; }
+.name-bub .name-px input::placeholder { font-size:30px; }

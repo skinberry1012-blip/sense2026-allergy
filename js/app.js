@@ -39,13 +39,14 @@ Router.screens.S39 = (app) => {
 Router.screens.S40 = (app) => {
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-s40' });
   labPanel(b, { y: 30, title: '알레르기 예방 약속 카드', center: true, fs: 40 });
-  labChar(b, 'staff_hello', 560, { left: 15, bottom: 10 });   // 수호냥 + 말풍선·이름 칸 묶음을 가운데로 (좌우 여백 같게)
-  const bub = labBubble(b, { x: 755, y: 300, w: 590, fs: 42, tail: 'l', name: '수호냥', staff: true });
-  bub.say('먼저 {{이름}}을 입력해 봐!');
-  const field = labEl(b, 'name-px', [755, 480, 590, 112], `
-    <input id="name" type="text" maxlength="12" placeholder="이름 (번호도 쓸 수 있어요)" autocomplete="off" enterkeyhint="done" aria-label="이름">
-    <span class="count" id="count">0/${NAME_MAX}</span>`, 'label');
-  const make = labBtn(b, '내 카드 만들기 ›', 'right:255px;top:672px;font-size:38px', 'y');   // 이름 칸과 떨어진 버튼, 오른쪽 끝 맞춤
+  labChar(b, 'staff_hello', 560, { left: 40, bottom: 10 });
+  /* 말풍선 안에 이름 칸 (11/10 다시): 수호냥이 묻고, 말풍선 안에서 바로 써요 */
+  const bub = labEl(b, 'px-bub tail-l name-bub', null, `<span class="px-name s">수호냥</span>
+    <div class="px-bub-txt">약속 카드에 들어갈<br>{{이름}}을 입력해 보아요!</div>
+    <label class="name-px"><input id="name" type="text" maxlength="12" placeholder="이름 (번호도 쓸 수 있어요)" autocomplete="off" enterkeyhint="done" aria-label="이름"><span class="count" id="count">0/${NAME_MAX}</span></label>
+    <i class="t1"></i><i class="t2"></i>`.replace(/\{\{(.+?)\}\}/g, '<b class="lc">$1</b>'), 'div', 'left:720px;top:236px;width:700px');
+  const field = $('.name-px', bub);
+  const make = labBtn(b, '내 카드 만들기 ›', 'right:180px;top:640px;font-size:38px', 'y');   // 말풍선 아래 오른쪽 끝 맞춤
   const input = $('#name', field);
   let composing = false;
   const clean = v => v.replace(/[^가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9\- ]/g, '').replace(/^ +/, '').replace(/ {2,}/g, ' ');   // 번호·반 번호 허용 (5-3 김건강, 12번)
@@ -319,7 +320,7 @@ function openInstallModal() {
       <h2 class="title-banner sm">🎉 나만의 <em>약속 카드</em> 완성 및 저장 완료!</h2>
       <div class="install-grid">
         <div class="install-left">
-          <div class="install-top"><img src="${CAT('pinky_03')}" data-anim="staff_guide" alt=""><p class="bubble sm">내일부터 시작되는 5일 챌린지를 위해 <mark>앱을 홈 화면에 추가</mark>해 주세요.</p></div>
+          <div class="install-top"><img src="${CAT('pinky_03')}" data-anim="staff_guide" alt=""><p class="bubble sm">이제 챌린지를 시작해요!<br><mark>앱을 홈 화면에 추가</mark>해 두면 쉽게 열 수 있어요.</p></div>
           <span class="lab-pill">나의 카드 고유번호</span>
           <div class="cardno">${esc(Store.get('cardNo', ''))}</div>
           <p class="saved-ok">※ 카드 저장이 완료되었습니다!</p>
