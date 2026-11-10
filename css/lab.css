@@ -730,3 +730,5 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .place-panel .px-steps i { flex:1; display:flex; align-items:center; justify-content:center; gap:8px; }
 .place-panel .px-steps .no { display:inline-grid; place-items:center; width:26px; height:26px; border-radius:50%; background:var(--navy); color:#fff; font-size:15px; line-height:1; padding-top:1px; }
 .place-panel .px-steps i.ok .no { background:var(--green); }
+/* 기억 체크 띠 이름표 크게 (11/10) */
+.qb-tag { top:-32px; left:28px; font-size:36px; padding:9px 34px 6px; box-shadow:0 0 0 4px #FFFDF5, 0 0 0 7px rgba(30,42,90,.18); }
