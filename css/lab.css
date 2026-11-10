@@ -744,3 +744,6 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .screen-S36-3 .lab-card > span::before { content:''; position:absolute; left:10px; right:10px; top:6px; height:5px; border-radius:4px; background:rgba(255,255,255,.9); }
 .screen-S36-3 .lab-card:active > span { translate:0 4px; box-shadow:0 0 0 3px rgba(30,42,90,.22), 0 3px 0 3px rgba(30,42,90,.28), 0 8px 12px rgba(30,42,90,.18) !important; }
 .screen-S36-3 .lab-card.sel > span { box-shadow:0 0 0 5px var(--yellow), 0 7px 0 5px #C79A1E, 0 16px 22px rgba(30,42,90,.22) !important; outline:none; }
+/* 장소 완료 (11/10): 상자 없이 판 전체를 남색으로 눌러 뒤 화면(미션 상자·찾은 원인 칸)을 가림 */
+.lab-pop.place-done { background:rgba(30,42,90,.62); }
+.lab-board:has(.place-done) .place-panel, .lab-board:has(.place-done) .lab-tray { visibility:hidden; }

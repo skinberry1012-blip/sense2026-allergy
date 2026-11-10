@@ -280,18 +280,18 @@ function labDone(app, key) {
   const d = LAB.done[key], name = LAB.places[d.place].name;
   const b = $('.lab-board', app); if (!b || $('.lab-pop', b)) return;
   playSfx('fanfare'); labConfetti();
-  const w = labEl(b, 'lab-pop', null, `
-    <div class="pop-card">
-      <span class="pop-ribbon">장소별 연구 - ${name} - 완료!</span>
-      <img class="pop-trophy" src="${IMG.trophy}" alt="">
-      <p>${name}에서 알레르기 유발물질<br><b class="lc">4가지</b>를 모두 찾았어!</p>
-    </div>`);
-  replay($('.pop-card', w), 'pop');
-  labChar(w, 'nyang_cheer', 380, { left: 150, bottom: 40 });
-  labChar(w, 'staff_cheer', 360, { right: 150, bottom: 40 });   // 냥박사와 비슷하게 보이도록 약 0.95배 (11/9)
+  /* 11/10: 흰 상자 없이 — 12가지 완료 화면처럼 우승컵 + 후광, 글은 꼬리 없는 말풍선 */
+  const w = labEl(b, 'lab-pop place-done');
+  const cup = labEl(w, 'lab-trophy', [620, 110, 360, 360], `<i class="tr-halo"></i><i class="tr-glow"></i><img src="${IMG.trophy}" alt="">`);
+  replay(cup, 'pop');
+  const say = labEl(w, 'px-bub tail-n cheer-say', null, `<div class="px-bub-txt">${name}에서 알레르기 유발물질<br><b class="lc big">4가지</b>를 모두 찾았어!</div>`, 'div', 'left:50%;top:500px;transform:translateX(-50%)');
+  replay(say, 'pop');
+  const nb = document.getElementById('navBtns'); if (nb) nb.classList.add('cele-hide');   // 축하 중 이전·처음 숨김
+  labChar(w, 'nyang_cheer', 520, { left: -50, bottom: 20 });
+  labChar(w, 'staff_cheer', 495, { right: -60, bottom: 20 });   // 12가지 완료 화면과 같은 크기·자리
   setTimeout(() => playSfx('whistle'), 900);
-  labBtn(w, d.label, 'left:50%;bottom:70px;transform:translateX(-50%);font-size:36px', 'y beat', () => {
-    playSfx('next');
+  labBtn(w, d.label, 'left:50%;bottom:70px;transform:translateX(-50%);font-size:40px', 'y beat', () => {
+    playSfx('next'); if (nb) nb.classList.remove('cele-hide');
     if (d.next === 'S36-1' && LabFound.total() < 12) return labGo(PLACE_OF[LabFound.firstMissing()]);
     labGo(d.next);
   });
