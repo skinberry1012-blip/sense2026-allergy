@@ -202,3 +202,16 @@
 .tgx .tc-evwarn { margin:0; padding:10px 14px; border-radius:12px; background:#FFF3C4; color:#1E2A5A; font-size:16px; line-height:1.5; }
 .tgx .tc-dy.ev-off .tc-sec { opacity:.5; }
 .tgx .tc-evnote { margin-top:8px; color:#8A5A00; }
+
+/* 02 탭 한 화면에 (11/10 점검 3): 설명 글은 버튼 오른쪽에, 칸 사이 간격 줄이기 */
+.tgx .tc-dy { gap:10px; }
+.tgx .tc-dy .tc-sec { gap:6px; }
+.tgx .tc-dy .tc-inl { flex-wrap:nowrap; gap:12px !important; }
+.tgx .tc-dy .tc-inl .tc-h { width:150px; }
+.tgx .tc-dy .tc-inl small { flex:1; min-width:0; font-size:14px; line-height:1.35; }
+.tgx .tc-dy .tc-help { margin:0; font-size:14px; }
+.tgx .tc-dy .tc-sample { margin-top:-2px; }
+.tgx .tc-dy .tc-pr .tc-sample { display:none; }   /* 칭찬은 비워 두면 예시 문구가 그대로 나가서 예시 버튼이 필요 없어요 */
+.tgx .tc-tab.off { opacity:.4; cursor:not-allowed; }
+.tgx .tc-dy .tc-inl .tc-h { width:auto; min-width:150px; white-space:nowrap; }
+.tgx .tc-dy .tc-inl .tc-h { min-width:168px; }   /* 버튼 시작 위치를 줄 맞춤 */

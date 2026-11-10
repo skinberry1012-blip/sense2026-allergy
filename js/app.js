@@ -446,7 +446,7 @@ Router.screens.T49 = (app, p) => {
   };
 
   const draw = () => {
-    $$('.tc-tab').forEach(b => { b.classList.toggle('on', +b.dataset.t === tab); b.setAttribute('aria-selected', +b.dataset.t === tab); });
+    $$('.tc-tab').forEach(b => { b.classList.toggle('on', +b.dataset.t === tab); b.setAttribute('aria-selected', +b.dataset.t === tab); b.classList.toggle('off', +b.dataset.t === 2 && d.mode === 'event'); });
     $('#panel').className = 'tc-panel t' + tab;
     if (tab === 1) {
       $('#panel').innerHTML = `
@@ -459,7 +459,7 @@ Router.screens.T49 = (app, p) => {
           </div>
         </section>
         <section class="tc-sec">
-          <h2 class="tc-h"><i>2</i>소리 기본값</h2>
+          <h2 class="tc-h"><i>2</i>소리</h2>
           <div class="tc-row"><span class="tc-lbl">효과음</span>${seg('sound', [['on', '켜기'], ['off', '끄기']], d.sound === 'off' ? 'off' : 'on')}</div>
           <div class="tc-row"><span class="tc-lbl">대기 음악</span>${seg('bgm', [['on', '켜기'], ['off', '끄기']], d.bgm === 'off' ? 'off' : 'on')}<small>첫 화면에서만 나와요</small></div>
         </section>
@@ -471,7 +471,7 @@ Router.screens.T49 = (app, p) => {
         </section>
         <section class="tc-device">
           <button class="tc-btn sm danger" id="wipe">이 기기 기록 지우기</button>
-          <p>학생 기록(이름·약속·다이어리 체크·사진)은 <b>이 기기에만</b> 저장되고 서버로 보내지 않아요. 공용 기기는 수업 뒤 지워 주세요.</p>
+          <p>학생 기록(이름·약속·다이어리 체크·사진)은 <b>이 기기에만</b> 저장되고 서버로 보내지 않아요. 학생 태블릿을 다른 학생에게 넘길 때 지워 주세요.</p>
         </section>
       </div>
       <div class="tc-col tc-pv">
@@ -481,7 +481,7 @@ Router.screens.T49 = (app, p) => {
         <div class="tc-steps" id="steps" aria-label="열어 볼 화면"></div>
         <div class="tc-frame" id="frame"><iframe id="pv" title="학생 화면 미리 보기"></iframe></div>
         <p class="tc-help" id="pvcap"></p>
-        <div class="tc-foot"><button class="tc-btn" id="reset">기본값으로</button><button class="tc-btn pri" id="toNext">다음 · 챌린지 다이어리 ›</button></div>
+        <div class="tc-foot"><button class="tc-btn" id="reset">기본값으로</button><button class="tc-btn pri" id="toNext">${d.mode === 'event' ? '다음 · QR 코드와 공유 ›' : '다음 · 챌린지 다이어리 ›'}</button></div>
       </div>`;
       $('#modes').addEventListener('click', e => { const b = e.target.closest('[data-m]'); if (!b) return; const was = d.mode; d.mode = b.dataset.m; Draft.set(d); view = d.mode === 'event' ? 'card' : 'lab';
         $$('#modes button').forEach(x => x.classList.toggle('on', x === b)); drawPrev();
@@ -512,7 +512,7 @@ Router.screens.T49 = (app, p) => {
         onTap($('#wNo', m), () => Modal.close());
         onTap($('#wYes', m), () => { playSfx('delete'); Store.clearAll(); try { sessionStorage.clear(); } catch (e) {} Modal.close(); toast('이 기기의 기록을 모두 지웠어요.'); });
       });
-      onTap($('#toNext'), () => { tab = 2; draw(); });
+      onTap($('#toNext'), () => { tab = d.mode === 'event' ? 3 : 2; draw(); });   // 행사용은 다이어리를 쓰지 않아 02 탭 건너뛰기 (11/10)
       onTap($('#reset'), () => { d = { mode: 'class', board: '', sound: 'on', bgm: 'on', dy: d.dy }; Draft.set(d); view = 'lab'; draw(); toast('기본값으로 되돌렸어요'); });
     } else if (tab === 2) {
       /* 02 챌린지 다이어리 (11/10 시안) */
@@ -534,7 +534,7 @@ Router.screens.T49 = (app, p) => {
         <section class="tc-sec"><h2 class="tc-h"><i>6</i>선생님 칭찬</h2>
           <div class="tc-pr"><span>${Math.min(y.min, y.count)}일 성공</span><div>${txt('praiseMin', 40, '비워 두면 예시 문구가 나와요', DY_SAMPLE.min)}</div></div>
           <div class="tc-pr"><span>완성</span><div>${txt('praiseDone', 40, '비워 두면 예시 문구가 나와요', DY_SAMPLE.done)}</div></div></section>
-        <section class="tc-sec tc-inl"><h2 class="tc-h"><i>7</i>인쇄 확인란</h2>${seg('dsign', [['t', '선생님 서명'], ['n', '냥박사 도장']], y.tsign === 'n' ? 'n' : 't')}<small>종이로 할 때 맨 아래</small></section>
+        <section class="tc-sec tc-inl"><h2 class="tc-h"><i>7</i>인쇄 확인란</h2>${seg('dsign', [['t', '선생님 서명'], ['n', '냥박사 도장']], y.tsign === 'n' ? 'n' : 't')}</section>
         <div class="tc-more" aria-hidden="true">▾ 아래로 내리면 더 있어요</div>
       </div>
       <div class="tc-col tc-pv">
@@ -570,6 +570,7 @@ Router.screens.T49 = (app, p) => {
       <section class="tc-card3 tc-sum">
         <div class="tc-cardhead tc-sumhead"><h2 class="tc-h">설정 요약</h2><button class="tc-btn sm" id="edit">수정</button></div>
         <dl class="tc-facts">
+          <div><dt>실행 모드</dt><dd><b>${d.mode === 'event' ? '행사용' : '수업용'}</b> · ${d.mode === 'event' ? '함께 쓰는 태블릿 (다이어리 없음)' : '1인 1태블릿 (챌린지 다이어리)'}</dd></div>
           <div><dt>소리</dt><dd>효과음 ${d.sound === 'off' ? '끄기' : '켜기'} · 대기 음악 ${d.bgm === 'off' ? '끄기' : '켜기'}</dd></div>
           <div><dt>챌린지</dt><dd>${(() => { const y = dy(); return `${y.mode === 'free' ? `${y.weeks}주 안에 자유롭게` : '학교 가는 날 이어서'} ${y.count}회 · ${Math.min(y.min, y.count)}일 성공 메달${y.promise.trim() ? ' · 선생님 약속 있음' : ''}`; })()}</dd></div>
           <div><dt>결과 게시판</dt><dd>${okBoard() ? `<span class="ok">연결됨</span> ${esc(d.board)}` : d.mode === 'event' ? '<span class="no">없음</span> 학생은 휴대폰으로 카드를 찍어 가요' : '<span class="no">없음</span> 다이어리는 학생 기기에만 저장돼요'}</dd></div>
@@ -588,7 +589,7 @@ Router.screens.T49 = (app, p) => {
       onTap($('#qrBig'), () => full('학생 접속 QR 코드', urlOf()));
       onTap($('#qrSave'), saveQR);
       onTap($('#edit'), () => { tab = 1; draw(); });
-      onTap($('#prev'), () => { tab = 2; draw(); });
+      onTap($('#prev'), () => { tab = d.mode === 'event' ? 1 : 2; draw(); });
       /* [설정 완료] (11/10 최종): 이 기기에도 설정을 적용해요 — 부스 태블릿처럼 선생님 설정에서 행사용을 고른 기기는 계속 행사용 */
       onTap($('#done'), () => {
         Config.set(Object.assign(Config.get(), { mode: d.mode === 'event' ? 'event' : 'class', board: okBoard() ? d.board : '', bgm: d.bgm !== 'off' }));
@@ -602,7 +603,7 @@ Router.screens.T49 = (app, p) => {
     const m = Modal.open(`<h3 class="${warn ? 'warn' : ''}">${title}</h3><div class="qr-big">${QR.toSVG(text)}</div><p>${warn ? '챌린지를 마친 뒤 다이어리 이미지를 올릴 때 쓰세요' : '태블릿 카메라로 찍어 주세요'}</p><button class="btn white" data-autofocus id="qc">✕ 닫기</button>`, { cls: 'qr-full', sfx: null });
     onTap($('#qc', m), () => Modal.close());
   };
-  $('.tc-tabs').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (!b) return; tab = +b.dataset.t; draw(); });
+  $('.tc-tabs').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (!b) return; if (+b.dataset.t === 2 && d.mode === 'event') { toast('행사용은 다이어리를 쓰지 않아요.'); return; } tab = +b.dataset.t; draw(); });
   window.addEventListener('resize', fitFrame);
   draw();
 };
