@@ -87,7 +87,7 @@ Router.screens.RULES = (app, p) => {
   const allPlaces = () => PLACES.every(done);
 
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-rules' });
-  labPanel(b, { sub: '나만의 알레르기 방패', title: '약속 고르기' });
+  labPanel(b, { sub: '나만의 알레르기 방패', title: '실천 약속 고르기' });
   labChar(b, 'staff_guide', 500, { left: -60, bottom: 10 });
   const bub = labBubbleAt(labBubble(b, { x: 40, y: 0, w: 470, fs: 30, tail: 'bl', name: '수호냥', staff: true }), { bottom: 470, tailX: 200 });
   const box = labEl(b, 'rl-box', [560, 156, 1000, 616]);   // 제목 아래 ~ 버튼 위 사이 가운데 (장소 고르기 2×2 · 약속 상자)
