@@ -136,3 +136,8 @@
 .tgx .tc-pr > span { font-family:var(--font-head); font-size:17px; color:var(--navy); padding-top:12px; }
 .tgx .tc-pr > div { display:flex; flex-direction:column; gap:6px; min-width:0; }
 .tgx .tc-panel.t3 { grid-template-columns:480px minmax(0, 1fr); }   /* 03 QR 코드와 공유 (11/10 탭이 3개로) */
+/* 03 탭 (11/10): 소리·챌린지·게시판 줄을 위로, 요약 상자 위끝 = QR 상자 위끝 */
+.tgx .tc-sum .tc-facts { padding-bottom:12px; border-bottom:2px solid rgba(30,42,90,.12); border-top:0; margin-top:0; padding-top:0; }
+.tgx .tc-share { justify-content:flex-start; }
+.tgx .tc-share .tc-foot { margin-top:auto; }
+.tgx .tc-panel.t3 .tc-qrcol { justify-content:flex-start; }
