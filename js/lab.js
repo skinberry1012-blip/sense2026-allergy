@@ -226,11 +226,11 @@ Object.entries(LAB.observe).forEach(([key, d]) => {
   Router.screens[key] = (app) => {
     const b = labBoard(app, LAB.bg[d.place], { dim: 'navy' });
     playSfx('scan');
-    labChar(b, 'nyang_scan', 600, { right: -70, bottom: 0 });
-    const bub = labBubbleAt(labBubble(b, { x: 380, y: 0, w: 860, fs: 40, tail: 'br' }), { bottom: 660 });
+    labChar(b, 'nyang_scan', 600, { right: 15, bottom: 0 });   // 좌우 여백 맞춤 (11/10): 돋보기·냥박사 묶음을 가운데로
+    const bub = labBubbleAt(labBubble(b, { x: 295, y: 0, w: 860, fs: 40, tail: 'br' }), { bottom: 660 });
     bub.style.left = 'auto'; bub.style.right = '360px';   // 오른쪽 끝을 냥박사 쪽에 고정   // 냥박사 머리 쪽으로 (11/9)
     bub.say(d.line);
-    const lens = labEl(b, 'lab-lens pulse', [250, 300, 470, 470], `<img src="${IMG.item(d.item)}" alt="${LAB.items[d.item]}">${corners()}`, 'button');
+    const lens = labEl(b, 'lab-lens pulse', [165, 300, 470, 470], `<img src="${IMG.item(d.item)}" alt="${LAB.items[d.item]}">${corners()}`, 'button');
     lens.setAttribute('aria-label', LAB.items[d.item] + ' 눌러 보기');
     let busy = false;
     onTap(lens, () => {
@@ -246,12 +246,12 @@ Object.entries(LAB.info).forEach(([key, d]) => {
   Router.screens[key] = (app) => {
     const b = labBoard(app, LAB.bg[d.place], { dim: 'navy' });
     playSfx('open');
-    labChar(b, 'nyang_scan', 560, { left: 80, bottom: 0 }, 'no-intro flip');   // 좌우 뒤집어 스캐너가 결과 창을 비추게 (11/9)
+    labChar(b, 'nyang_scan', 560, { left: 17, bottom: 0 }, 'no-intro flip');   // 좌우 뒤집어 스캐너가 결과 창을 비추게 (11/9)
     /* '알겠어요!' 아이: 결과 창이 열릴 때마다 여자·남자아이 번갈아 (11/9) */
     LabState.kidTurn = (LabState.kidTurn || 0) + 1;
     const kid = LabState.kidTurn % 2 ? 'girl' : 'boy';
     /* 결과 창: 폭 850, 높이는 내용에 맞추고 위아래 가운데 (11/9) */
-    const win = labEl(b, 'lab-result', [700, 34, 850, 832], `
+    const win = labEl(b, 'lab-result', [614, 34, 850, 832], `
       <div class="rs-light"></div>
       <div class="rs-screen">
         <div class="rs-head"><img src="${IMG.item(d.item)}" alt=""><div><small>발견! 알레르기 원인</small><b>${LAB.items[d.item]}</b></div></div>
