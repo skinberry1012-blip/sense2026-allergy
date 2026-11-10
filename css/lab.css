@@ -596,3 +596,16 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 /* 장소 화면 찾은 원인: 알약 배지 (11/10) */
 .place-cnt { font-size:32px; padding:9px 26px 7px; }
 .place-cnt b.lc { font-size:38px; }
+/* 장소 안내판: 연구 과제 · 장소 표시 알약 배지, 가운데 정렬 (11/10) */
+.place-panel > div { align-items:center; gap:6px; padding:12px 28px 14px; }
+.place-panel small { display:inline-block; font-size:20px; line-height:1; color:#fff; background:var(--blue); border-radius:999px; padding:7px 18px 5px; }
+.place-panel .px-steps { justify-content:center; gap:10px; margin-top:4px; }
+.place-panel .px-steps i { border:0; border-radius:999px; padding:5px 14px 3px; font-size:19px; opacity:.5; box-shadow:none; }
+.place-panel .px-steps i.pl-home { background:#F7D667; }
+.place-panel .px-steps i.pl-school { background:#A9D3F5; }
+.place-panel .px-steps i.pl-ground { background:#B5DFA6; }
+.place-panel .px-steps i.cur { opacity:1; box-shadow:0 0 0 3px var(--navy); }
+.place-panel .px-steps i.ok { opacity:.85; }
+.place-panel .px-steps i.pl-school { background:#8CC0F0; }   /* 하늘색 안내판 위에서도 보이게 한 단계 진하게 */
+.place-panel .px-steps i { opacity:.6; }
+.place-panel .px-steps i.cur { opacity:1; } .place-panel .px-steps i.ok { opacity:.9; }
