@@ -472,7 +472,7 @@ Router.screens.S38A = (app) => {
     e.style.animationDelay = i * 0.08 + 's'; replay(e, 'pop');
     return e;
   });
-  const ok = labBtn(b, '방패 만들러 가기 ›', 'left:auto;right:160px;top:786px;font-size:34px'   /* 위급 대처 띠 오른쪽 아래에 붙여요 */, 'y beat');
+  const ok = labBtn(b, '방패 만들러 가기 ›', 'left:auto;right:176px;top:792px;font-size:34px'   /* 위급 대처 띠 오른쪽 아래에 붙여요 */, 'y beat');
   ok.hidden = true;
 
   let round = 'light', placed = 0, selected = null;

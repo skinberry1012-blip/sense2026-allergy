@@ -747,3 +747,6 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 /* 장소 완료 (11/10): 상자 없이 판 전체를 남색으로 눌러 뒤 화면(미션 상자·찾은 원인 칸)을 가림 */
 .lab-pop.place-done { background:rgba(30,42,90,.62); }
 .lab-board:has(.place-done) .place-panel, .lab-board:has(.place-done) .lab-tray { visibility:hidden; }
+/* 다 맞힌 뒤 두 띠 (11/10): 이름표가 커져서 띠 사이를 벌리고 조금 작게 */
+.quiz-band.sum-top { transform:translate(90px, -46px) scale(.78); }
+.quiz-band.sum-bot { transform:translate(90px, 292px) scale(.78); }
