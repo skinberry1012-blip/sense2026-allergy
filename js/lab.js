@@ -226,11 +226,11 @@ Object.entries(LAB.observe).forEach(([key, d]) => {
   Router.screens[key] = (app) => {
     const b = labBoard(app, LAB.bg[d.place], { dim: 'navy' });
     playSfx('scan');
-    labChar(b, 'nyang_scan', 600, { right: 15, bottom: 0 });   // 좌우 여백 맞춤 (11/10): 돋보기·냥박사 묶음을 가운데로
-    const bub = labBubbleAt(labBubble(b, { x: 295, y: 0, w: 860, fs: 40, tail: 'br' }), { bottom: 660 });
+    labChar(b, 'nyang_scan', 600, { right: 81, bottom: 0 });   // 좌우 여백 맞춤 (11/10): 돋보기·냥박사 묶음을 가운데로
+    const bub = labBubbleAt(labBubble(b, { x: 229, y: 0, w: 860, fs: 40, tail: 'br' }), { bottom: 660 });
     bub.style.left = 'auto'; bub.style.right = '360px';   // 오른쪽 끝을 냥박사 쪽에 고정   // 냥박사 머리 쪽으로 (11/9)
     bub.say(d.line);
-    const lens = labEl(b, 'lab-lens pulse', [165, 300, 470, 470], `<img src="${IMG.item(d.item)}" alt="${LAB.items[d.item]}">${corners()}`, 'button');
+    const lens = labEl(b, 'lab-lens pulse', [232, 300, 470, 470], `<img src="${IMG.item(d.item)}" alt="${LAB.items[d.item]}">${corners()}`, 'button');
     lens.setAttribute('aria-label', LAB.items[d.item] + ' 눌러 보기');
     let busy = false;
     onTap(lens, () => {
