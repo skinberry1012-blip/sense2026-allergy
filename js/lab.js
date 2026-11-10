@@ -400,12 +400,15 @@ Router.screens['S36-3'] = (app) => {
       if (i < 2) labEl(b, 'cope-arrow', null, '›', 'div', `left:${130 + i * 470 + 400 + 18}px;top:425px`);   // 카드 사이 한가운데
       return s;
     });
-    const back = labBtn(b, '‹ 증상 카드로', 'left:110px;bottom:56px;font-size:32px', 'w', () => { playSfx('tap'); labGo('S36-3'); });
-    const right = labBtn(b, '', 'right:110px;bottom:56px;font-size:32px', 'y');
+    /* 아래 버튼 두 개는 오른쪽에 나란히 (11/10): 왼쪽 아래 이전·처음 버튼과 겹치지 않게, 오른쪽 끝 = 카드 오른쪽 끝 */
+    const back = labBtn(b, '‹ 증상 카드로', 'right:130px;bottom:56px;font-size:32px', 'w', () => { playSfx('tap'); labGo('S36-3'); });
+    const right = labBtn(b, '', 'right:130px;bottom:56px;font-size:32px', 'y');
+    const placeBack = () => { back.style.right = (130 + right.offsetWidth + 18) + 'px'; };
     const both = () => LabState.copeSeen.light && LabState.copeSeen.severe;
     const paintRight = () => {
       if (!both()) { right.className = 'px-btn ' + (d.type === 'light' ? 'c' : 'y'); $('span', right).innerHTML = d.otherLabel; }
       else { right.className = 'px-btn b beat'; $('span', right).innerHTML = LabState.quizDone ? '방패 만들러 가기 ›' : '기억 체크하기 ›'; }
+      placeBack();
     };
     let shown = false;
     [back, right].forEach(x => x.classList.add('hide'));
