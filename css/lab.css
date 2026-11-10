@@ -664,3 +664,10 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
   box-shadow:0 0 0 3px var(--navy), 0 6px 0 3px rgba(30,42,90,.18); }
 .rl-tab.cur { padding:10px 24px 8px; font-size:26px; background:var(--navy) !important; color:#fff; box-shadow:0 0 0 3px var(--navy), 0 6px 0 3px rgba(30,42,90,.25); translate:0 -3px; }
 .rl-tab.cur b { color:#BFF0C8; }
+/* 약속 고르기 (11/10): 약속 앞 번호 원형 배지 · 탭은 선생님 화면처럼 위 모서리만 둥근 탭, 상자와는 살짝 떨어지게 */
+.rl-list .tno { flex:none; width:44px; height:44px; border-radius:50%; background:var(--sky); color:var(--navy); font-family:var(--font-head); font-size:26px; display:grid; place-items:center; padding-top:3px; }
+.rl-list .ti.on .tno { background:var(--coral); color:#fff; }
+.rl-tabs { gap:6px; margin-bottom:10px; padding-left:20px; align-items:flex-end; }
+.rl-tab, .rl-tab.pl-home, .rl-tab.pl-school, .rl-tab.pl-outside, .rl-tab.pl-mine { border-radius:14px 14px 0 0; padding:12px 28px 10px; font-size:26px; background:#EADBC6; color:#6B6F86; box-shadow:none; translate:none; }
+.rl-tab.cur { background:#FFFDF8 !important; color:var(--navy); padding:14px 30px 12px; translate:none; box-shadow:inset 3px 0 0 var(--navy), inset -3px 0 0 var(--navy), inset 0 3px 0 var(--navy), inset 0 -3px 0 var(--navy); }
+.rl-tab.cur b { color:var(--green); }

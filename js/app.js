@@ -103,12 +103,12 @@ Router.screens.RULES = (app, p) => {
     const pill = k => `<span class="rpl pl-${k}">${k === 'mine' ? '나' : RULE_TABS.find(t => t[0] === k)[1]}</span>`;
     let body;
     if (pl !== 'mine') {
-      body = `<h5>지킬 약속을 하나 골라요</h5>` + window.RULES_DATA[pl].rules.map(r =>
-        `<button class="ti ${rules[pl][0] === r.id ? 'on' : ''}" data-id="${r.id}"><span class="tt">${esc(r.text)}</span><i class="cb ${rules[pl][0] === r.id ? 'on' : ''}"></i></button>`).join('');
+      body = `<h5>지킬 약속을 하나 골라요</h5>` + window.RULES_DATA[pl].rules.map((r, n) =>
+        `<button class="ti ${rules[pl][0] === r.id ? 'on' : ''}" data-id="${r.id}"><span class="tno">${n + 1}</span><span class="tt">${esc(r.text)}</span><i class="cb ${rules[pl][0] === r.id ? 'on' : ''}"></i></button>`).join('');
     } else {
       const d = window.RULES_DATA.mine;
       body = `<h5>직접 적어요<span class="hrule">안 적어도 돼요 · ${MINE_MAX}개까지</span></h5>`
-        + custom.mine.map((c, j) => `<div class="ti ${c.checked ? 'on' : ''}" data-c="${j}" role="button" tabindex="0"><span class="tt">${esc(c.text)}</span><button class="del" data-d="${j}" aria-label="삭제">✕</button><i class="cb ${c.checked ? 'on' : ''}"></i></div>`).join('')
+        + custom.mine.map((c, j) => `<div class="ti ${c.checked ? 'on' : ''}" data-c="${j}" role="button" tabindex="0"><span class="tno">${j + 1}</span><span class="tt">${esc(c.text)}</span><button class="del" data-d="${j}" aria-label="삭제">✕</button><i class="cb ${c.checked ? 'on' : ''}"></i></div>`).join('')
         + (custom.mine.length < MINE_MAX ? `<div class="rl-add"><p>${d.tip}</p><label class="name-px rl-in"><input id="cin" maxlength="${CUSTOM_MAX}" placeholder="${d.placeholder}" enterkeyhint="done" aria-label="나만의 약속"><span class="count" id="ccount">0/${CUSTOM_MAX}</span></label><button class="px-btn y rl-addbtn" id="cadd" type="button"><span>+ 추가</span></button></div>` : '')
         + `<p class="rl-note"><b>i</b>알레르기 종류나 병 이름 같은 건강 정보는 적지 않아요. 나만의 약속은 내 카드에만 나오고, 어디에도 보내지 않아요.</p>`;
     }
