@@ -169,6 +169,8 @@ Router.screens.RULES = (app, p) => {
 
 /* ===================== S44 카드 디자인 및 제작 ===================== */
 let signatureImg = null; // 서명은 저장하지 않고 이 화면 메모리에만
+/* 기록을 지울 때 서명도 함께 지워요 (11/10): 서명은 메모리에만 있어서 Store.clearAll로는 안 지워졌어요 — 다음 사람 카드에 앞 사람 서명이 나오던 문제 */
+{ const clear = Store.clearAll; Store.clearAll = function () { signatureImg = null; return clear.apply(Store, arguments); }; }
 Router.screens.S44 = (app) => {
   const st = { design: 'certificate', buddy: Store.get('buddy', 'pinky_01'), step: 1 };
   if (!BUDDIES[st.buddy]) st.buddy = 'pinky_01';   // 수호 친구는 4가지만 (11/9)
