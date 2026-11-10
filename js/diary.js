@@ -156,7 +156,7 @@ Router.screens.S46 = (app, p = {}) => {
     }
     const ended = st === 'ended';
     W.innerHTML = `<div class="b-bg dim"></div>
-      <div class="b-title lt"><div>${c ? '나의 <em>챌린지 다이어리</em>' : '<em>챌린지 다이어리</em> 꾸미기'}</div></div>
+      <div class="b-title lt a1"><div><b>${c ? '챌린지 다이어리' : '다이어리 꾸미기'}</b></div></div>
       <div class="side">
         ${bub ? `<div class="sbub">${bub}</div>` : ''}
         <div class="tabs"><button data-side="cover" class="${sideTab === 'cover' ? 'on' : ''}">표지</button><button data-side="stk" class="${sideTab === 'stk' ? 'on' : ''}">스티커</button>${cfg.photo !== false ? '<button data-side="photo">내 사진</button>' : ''}</div>

@@ -1308,3 +1308,9 @@ body:not(.tablet) .install.talk { zoom:.55; }
 .it-kid.g { left:600px; right:auto; height:450px; }
 .it-cb { left:-10px; right:auto; top:110px; }
 .it-kb { left:1010px; right:auto; top:110px; }
+/* 카드 꾸미기 제목 (11/10): 연구소와 같은 A-1 제목 상자 · 왼쪽 위 */
+.s44-top { justify-content:flex-start; padding:4px 0 0 10px; }
+.s44-title { margin:0; font-weight:400; display:inline-block; }
+.s44-title > div { display:flex; }
+body.tablet .s44-top { padding:16px 0 6px 18px; }
+.s44-top { margin-bottom:14px; }

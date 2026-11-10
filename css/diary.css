@@ -418,3 +418,10 @@ button.cb:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
 #dz .diary,#dz .stk{pointer-events:auto}
 .brow{display:flex;gap:10px}.brow .pbtn{flex:1}
 .rpl.p3{background:#D9C8F5}
+/* 제목 상자 A-1 (11/10): 연구소 화면과 같은 모양 · 왼쪽 위 · 이전·처음 버튼 자리 비우기 */
+.b-title.a1{left:34px;top:30px;width:auto;background:#FFFDF6;padding:0;border-radius:22px;box-shadow:0 0 0 4px var(--navy),0 0 0 9px var(--yellow),0 0 0 13px var(--navy),0 12px 0 13px rgba(30,42,90,.28)}
+.b-title.a1>div{background:none;display:flex;align-items:center;gap:14px;padding:14px 26px 12px 18px;font-size:inherit;white-space:nowrap}
+.b-title.a1 small{font-family:var(--f-disp);font-size:20px;line-height:1;color:var(--navy);background:#BFE0FA;border-radius:999px;padding:7px 16px 5px}
+.b-title.a1 b{font-family:var(--f-disp);font-weight:400;font-size:38px;line-height:1.1;color:var(--navy);-webkit-text-stroke:1.2px var(--navy)}
+.side{top:158px;bottom:122px}
+.b-title.a1>div{padding:14px 28px 12px}   /* 왼쪽 칸 폭(360px) 안에 들어가게 파트 칩 없이 */

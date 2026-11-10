@@ -172,7 +172,7 @@ Router.screens.S44 = (app) => {
   app.innerHTML = `
   <div class="sc outdoor s44 s44b">
     <header class="s44-top">
-      <h1 class="title-banner">${pawSVG('#fff')} 나만의 알레르기 예방 <em>약속 카드</em> 만들기! ${pawSVG('#fff')}</h1>
+      <h1 class="px-panel s44-title"><div><small>나만의 알레르기 방패</small><b>카드 꾸미기</b></div></h1>
     </header>
     <div class="s44b-body">
       <aside class="s44b-side">
