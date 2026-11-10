@@ -148,8 +148,8 @@ Object.entries(LAB.story).forEach(([key, d], i) => {
     Bgm.stop();
     const b = labBoard(app, LAB.bg.lab, { dim: 'soft-r' });
     labEl(b, 'px-chip', null, `이야기 ${i + 1} / 4`, 'div', 'left:28px;top:26px');
-    labChar(b, d.pose, 640, { left: -90, bottom: 8 }, 'bob');
-    const bub = labBubble(b, { x: 560, y: 230, w: 860, fs: 42, tail: 'l' });   // 냥박사 얼굴 옆에 붙임 (11/9)
+    labChar(b, d.pose, 640, { left: 30, bottom: 8 }, 'bob');   // 이전·처음 버튼과 안 겹치게 오른쪽으로 (11/10)
+    const bub = labBubble(b, { x: 680, y: 230, w: 860, fs: 42, tail: 'l' });   // 냥박사 얼굴 옆에 붙임 (11/9)
     bub.say(d.line);
     labBtn(b, d.label || '다음 ›', 'right:56px;bottom:62px;font-size:38px', 'y', () => { playSfx('next'); labGo(d.go); });
   };
@@ -244,7 +244,7 @@ Object.entries(LAB.info).forEach(([key, d]) => {
   Router.screens[key] = (app) => {
     const b = labBoard(app, LAB.bg[d.place], { dim: 'navy' });
     playSfx('open');
-    labChar(b, 'nyang_scan', 560, { left: -40, bottom: 0 }, 'no-intro flip');   // 좌우 뒤집어 스캐너가 결과 창을 비추게 (11/9)
+    labChar(b, 'nyang_scan', 560, { left: 80, bottom: 0 }, 'no-intro flip');   // 좌우 뒤집어 스캐너가 결과 창을 비추게 (11/9)
     /* '알겠어요!' 아이: 결과 창이 열릴 때마다 여자·남자아이 번갈아 (11/9) */
     LabState.kidTurn = (LabState.kidTurn || 0) + 1;
     const kid = LabState.kidTurn % 2 ? 'girl' : 'boy';
@@ -349,8 +349,8 @@ Router.screens['S36-3'] = (app) => {
     onTap(e, () => pick(c.id));
     return e;
   });
-  labChar(b, 'nyang_explain', 430, { left: -20, bottom: 6 });
-  const bub = labBubbleAt(labBubble(b, { x: 36, y: 0, w: 540, fs: 34, tail: 'bl' }), { bottom: 470, tailX: 230 });   // 냥박사 머리 바로 위 (11/9)
+  labChar(b, 'nyang_explain', 430, { left: 50, bottom: 6 });
+  const bub = labBubbleAt(labBubble(b, { x: 36, y: 0, w: 540, fs: 34, tail: 'bl' }), { bottom: 470, tailX: 300 });   // 냥박사 머리 바로 위 (11/9)
   bub.classList.add('bal');
   const lineFor = n => n >= 7 ? C.lines[7] : n >= 2 ? C.lines[2] : C.lines[n];
   const bl = labBtn(b, '<i class="lk">🔒</i> 가벼운 증상 대처 방법 ›', 'left:640px;bottom:58px;font-size:28px', 'y');
@@ -433,8 +433,8 @@ Router.screens.S38A = (app) => {
   const panel = labPanel(b, { y: 20, title: '대처 방법 기억하기', center: true, fs: 38 });
   const chip = labEl(b, 'px-chip quiz-step', null, '', 'div', `left:${800 + panel.offsetWidth / 2 + 18}px;top:46px`);
   /* 냥박사가 왼쪽에서 판마다 안내해요 (11/9) */
-  const guide = labChar(b, 'nyang_explain', 400, { left: -66, bottom: 6 });   // 보이는 몸 왼쪽 끝 = 화면 왼쪽 48px (오른쪽 여백과 같게)
-  const bub = labBubbleAt(labBubble(b, { x: 48, y: 0, w: 480, fs: 30, tail: 'bl' }), { bottom: 440, tailX: 190 });
+  const guide = labChar(b, 'nyang_explain', 400, { left: 20, bottom: 6 });   // 보이는 몸 왼쪽 끝 = 화면 왼쪽 48px (오른쪽 여백과 같게)
+  const bub = labBubbleAt(labBubble(b, { x: 48, y: 0, w: 480, fs: 30, tail: 'bl' }), { bottom: 440, tailX: 276 });
   /* 띠: [230,196,1140,360] 안에 빈칸 3개 (240×280) + 화살표 */
   /* 오른쪽 칸 x 560~1552: 띠와 카드 받침의 폭·위치를 같게 */
   const BX = 560, BY = 196, BW = 992, BH = 340, SW = 210, SH = 250, AG = 80, SX0 = (BW - (SW * 3 + AG * 2)) / 2, SY = (BH - SH) / 2 + 6;

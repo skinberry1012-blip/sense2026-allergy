@@ -196,7 +196,7 @@ const NavBtns = {
   update(screen) {
     if (!NavBtns.el) {
       const w = document.createElement('div'); w.id = 'navBtns';
-      w.innerHTML = '<button type="button" id="navBack" aria-label="이전 화면">‹ 이전</button><button type="button" id="navHome" aria-label="처음 화면">⌂ 처음</button>';
+      w.innerHTML = '<button type="button" id="navBack" aria-label="이전 화면"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg><span>이전</span></button><button type="button" id="navHome" aria-label="처음 화면"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7"/><path d="M6.5 9.5V20h11V9.5"/><path d="M10 20v-5h4v5"/></svg><span>처음</span></button>';
       $('#stage').appendChild(w); NavBtns.el = w;
       $('#navBack', w).addEventListener('click', () => {
         if (typeof playSfx === 'function') playSfx('tap');
