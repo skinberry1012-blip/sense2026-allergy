@@ -774,3 +774,5 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 
 /* 장소 완료 (11/10 점검): 어두운 배경 뒤로 '발견' 도장이 비치지 않게 */
 .lab-board:has(.place-done) .lab-spot { visibility:hidden; }
+/* 장소 번호 배지 (11/10): 실제 글꼴(주아)에서 '운동장'이 두 줄로 꺾이지 않게 — 한 줄 고정, 폭은 글자에 맞춤 */
+.place-panel .px-steps i { flex:1 1 auto; white-space:nowrap; }
