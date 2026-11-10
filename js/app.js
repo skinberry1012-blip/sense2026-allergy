@@ -96,7 +96,6 @@ Router.screens.RULES = (app, p) => {
 
   /* 순서대로 (11/10): 집 → 학교 → 밖 → 나만의 약속(선택) → 카드 꾸미기. 하나 고르면 다음 장소로 넘어가요 */
   let step = Math.max(0, Math.min(3, p.step != null ? p.step | 0 : (PLACES.findIndex(pl => !done(pl)) + 1 || 4) - 1));
-  const chip = labEl(b, 'sym-cnt top-cnt rl-step', null, '', 'div', 'right:40px;top:40px');
   const say = () => {
     const k = RULE_TABS[step][0];
     if (k === 'mine') return bub.say(allPlaces() ? '내가 지킬 약속을<br><b class="kw light">직접</b> 적어도 좋아!' : '집 · 학교 · 밖에서<br>하나씩 먼저 정해 줘!', false);
@@ -104,7 +103,6 @@ Router.screens.RULES = (app, p) => {
   };
   const render = () => {
     const pl = RULE_TABS[step][0];
-    chip.innerHTML = `<b class="lc">${step + 1}</b> / 4`;
     let body;
     if (pl !== 'mine') {
       body = window.RULES_DATA[pl].rules.map((r, n) =>
@@ -267,7 +265,7 @@ Router.screens.S44 = (app) => {
     if (!res.fit) {
       toast('약속이 카드에 다 들어가지 않아요. [다시 꾸미기]에서 약속을 줄이거나 짧게 고쳐 주세요.', 3500); return;
     }
-    try { await saveCanvasPNG(out, `promise-card_${Store.get("cardNo")}.png`); }
+    try { await saveCanvasPNG(out, `약속카드_${(name || '나').replace(/[^가-힣a-zA-Z0-9]/g, '')}_${DateK.today().replace(/-/g, '').slice(4)}.png`); }
     catch (e) { toast(e && e.name === 'AbortError' ? '카드 저장이 취소됐어요. 다시 눌러 주세요.' : '저장하지 못했어요. 다시 눌러 주세요.', 2500); return; }
     st.step = 4; playSfx('save'); render();
     Store.set('design', st.design); Store.set('buddy', st.buddy);

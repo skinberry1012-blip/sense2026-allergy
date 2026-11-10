@@ -216,7 +216,7 @@ Object.entries(LAB.places).forEach(([place, d]) => {
     });
     if (n >= 4) {
       setTimeout(() => { if (Router.current && Router.current.s === d.scene) labDone(app, d.done); }, p.just ? 900 : 300);
-      labBtn(b, LAB.done[d.done].label, 'left:28px;top:160px;font-size:28px', 'y', () => { playSfx('tap'); labDone(app, d.done); });
+      labBtn(b, LAB.done[d.done].label, 'left:34px;top:170px;font-size:28px', 'y place-again', () => { playSfx('tap'); labDone(app, d.done); });
     }
   };
 });
@@ -355,8 +355,8 @@ Router.screens['S36-3'] = (app) => {
   const bub = labBubbleAt(labBubble(b, { x: 36, y: 0, w: 540, fs: 34, tail: 'bl' }), { bottom: 470, tailX: 300 });   // 냥박사 머리 바로 위 (11/9)
   bub.classList.add('bal');
   const lineFor = n => n >= 7 ? C.lines[7] : n >= 2 ? C.lines[2] : C.lines[n];
-  const bl = labBtn(b, '<i class="lk">🔒</i> 가벼운 증상 대처 방법 ›', 'left:640px;bottom:58px;font-size:28px', 'y');
-  const bs = labBtn(b, '<i class="lk">🔒</i> 위급한 증상 대처 방법 ›', 'left:1080px;bottom:58px;font-size:28px', 'c');
+  const bl = labBtn(b, '가벼운 증상 대처 방법 ›', 'left:640px;bottom:58px;font-size:28px', 'y');
+  const bs = labBtn(b, '위급한 증상 대처 방법 ›', 'left:1080px;bottom:58px;font-size:28px', 'c');
   bl.dataset.type = 'light'; bs.dataset.type = 'severe';
   [[bl, 'S37'], [bs, 'S38']].forEach(([btn, go]) => onTap(btn, () => {
     if (LabState.cardsSeen.length < 7) { playSfx('full'); replay(btn, 'shake'); clearTimeout(lockTimer); bub.say(C.lines.lock, false); lockTimer = setTimeout(() => bub.say(lineFor(LabState.cardsSeen.length), false), 2000); return; }

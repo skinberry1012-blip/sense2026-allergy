@@ -28,7 +28,7 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .px-btn:active { filter:brightness(.92); }
 .px-btn.off { background:rgba(255,253,245,.55) !important; color:#9AA1B8 !important;
   box-shadow:0 -3px 0 rgba(30,42,90,.22),0 3px 0 rgba(30,42,90,.22),-3px 0 0 rgba(30,42,90,.22),3px 0 0 rgba(30,42,90,.22) !important; }   /* 잠긴 버튼: 진한 테두리·그림자 없이 옅게 (11/9) */
-.px-btn .lk { font-style:normal; display:none; } .px-btn.off .lk { display:inline; }
+ 
 .px-btn.hide { opacity:0; pointer-events:none; }
 .px-btn[hidden] { display:none; }
 .px-btn.shine::after { content:''; position:absolute; top:-20%; left:-60%; width:40%; height:140%; background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,.85),rgba(255,255,255,0)); transform:skewX(-20deg); animation:pxshine 2.6s ease-in-out infinite; }
@@ -594,8 +594,8 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .name-bub .name-px input { font-size:46px; }
 .name-bub .name-px input::placeholder { font-size:30px; }
 /* 장소 화면 찾은 원인: 알약 배지 (11/10) */
-.place-cnt { font-size:32px; padding:9px 26px 7px; }
-.place-cnt b.lc { font-size:38px; }
+
+
 /* 장소 안내판: 연구 과제 · 장소 표시 알약 배지, 가운데 정렬 (11/10) */
 .place-panel > div { align-items:center; gap:6px; padding:12px 28px 14px; }
 .place-panel small { display:inline-block; font-size:20px; line-height:1; color:#fff; background:var(--blue); border-radius:999px; padding:7px 18px 5px; }
@@ -612,19 +612,19 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .place-panel small { color:var(--blue); background:#fff; box-shadow:0 0 0 2px rgba(47,77,168,.35); }   /* 연구 과제 배지: 연하게 (11/10) */
 /* ===== 약속 고르기 (11/10 다시): 다이어리 '실천한 약속' 칸과 같은 모양 ===== */
 .lab-rules .rl-box { display:flex; flex-direction:column; gap:16px; }
-.rl-tabs { display:flex; gap:12px; padding-left:6px; }
-.rl-tab { border:0; border-radius:999px; padding:10px 26px 8px; font-family:var(--font-head); font-size:28px; color:var(--navy); cursor:pointer; opacity:.6; transition:opacity .15s; }
-.rl-tab b { font-weight:400; color:var(--green); }
-.rl-tab.pl-home { background:#F7D667; } .rl-tab.pl-school { background:#8CC0F0; } .rl-tab.pl-outside { background:#B5DFA6; } .rl-tab.pl-mine { background:#D9C8F5; }
-.rl-tab.cur { opacity:1; box-shadow:0 0 0 4px var(--navy), 0 6px 0 4px rgba(30,42,90,.2); }
+
+
+
+   
+
 .rl-list { flex:1; background:#fff; border-radius:20px; overflow:hidden; box-shadow:0 0 0 4px var(--navy), 0 10px 0 4px rgba(30,42,90,.18); display:flex; flex-direction:column; }
 .rl-list h5 { margin:0; display:flex; align-items:center; padding:16px 26px; background:var(--sky); border-bottom:4px solid var(--navy); font-family:var(--font-head); font-weight:400; font-size:30px; color:var(--navy); }
 .rl-list .hrule { margin-left:auto; font-size:24px; color:var(--blue); }
 .rl-list .ti { position:relative; display:flex; align-items:center; gap:18px; width:100%; border:0; background:#fff; text-align:left; padding:22px 26px; border-bottom:3px dashed #E9DFC9; cursor:pointer; font:inherit; }
 .rl-list .ti:last-of-type { border-bottom:0; }
 .rl-list .ti.on { background:#FFF8EC; }
-.rl-list .rpl { flex:none; min-width:76px; text-align:center; font-family:var(--font-head); font-size:22px; color:var(--navy); border-radius:999px; padding:5px 14px 3px; }
-.rl-list .rpl.pl-home { background:#F7D667; } .rl-list .rpl.pl-school { background:#A9D3F5; } .rl-list .rpl.pl-outside { background:#B5DFA6; } .rl-list .rpl.pl-mine { background:#D9C8F5; }
+
+   
 .rl-list .tt { flex:1; min-width:0; font-family:var(--font-head); font-size:30px; line-height:1.35; color:var(--navy); word-break:keep-all; }
 .rl-list .cb { flex:none; position:relative; width:48px; height:48px; border:4px solid var(--navy); border-radius:10px; background:#fff; }
 .rl-list .cb.on { background:var(--coral); }
@@ -642,54 +642,52 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .lab-rules input { user-select:text; -webkit-user-select:text; }
 .rl-list { flex:none; }
 .rl-note { margin:14px 26px 18px; }
-.rl-tab { opacity:.72; }
+
 /* 약속 고르기: 폴더 탭 + 목록 상자, 상자는 제목과 버튼 사이 가운데 (11/10) */
 .lab-rules .rl-box { justify-content:center; gap:0; }
 .rl-wrap { display:flex; flex-direction:column; }
-.rl-tabs { gap:8px; padding-left:24px; align-items:flex-end; position:relative; z-index:2; }
-.rl-tab { opacity:1; border-radius:16px 16px 0 0; padding:12px 28px 10px; font-size:27px; margin-bottom:-4px; box-shadow:inset 0 0 0 4px var(--navy); filter:saturate(.55) brightness(1.08); color:#4A5578; }
-.rl-tab.cur { padding:16px 32px 14px; font-size:29px; color:var(--navy); filter:none; box-shadow:inset 4px 4px 0 0 var(--navy), inset -4px 0 0 0 var(--navy); }
-.rl-list.pl-home h5 { background:#F7D667; } .rl-list.pl-school h5 { background:#A9D3F5; } .rl-list.pl-outside h5 { background:#B5DFA6; } .rl-list.pl-mine h5 { background:#D9C8F5; }
+
+
+
+   
 .rl-list .hrule { color:var(--navy); }
 .rl-list .ti { padding:24px 30px; }
 /* 약속 고르기 탭: 색 채우기 빼고 같은 색으로 (11/10) — 고른 탭만 흰색으로 머리 줄과 이어져요 */
-.rl-tab, .rl-tab.pl-home, .rl-tab.pl-school, .rl-tab.pl-outside, .rl-tab.pl-mine { background:#EFE7D8; filter:none; color:#7A7F99; }
-.rl-tab.cur { background:#fff !important; color:var(--navy); }
-.rl-list.pl-home h5, .rl-list.pl-school h5, .rl-list.pl-outside h5, .rl-list.pl-mine h5 { background:#fff; border-bottom:3px solid #E9DFC9; }
+
+
+
 .rl-list h5 { font-size:26px; color:var(--blue); padding:14px 30px 10px; }
 /* 약속 고르기 (11/10 다시): 상자는 처음 모양, 탭은 상자와 떨어져 살짝 뜬 알약 */
-.rl-list.pl-home h5, .rl-list.pl-school h5, .rl-list.pl-outside h5, .rl-list.pl-mine h5, .rl-list h5 { background:var(--sky); border-bottom:4px solid var(--navy); font-size:30px; color:var(--navy); padding:16px 26px; }
-.rl-tabs { gap:12px; padding-left:6px; margin-bottom:18px; align-items:center; }
-.rl-tab, .rl-tab.pl-home, .rl-tab.pl-school, .rl-tab.pl-outside, .rl-tab.pl-mine { margin:0; border-radius:999px; padding:10px 24px 8px; font-size:26px; background:#fff; color:var(--navy); opacity:1; filter:none;
-  box-shadow:0 0 0 3px var(--navy), 0 6px 0 3px rgba(30,42,90,.18); }
-.rl-tab.cur { padding:10px 24px 8px; font-size:26px; background:var(--navy) !important; color:#fff; box-shadow:0 0 0 3px var(--navy), 0 6px 0 3px rgba(30,42,90,.25); translate:0 -3px; }
-.rl-tab.cur b { color:#BFF0C8; }
+.rl-list h5 { background:var(--sky); border-bottom:4px solid var(--navy); font-size:30px; color:var(--navy); padding:16px 26px; }
+
+
+
+
 /* 약속 고르기 (11/10): 약속 앞 번호 원형 배지 · 탭은 선생님 화면처럼 위 모서리만 둥근 탭, 상자와는 살짝 떨어지게 */
 .rl-list .tno { flex:none; width:44px; height:44px; border-radius:50%; background:var(--sky); color:var(--navy); font-family:var(--font-head); font-size:26px; display:grid; place-items:center; padding-top:3px; }
 .rl-list .ti.on .tno { background:var(--coral); color:#fff; }
-.rl-tabs { gap:6px; margin-bottom:10px; padding-left:20px; align-items:flex-end; }
-.rl-tab, .rl-tab.pl-home, .rl-tab.pl-school, .rl-tab.pl-outside, .rl-tab.pl-mine { border-radius:14px 14px 0 0; padding:12px 28px 10px; font-size:26px; background:#EADBC6; color:#6B6F86; box-shadow:none; translate:none; }
-.rl-tab.cur { background:#FFFDF8 !important; color:var(--navy); padding:14px 30px 12px; translate:none; box-shadow:inset 3px 0 0 var(--navy), inset -3px 0 0 var(--navy), inset 0 3px 0 var(--navy), inset 0 -3px 0 var(--navy); }
-.rl-tab.cur b { color:var(--green); }
+
+
+
+
 /* 약속 고르기: 장소 고르기 2×2 그림 카드 → 누르면 그 장소 약속 상자 (11/10) */
-.rl-grid { display:grid; grid-template-columns:1fr 1fr; gap:26px 30px; }
-.rl-card { position:relative; height:288px; border:0; padding:0; border-radius:22px; background:#fff; cursor:pointer; text-align:left; overflow:visible;
-  display:flex; flex-direction:column; box-shadow:0 0 0 4px var(--navy), 0 8px 0 4px rgba(30,42,90,.18); transition:transform .15s; }
-.rl-card:active { transform:translateY(3px); }
-.rl-card .pic { flex:1; border-radius:18px 18px 0 0; background-size:cover; background-position:center; border-bottom:3px solid var(--navy); }
-.rl-card.pl-home .pic { background-image:url(../assets/bg/bg_home.png); background-position:30% 62%; }
-.rl-card.pl-school .pic { background-image:url(../assets/bg/bg_cafeteria.png); background-position:50% 58%; }
-.rl-card.pl-outside .pic { background-image:url(../assets/bg/bg_playground.png); background-position:40% 72%; }
-.rl-card.pl-mine .pic { background:radial-gradient(circle at 50% 55%, #fff 0 22%, transparent 23%), #EDE4FB; position:relative; }
-.rl-card.pl-mine .pic::after { content:'⭐'; position:absolute; left:50%; top:50%; transform:translate(-50%,-46%); font-size:54px; }
-.rl-card b { display:block; padding:12px 22px 0; font-family:var(--font-head); font-weight:400; font-size:30px; color:var(--navy); }
-.rl-card b small { font-size:18px; color:#8A7FB0; background:#EDE4FB; border-radius:999px; padding:2px 10px; vertical-align:middle; }
-.rl-card em { display:block; padding:2px 22px 14px; font-style:normal; font-size:20px; color:#8A93AE; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.rl-card.done em { color:var(--coral-d); }
-.rl-card > i { position:absolute; right:-12px; top:-12px; width:50px; height:50px; border-radius:50%; background:var(--green); color:#fff; font-style:normal; font-family:var(--font-head); font-size:30px; display:grid; place-items:center; box-shadow:0 0 0 4px #fff; }
-.rl-card:not(.done):not(.pl-mine) { animation:cardsoft 2.4s ease-in-out infinite; }
-.rl-back { align-self:flex-start; margin:0 0 16px 4px; border:0; background:#fff; color:var(--navy); font-family:var(--font-head); font-size:26px; padding:10px 22px 8px; border-radius:12px; cursor:pointer; box-shadow:0 0 0 3px var(--navy), 0 5px 0 3px rgba(30,42,90,.18); }
-.rl-box.grid { justify-content:center; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* 약속 고르기 — 순서대로 한 박스 (11/10): 위 장소 그림 + 아래 약속 목록 */
 .lab-rules .rl-box { justify-content:flex-start; }
 .rl-list { flex:none; }
@@ -702,7 +700,7 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .rl-pic span { position:relative; background:#fff; border-radius:999px; padding:8px 26px 6px; font-family:var(--font-head); font-size:32px; color:var(--navy); box-shadow:0 0 0 4px var(--navy), 0 6px 0 4px rgba(30,42,90,.2); }
 .rl-pic em { position:relative; font-style:normal; font-family:var(--font-head); font-size:24px; color:var(--navy); background:rgba(255,255,255,.85); border-radius:999px; padding:6px 18px 4px; }
 .rl-list .ti { padding:22px 30px; }
-.rl-step { white-space:nowrap; }
+
 /* 배경 누르기 통일 (11/10): 밝은 크림 대신 남색으로 살짝 어둡게 — 글·상자·캐릭터가 또렷하게.
    장소 탐색(원본 그대로)과 스캔·결과(남색 .48)는 그대로 */
 .lab-dim.cream, .lab-dim.soft-r, .lab-quiz .lab-dim.cream, .lab-quiz.rounds .lab-dim.cream { background:rgba(30,42,90,.38); }
@@ -772,3 +770,4 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .rl-head b.pw.pl-school { background:linear-gradient(transparent 45%, #A9D3F5 45%, #A9D3F5 92%, transparent 92%); }
 .rl-head b.pw.pl-outside { background:linear-gradient(transparent 45%, #B5DFA6 45%, #B5DFA6 92%, transparent 92%); }
 .rl-head b.pw.pl-mine { background:linear-gradient(transparent 45%, #D9C8F5 45%, #D9C8F5 92%, transparent 92%); }
+.lab-board:has(.place-done) .place-again { visibility:hidden; }
