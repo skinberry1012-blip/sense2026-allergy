@@ -115,7 +115,11 @@ Router.screens.RULES = (app, p) => {
         + `<p class="rl-note"><b>i</b>알레르기 종류나 병 이름 같은 건강 정보는 적지 않아요. 나만의 약속은 내 카드에만 나오고, 어디에도 보내지 않아요.</p>`;
     }
     /* 위: 장소 그림 띠 + 장소 이름, 아래: 약속 목록 */
-    box.innerHTML = `<div class="tlist rl-list"><div class="rl-pic pl-${pl}"><span>${window.RULES_DATA[pl].icon} ${RULE_TABS[step][1]}</span>${pl === 'mine' ? `<em>안 적어도 돼요 · ${MINE_MAX}개까지</em>` : ''}</div>${body}</div>`;
+    /* 11/10: 상자 위 장소 배지(누르면 그 장소로) + 상자 머리 "학교에서는 이렇게 해요"(장소 형광펜) */
+    const PB = { home: '🏠 집', school: '🏫 학교', outside: '🌳 밖', mine: '⭐ 나만의 약속' };
+    const PH = { home: '<b class="pw pl-home">집</b>에서는 이렇게 해요', school: '<b class="pw pl-school">학교</b>에서는 이렇게 해요', outside: '<b class="pw pl-outside">밖</b>에서는 이렇게 해요', mine: '<b class="pw pl-mine">나만의 약속</b>을 적어 봐요' };
+    const badges = RULE_TABS.map(([k], j) => { const ok = k !== 'mine' && done(k); return `<button type="button" class="rl-badge pl-${k} ${j === step ? 'cur' : ''} ${ok ? 'ok' : ''}" data-go="${j}">${PB[k]}${ok ? ' <i>✓</i>' : ''}</button>`; }).join('');
+    box.innerHTML = `<div class="rl-stack"><div class="rl-badges">${badges}</div><div class="tlist rl-list"><div class="rl-pic pl-${pl}"><span class="rl-head">${PH[pl]}</span>${pl === 'mine' ? `<em>안 적어도 돼요 · ${MINE_MAX}개까지</em>` : ''}</div>${body}</div></div>`;
     const cin = $('#cin', box);
     if (cin) {
       cin.addEventListener('input', () => { $('#ccount', box).textContent = `${[...cin.value].length}/${CUSTOM_MAX}`; });
@@ -131,7 +135,7 @@ Router.screens.RULES = (app, p) => {
     say();
     /* 정리 (11/10): 상자 + 아래 버튼 줄을 한 묶음으로 제목 아래~화면 아래 사이 세로 가운데, 버튼은 오른쪽에 나란히 (끝 = 상자 끝) */
     requestAnimationFrame(() => {
-      const list = $('.rl-list', box); if (!list) return;
+      const list = $('.rl-stack', box); if (!list) return;
       const h = list.offsetHeight, bh = next.offsetHeight, gap = 26, y0 = 140, y1 = 880;
       const top = Math.round(y0 + Math.max(0, (y1 - y0 - (h + gap + bh)) / 2));
       box.style.top = top + 'px'; box.style.height = h + 'px';
@@ -148,6 +152,7 @@ Router.screens.RULES = (app, p) => {
   };
   const go = n => { step = n; render(); replay(box, 'pop'); };
   box.addEventListener('click', e => {
+    const g = e.target.closest('[data-go]'); if (g) { const j = +g.dataset.go; if (j !== step) { playSfx('tab'); go(j); } return; }
     const d = e.target.closest('[data-d]'); if (d) { e.stopPropagation(); custom.mine.splice(+d.dataset.d, 1); save(); playSfx('uncheck'); return render(); }
     const row = e.target.closest('.ti'); if (!row) return;
     const pl = RULE_TABS[step][0];
