@@ -316,12 +316,11 @@ const Orient = {
     const short = Math.min(screen.width, screen.height);
     const tablet = short >= 600;
     const portrait = window.innerHeight > window.innerWidth;
-    const lab = Router.current && /^S(0\d|1\d|2\d|3[0-8])/.test(Router.current.s);   // 연구소(S00~S38A)는 장면 그림이라 휴대폰도 가로
+    const lab = true;   // 11/10: 방패 만들기·이름 쓰기·약속 고르기·다이어리도 연구소 판(1600×900)이라 학생 화면은 모두 가로
     let msg = '';
     if (coarse && !teacher) {
       if (tablet && portrait) msg = '태블릿을 <b>가로로</b> 돌려 주세요';
-      if (!tablet && lab && portrait) msg = '연구소는 휴대폰을 <b>가로로</b> 돌려서 봐요';
-      if (!tablet && !lab && !portrait) msg = '휴대폰을 <b>세로로</b> 돌려 주세요';
+      if (!tablet && lab && portrait) msg = '휴대폰을 <b>가로로</b> 돌려서 봐요';
     }
     o.querySelector('p').innerHTML = msg;
     o.classList.toggle('show', !!msg);
