@@ -290,8 +290,7 @@ function openInstallModal() {
     <div class="install talk">
       <div class="it-stage">
         <img class="it-kid g" src="assets/kid/kid_girl.png" alt="">
-        <img class="it-kid b" src="assets/kid/kid_boy.png" alt="">
-        ${bub('tail-br it-kb', esc(Store.get('name', '') || '나'), '', '나만의 알레르기<br>{{실천 약속 카드}} 완성!')}
+        ${bub('tail-bl it-kb', '', '', '나만의 알레르기<br>{{실천 약속 카드}} 완성!')}
         <img class="it-cat" src="assets/char/staff_guide.png" data-anim="staff_guide" alt="">
         ${bub('tail-bl it-cb', '수호냥', 's', say)}
       </div>
