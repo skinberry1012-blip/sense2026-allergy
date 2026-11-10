@@ -177,7 +177,7 @@ Object.entries(LAB.places).forEach(([place, d]) => {
   Router.screens[d.scene] = (app, p) => {
     const b = labBoard(app, LAB.bg[place]);
     const found = LabFound.get()[place], n = found.length;
-    const pan = labPanel(b, { x: 28, y: 24, sub: `연구 과제 ${d.no} · ${d.name}`, title: '숨은 알레르기 원인 4가지 찾기', fs: 34 });
+    const pan = labPanel(b, { x: 28, y: 24, sub: `미션 ${d.no} · ${d.name}`, title: '숨은 알레르기 원인 4가지 찾기', fs: 34 });
     pan.classList.add('place-panel');   // 연구 과제 · 장소 표시를 알약 배지로 (11/10)
     /* 장소 미션 3가지 표시 (집 3-1 · 급식실 3-2 · 운동장 3-3) */
     const PICON = { home: '🏠', school: '🍴', ground: '⚽' };
