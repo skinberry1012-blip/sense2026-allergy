@@ -652,3 +652,8 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .rl-list.pl-home h5 { background:#F7D667; } .rl-list.pl-school h5 { background:#A9D3F5; } .rl-list.pl-outside h5 { background:#B5DFA6; } .rl-list.pl-mine h5 { background:#D9C8F5; }
 .rl-list .hrule { color:var(--navy); }
 .rl-list .ti { padding:24px 30px; }
+/* 약속 고르기 탭: 색 채우기 빼고 같은 색으로 (11/10) — 고른 탭만 흰색으로 머리 줄과 이어져요 */
+.rl-tab, .rl-tab.pl-home, .rl-tab.pl-school, .rl-tab.pl-outside, .rl-tab.pl-mine { background:#EFE7D8; filter:none; color:#7A7F99; }
+.rl-tab.cur { background:#fff !important; color:var(--navy); }
+.rl-list.pl-home h5, .rl-list.pl-school h5, .rl-list.pl-outside h5, .rl-list.pl-mine h5 { background:#fff; border-bottom:3px solid #E9DFC9; }
+.rl-list h5 { font-size:26px; color:var(--blue); padding:14px 30px 10px; }
