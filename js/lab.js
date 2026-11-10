@@ -184,7 +184,7 @@ Object.entries(LAB.places).forEach(([place, d]) => {
       const ok = LabFound.count(k) >= 4;
       return `<i class="pl-${k} ${k === place ? 'cur' : ''} ${ok ? 'ok' : ''}"><span class="no">${ok ? '✓' : j + 1}</span>${q.name}</i>`;
     }).join('')}</span>`);
-    labEl(b, 'sym-cnt place-cnt top-cnt', null, `<b class="lc">${n}</b> / 4`, 'div', 'right:40px;top:40px');   // 증상 카드처럼 알약 배지 (11/10)
+    /* 오른쪽 위 '0 / 4'는 뺐어요 (11/10): 아래 '찾은 원인' 칸 4개가 채워지며 같은 걸 보여 줘요 */
     /* 힌트 버튼은 뺐어요 (11/10): 찾을 물건이 처음부터 노란 빛·물결·모서리로 강조돼 있어요 */
     /* 스캔할 곳 */
     const spots = d.points.map((pt, i) => {
