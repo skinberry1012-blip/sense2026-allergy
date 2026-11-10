@@ -255,8 +255,9 @@ Router.screens.S46 = (app, p = {}) => {
       <div class="act"><button class="pbtn y" id="hang">다이어리에 붙이기 ›</button></div>
     </div><canvas class="conf" width="1600" height="900"></canvas>`;
     W.appendChild(box);
+    const nb = document.getElementById('navBtns'); if (nb) nb.classList.add('cele-hide');   // 축하 장면에서는 이전·처음 숨김 (11/10)
     playSfx('fanfare'); dyConfetti(box.querySelector('canvas'), big ? 220 : 60, big);
-    onTap(box.querySelector('#hang'), () => { playSfx('stamp'); box.remove(); paint(); const a = q('.award'); if (a) replay(a, 'hang'); });
+    onTap(box.querySelector('#hang'), () => { playSfx('stamp'); box.remove(); if (nb) nb.classList.remove('cele-hide'); paint(); const a = q('.award'); if (a) replay(a, 'hang'); });
   }
 
   /* ---------- 내 사진: 카메라(3·2·1 찰칵) 또는 수호냥 ---------- */

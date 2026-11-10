@@ -130,3 +130,4 @@ body.tablet #navBtns button svg { width:34px; height:34px; }
 body.tablet #navBtns { left:16px; bottom:16px; gap:10px; }
 body.tablet #navBtns button { width:60px; height:66px; padding:6px 0 4px; font-size:14px; border-radius:16px; }
 body.tablet #navBtns button svg { width:28px; height:28px; }
+#navBtns.cele-hide { display:none !important; }

@@ -212,6 +212,7 @@ const NavBtns = {
     }
     const hide = PREVIEW || screen === 'T49' || screen === 'T50' || screen === 'S44' || screen === NavBtns.home();   // S44는 왼쪽에 자체 이동 버튼
     NavBtns.el.hidden = hide;
+    NavBtns.el.classList.remove('cele-hide');
   },
   depth: 0
 };
