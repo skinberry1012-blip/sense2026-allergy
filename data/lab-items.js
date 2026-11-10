@@ -10,7 +10,7 @@
 window.LAB = {
   /* 그림 경로 */
   /* 장소 앞에 얹는 꾸밈 그림 (누를 수 없음): [그림, 왼쪽, 위, 너비, 높이] */
-  deco: { ground: [['assets/bg/deco_bush.png', 1206, 736, 394, 176]], home: [['assets/bg/deco_frame.png', 640, 167, 320, 216]] },   // 집: 벽 보드판을 액자로 (팀 점검 11/10)
+  deco: { ground: [['assets/bg/deco_bush.png', 1206, 736, 394, 176]], home: [['assets/bg/deco_frame.png', 640, 167, 320, 240]] },   // 집: 벽 보드판을 액자로 (팀 점검 11/10)
 
   bg: { entrance: 'assets/bg/bg_entrance.png', lab: 'assets/bg/bg_lab.png', home: 'assets/bg/bg_home.png', school: 'assets/bg/bg_cafeteria.png', ground: 'assets/bg/bg_playground.png' },
 
