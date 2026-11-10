@@ -10,7 +10,7 @@
 'use strict';
 
 const DY_IMG = k => `assets/diary/${k}.png`;
-const DY_PLACE = { home: ['집', 0], school: ['학교', 1], outside: ['밖', 2] };
+const DY_PLACE = { home: ['집', 0], school: ['학교', 1], outside: ['밖', 2], mine: ['나', 3] };
 const DY_SAMPLE = { min: '목표를 이뤘어요! 매일 약속을 지키는 모습이 정말 멋져요.', done: '끝까지 해냈어요! 약속을 지키는 멋진 방패 대원이에요.' };
 const DY_STK = [
   ...['staff_hello', 'staff_heart', 'staff_thumb', 'nyang_hello', 'nyang_cheer', 'nyang_explain'].map(k => ['img', k, 140, 'c']),

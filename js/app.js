@@ -71,123 +71,81 @@ Router.screens.S40 = (app) => {
   input.value = Store.get('name', ''); render();
 };
 
-/* ===================== S41 약속 고르기 (한 화면 · 탭 3개: S41-1 집 / S41-2 학교 / S41-3 밖) ===================== */
+/* ===================== S41 약속 고르기 (11/10 다시) =====================
+   연구소 판 위에: 왼쪽 수호냥 + 말풍선, 오른쪽 다이어리의 '실천한 약속' 칸과 같은 목록
+   장소(집 · 학교 · 밖)마다 1가지씩 꼭 고르고, '나만의 약속'은 직접 써서 2개까지 더할 수 있어요. 고르면 바로 저장돼요. */
+const RULE_TABS = [['home', '집'], ['school', '학교'], ['outside', '밖'], ['mine', '나만의 약속']];
 Router.screens.RULES = (app, p) => {
-  let tab = Math.max(0, Math.min(2, p.tab | 0));
+  let tab = Math.max(0, Math.min(3, p.tab | 0));
   const empty = () => ({ home: [], school: [], outside: [] });
-  const load = () => ({ rules: Store.get('rules', empty()), custom: Store.get('custom', empty()) });
-  const clone = o => JSON.parse(JSON.stringify(o));
-  let saved = load(), draft = clone(saved);
-  const cntPlace = pl => (draft.rules[pl] || []).length + (draft.custom[pl] || []).filter(c => c.checked).length;
-  const total = () => PLACES.reduce((a, pl) => a + cntPlace(pl), 0);
-  const savedTotal = () => PLACES.reduce((a, pl) => a + (saved.rules[pl] || []).length + (saved.custom[pl] || []).filter(c => c.checked).length, 0);
-  const dirty = () => JSON.stringify(draft) !== JSON.stringify(saved);
+  const rules = Object.assign(empty(), Store.get('rules', empty()));
+  const custom = Object.assign({ mine: [] }, Store.get('custom', {}));
+  PLACES.forEach(pl => { rules[pl] = (rules[pl] || []).filter(id => window.RULES_DATA[pl].rules.some(r => r.id === id)).slice(0, 1); });   // 장소마다 1개
+  custom.mine = (custom.mine || []).slice(0, MINE_MAX);
+  const save = () => { Store.set('rules', rules); Store.set('custom', custom); };
+  const done = pl => pl === 'mine' ? custom.mine.some(c => c.checked) : rules[pl].length > 0;
+  const allPlaces = () => PLACES.every(done);
 
-  app.innerHTML = `
-  <div class="sc outdoor rules-screen">
-    <header class="rules-head">
-      <h1 class="title-banner sm">${pawSVG('#fff')} 세 장소에서 지킬 수 있는 <em>너만의 약속</em>을 골라 보자! ${pawSVG('#fff')}</h1>
-    </header>
-    <div class="rules-sticky">
-      <div class="countbox" id="countbox"></div>
-      <div class="tabs" id="tabs" role="tablist"></div>
-    </div>
-    <img class="rules-cat bob" id="rcat" src="${CAT('pinky_03')}" data-anim="staff_guide" alt="">
-    <div class="rules-body">
-      <section class="rules-panel">
-        <div id="list"></div>
-        <div class="custom">
-          <span class="custom-lab">✏️ 나만의 약속 직접 쓰기</span>
-          <p class="custom-tip">💡 매일 실천할 수 있는 내용을 적어 보아요</p>
-          <div class="custom-row">
-            <input id="cin" maxlength="${CUSTOM_MAX}" enterkeyhint="done" aria-label="나만의 약속">
-            <button class="btn pink" id="cadd" disabled>+ 추가</button>
-          </div>
-        </div>
-        <p class="health-note"><b>i</b>알레르기 종류나 병 이름 같은 건강 정보는 적지 않아요. 나만의 약속은 내 카드에만 나오고, 어디에도 보내지 않아요.</p>
-      </section>
-    </div>
-    <nav class="bottom-bar rules-bar two">
-      <button class="btn pink" id="save">✓ 약속 고르기 완료 <small>(저장)</small></button>
-      <button class="btn orange" id="next">카드 꾸미기로 이동 ›</button>
-    </nav>
-  </div>`;
+  const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-rules' });
+  labPanel(b, { y: 26, title: '나만의 약속을 골라 보세요!', center: true, fs: 38 });
+  labChar(b, 'staff_guide', 500, { left: -60, bottom: 10 });
+  const bub = labBubbleAt(labBubble(b, { x: 40, y: 0, w: 470, fs: 30, tail: 'bl', name: '수호냥', staff: true }), { bottom: 470, tailX: 200 });
+  const box = labEl(b, 'rl-box', [560, 140, 1000, 610]);
+  const next = labBtn(b, '카드 꾸미기로 ›', 'right:40px;bottom:46px;font-size:36px', 'y');
 
-  let lastTotal = total();
+  const say = () => {
+    const left = PLACES.filter(pl => !done(pl)).map(pl => RULE_TABS.find(t => t[0] === pl)[1]);
+    bub.say(left.length ? `장소마다 {{1가지씩}} 골라 봐!<br>남은 곳: ${left.join(' · ')}` : '좋아! 직접 약속을 적을 수도 있어.<br>다 됐으면 {{카드 꾸미기}}로 가자!', false);
+  };
   const render = () => {
-    const place = PLACES[tab], data = window.RULES_DATA[place], n = total(), ok = n >= MIN_RULES;
-    const cb = $('#countbox');
-    cb.className = 'countbox ' + (ok ? 'ok' : '');
-    cb.innerHTML = `<div class="cb-main"><span class="cb-lab">전체 고른 약속</span><span class="cb-num">${n}<small> / ${MAX_RULES}</small></span>
-      <span class="dots">${Array.from({ length: MAX_RULES }, (_, i) => `<i class="${i < n ? 'on' : ''}"></i>${i === 2 ? '<em></em>' : ''}`).join('')}</span></div>
-      <p class="cb-note">세 장소를 합쳐 3~7개 골라요</p>`;
-    if (n !== lastTotal) { replay(cb, 'pop'); if (lastTotal === 2 && n === 3) playSfx('star'); }
-    lastTotal = n;
-    $('#tabs').innerHTML = PLACES.map((pl, i) => { const d = window.RULES_DATA[pl], k = cntPlace(pl);
-      return `<button class="tab ${i === tab ? 'cur' : ''}" role="tab" aria-selected="${i === tab}" data-t="${i}">${d.icon} ${d.name}${k ? `<span class="badge">${k}</span>` : ''}</button>`; }).join('');
-    $('#list').innerHTML = data.rules.map(r => `<button class="rule ${draft.rules[place].includes(r.id) ? 'on' : ''}" data-id="${r.id}"><span class="box"></span><span class="txt">${esc(r.text)}</span></button>`).join('')
-      + draft.custom[place].map((c, j) => `<div class="rule ${c.checked ? 'on' : ''}" data-c="${j}" role="button" tabindex="0"><span class="box"></span><span class="txt"><span class="mine">나만의</span>${esc(c.text)}</span><button class="del" data-d="${j}" aria-label="삭제">✕</button></div>`).join('');
-    $('#cin').placeholder = data.placeholder;
-    const v = $('#cin').value.trim();
-    $('#cadd').disabled = !v || n >= MAX_RULES;
-  };
-  const full = () => { playSfx('full'); replay($('#countbox'), 'shake'); toast('집·학교·밖 합쳐서 7개까지 고를 수 있어요.'); };
-  const cheer = () => replay($('#rcat'), 'hop');
-
-  $('#tabs').addEventListener('click', e => {
-    const b = e.target.closest('[data-t]'); if (!b || +b.dataset.t === tab) return;
-    tab = +b.dataset.t; $('#cin').value = ''; playSfx('tab'); replay($('#rcat'), 'nod'); render();
-  });
-  $('#list').addEventListener('click', e => {
-    const place = PLACES[tab];
-    const d = e.target.closest('[data-d]'); if (d) { e.stopPropagation(); draft.custom[place].splice(+d.dataset.d, 1); playSfx('uncheck'); return render(); }
-    const row = e.target.closest('.rule'); if (!row) return;
-    if (row.dataset.id) {
-      const ids = draft.rules[place], id = row.dataset.id, k = ids.indexOf(id);
-      if (k >= 0) { ids.splice(k, 1); playSfx('uncheck'); }
-      else { if (total() >= MAX_RULES) return full(); ids.push(id); playSfx('check'); cheer(); }
+    const pl = RULE_TABS[tab][0];
+    const tabs = RULE_TABS.map(([k, n], i) => `<button class="rl-tab pl-${k} ${i === tab ? 'cur' : ''}" data-t="${i}" role="tab" aria-selected="${i === tab}">${n}${done(k) ? ' <b>✓</b>' : ''}</button>`).join('');
+    const pill = k => `<span class="rpl pl-${k}">${k === 'mine' ? '나' : RULE_TABS.find(t => t[0] === k)[1]}</span>`;
+    let body;
+    if (pl !== 'mine') {
+      body = `<h5>${RULE_TABS[tab][1]}에서 지킬 약속<span class="hrule">하나만 골라요</span></h5>` + window.RULES_DATA[pl].rules.map(r =>
+        `<button class="ti ${rules[pl][0] === r.id ? 'on' : ''}" data-id="${r.id}">${pill(pl)}<span class="tt">${esc(r.text)}</span><i class="cb ${rules[pl][0] === r.id ? 'on' : ''}"></i></button>`).join('');
     } else {
-      const c = draft.custom[place][+row.dataset.c];
-      if (!c.checked && total() >= MAX_RULES) return full();
-      c.checked = !c.checked; playSfx(c.checked ? 'check' : 'uncheck'); if (c.checked) cheer();
+      const d = window.RULES_DATA.mine;
+      body = `<h5>나만의 약속<span class="hrule">선택 · ${MINE_MAX}개까지</span></h5>`
+        + custom.mine.map((c, j) => `<div class="ti ${c.checked ? 'on' : ''}" data-c="${j}" role="button" tabindex="0">${pill('mine')}<span class="tt">${esc(c.text)}</span><button class="del" data-d="${j}" aria-label="삭제">✕</button><i class="cb ${c.checked ? 'on' : ''}"></i></div>`).join('')
+        + (custom.mine.length < MINE_MAX ? `<div class="rl-add"><p>${d.tip}</p><label class="name-px rl-in"><input id="cin" maxlength="${CUSTOM_MAX}" placeholder="${d.placeholder}" enterkeyhint="done" aria-label="나만의 약속"><span class="count" id="ccount">0/${CUSTOM_MAX}</span></label><button class="px-btn y rl-addbtn" id="cadd" type="button"><span>+ 추가</span></button></div>` : '')
+        + `<p class="rl-note"><b>i</b>알레르기 종류나 병 이름 같은 건강 정보는 적지 않아요. 나만의 약속은 내 카드에만 나오고, 어디에도 보내지 않아요.</p>`;
     }
-    render();
-  });
+    box.innerHTML = `<div class="rl-tabs" role="tablist">${tabs}</div><div class="tlist rl-list">${body}</div>`;
+    next.classList.toggle('off', !allPlaces()); next.setAttribute('aria-disabled', String(!allPlaces()));
+    const cin = $('#cin', box);
+    if (cin) {
+      cin.addEventListener('input', () => { $('#ccount', box).textContent = `${[...cin.value].length}/${CUSTOM_MAX}`; });
+      cin.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) add(); });
+      onTap($('#cadd', box), add);
+    }
+    say();
+  };
   const add = () => {
-    const place = PLACES[tab], v = $('#cin').value.trim(); if (!v) return;
-    if (total() >= MAX_RULES) return full();
-    const all = PLACES.flatMap(pl => [...draft.custom[pl].map(c => c.text), ...window.RULES_DATA[pl].rules.map(r => r.text)]);
+    const cin = $('#cin', box), v = (cin.value || '').trim(); if (!v) { playSfx('full'); replay(cin.parentNode, 'shake'); return; }
+    const all = [...custom.mine.map(c => c.text), ...PLACES.flatMap(pl => window.RULES_DATA[pl].rules.map(r => r.text))];
     if (all.includes(v)) return toast('이미 있는 약속이에요.');
-    draft.custom[place].push({ id: 'c' + Date.now().toString(36), text: v, checked: true }); $('#cin').value = '';
-    playSfx('check'); cheer(); render();
+    custom.mine.push({ id: 'c' + Date.now().toString(36), text: v, checked: true }); save(); playSfx('check'); render();
   };
-  $('#cin').addEventListener('input', render);
-  $('#cin').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) add(); });
-  $('#cin').addEventListener('focus', () => document.body.classList.add('kbd'));
-  $('#cin').addEventListener('blur', () => setTimeout(() => document.body.classList.remove('kbd'), 150));
-  onTap($('#cadd'), () => (total() >= MAX_RULES ? full() : add()));
-
-  const save = silent => {
-    Store.set('rules', clone(draft.rules)); Store.set('custom', clone(draft.custom));
-    saved = load(); if (!silent) { playSfx('save'); toast('저장했어요!', 1500); } render();
-  };
-  onTap($('#save'), () => save());
-
-  const leave = to => {
-    if (!dirty()) return to();
-    const m = Modal.open(`
-      <div class="pop-head orange">고른 약속이 아직 저장되지 않았어요.</div>
-      <p class="pop-body">저장하지 않고 이동하면 마지막으로 저장한 상태로 돌아가요.</p>
-      <div class="pop-btns"><button class="btn white" id="mSkip">저장하지 않고 이동</button><button class="btn pink" data-autofocus id="mSave">저장하고 이동</button></div>`);
-    onTap($('#mSave', m), () => { Modal.close(); save(true); playSfx('save'); to(); });
-    onTap($('#mSkip', m), () => { Modal.close(); draft = clone(saved); playSfx('tap'); to(); });
-  };
-  const toCard = () => {
-    if (savedTotal() < MIN_RULES) { playSfx('full'); replay($('#countbox'), 'shake'); return toast('집·학교·밖 합쳐서 3개 이상 골라 주세요.'); }
+  box.addEventListener('click', e => {
+    const t = e.target.closest('[data-t]'); if (t) { if (+t.dataset.t !== tab) { tab = +t.dataset.t; playSfx('tab'); render(); } return; }
+    const d = e.target.closest('[data-d]'); if (d) { e.stopPropagation(); custom.mine.splice(+d.dataset.d, 1); save(); playSfx('uncheck'); return render(); }
+    const row = e.target.closest('.ti'); if (!row) return;
+    const pl = RULE_TABS[tab][0];
+    if (row.dataset.id) {
+      const on = rules[pl][0] === row.dataset.id;
+      rules[pl] = on ? [] : [row.dataset.id]; playSfx(on ? 'uncheck' : 'check'); save();
+      render();
+      if (!on && tab < 2) setTimeout(() => { if (Router.current && Router.current.s === 'RULES' && tab < 2 && done(PLACES[tab])) { tab++; render(); } }, 450);   // 다음 장소로
+      return;
+    }
+    const c = custom.mine[+row.dataset.c]; c.checked = !c.checked; save(); playSfx(c.checked ? 'check' : 'uncheck'); render();
+  });
+  onTap(next, () => {
+    if (!allPlaces()) { playSfx('full'); replay(next, 'shake'); tab = PLACES.findIndex(pl => !done(pl)); render(); return toast('집 · 학교 · 밖에서 하나씩 골라 주세요.'); }
     playSfx('next'); Router.go('S44');
-  };
-  onTap($('#next'), () => leave(toCard));
-  Router.guard = () => { if (!dirty()) return false; leave(() => Router.go('S40', {}, { replace: true })); return true; };
+  });
   render();
 };
 
@@ -582,8 +540,8 @@ Router.screens.T50 = (app, p) => Router.screens.T49(app, { ...p, tab: 3 });
 function seedPreview(view) {
   Store.clearAll();
   Store.set('name', '김건강'); Store.set('cardNo', 'AL-PREVIEW');
-  Store.set('rules', { home: ['home-1', 'home-2'], school: ['school-1', 'school-3'], outside: ['outside-2'] });
-  Store.set('custom', { home: [], school: [], outside: [] });
+  Store.set('rules', { home: ['home-1'], school: ['school-1'], outside: ['outside-2'] });
+  Store.set('custom', { mine: [] });
   /* 연구소 뒤쪽 화면은 앞 단계를 마친 것처럼 (미리 보기 기기에만) */
   if (['S36-3', 'S37', 'S38', 'S38A'].includes(view) && window.LAB) {
     Store.set('labFound', Object.fromEntries(Object.entries(LAB.places).map(([k, pl]) => [k, pl.points.map(pt => pt.item)])));

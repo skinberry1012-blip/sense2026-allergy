@@ -82,7 +82,7 @@ const CARD = { accent: '#3E6B2E', ink: '#22361A', soft: '#E3ECD5' };
 const GOWUN = '"Gowun Dodum",' + FONT;
 const SEAL_INK = '#C9573A', HILITE = 'rgba(245,200,66,.55)';
 const RULE_STEPS = [{ fs: 44, lh: 1.26, gap: 12 }, { fs: 38, lh: 1.28, gap: 11 }, { fs: 36, lh: 1.26, gap: 10 }, { fs: 34, lh: 1.24, gap: 8 }, { fs: 32, lh: 1.2, gap: 7 }, { fs: 30, lh: 1.2, gap: 6 }, { fs: 28, lh: 1.18, gap: 5 }, { fs: 26, lh: 1.18, gap: 4 }, { fs: 24, lh: 1.16, gap: 3 }];
-const PLACE_TAG = { home: { name: '집에서', fill: '#F7D667', soft: 'rgba(247,214,103,.18)' }, school: { name: '학교에서', fill: '#A9D3F5', soft: 'rgba(169,211,245,.24)' }, outside: { name: '밖에서', fill: '#B5DFA6', soft: 'rgba(181,223,166,.26)' } };
+const PLACE_TAG = { home: { name: '집에서', fill: '#F7D667', soft: 'rgba(247,214,103,.18)' }, school: { name: '학교에서', fill: '#A9D3F5', soft: 'rgba(169,211,245,.24)' }, outside: { name: '밖에서', fill: '#B5DFA6', soft: 'rgba(181,223,166,.26)' }, mine: { name: '나만의', fill: '#D9C8F5', soft: 'rgba(217,200,245,.26)' } };
 const hasJong = w => { const c = String(w).trim().slice(-1).charCodeAt(0); return c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28 !== 0; };
 
 /* 도장: 따로 그려 투명도만 낮춰 얹어요 (배경이 비치고 잉크 색은 그대로) */

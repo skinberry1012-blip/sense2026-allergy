@@ -8,7 +8,7 @@ const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const PLACES = ['home', 'school', 'outside'];
-const MIN_RULES = 3, MAX_RULES = 7, NAME_MAX = 10, CUSTOM_MAX = 30;
+const MIN_RULES = 3, MAX_RULES = 5, MINE_MAX = 2, NAME_MAX = 10, CUSTOM_MAX = 30;
 
 /* 받침 판별 → 조사 */
 function hasBatchim(word) {
@@ -89,6 +89,7 @@ function selectedRules() {
     (rules[p] || []).forEach(id => { const r = data.rules.find(x => x.id === id); if (r) out.push({ id: r.id, text: r.text, place: p, mine: false, type: r.type || 'daily' }); });
     (custom[p] || []).filter(c => c.checked).forEach(c => out.push({ id: c.id, text: c.text, place: p, mine: true, type: 'daily' }));
   });
+  (custom.mine || []).filter(c => c.checked).forEach(c => out.push({ id: c.id, text: c.text, place: 'mine', mine: true, type: 'daily' }));   // 나만의 약속 (11/10)
   return out;
 }
 const needCount = n => Math.max(1, n - 1);   // 하나까지는 못 지켜도 별 (3개→2 · 7개→6, 팀 점검 11/8)

@@ -610,3 +610,36 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .place-panel .px-steps i { opacity:.6; }
 .place-panel .px-steps i.cur { opacity:1; } .place-panel .px-steps i.ok { opacity:.9; }
 .place-panel small { color:var(--blue); background:#fff; box-shadow:0 0 0 2px rgba(47,77,168,.35); }   /* 연구 과제 배지: 연하게 (11/10) */
+/* ===== 약속 고르기 (11/10 다시): 다이어리 '실천한 약속' 칸과 같은 모양 ===== */
+.lab-rules .rl-box { display:flex; flex-direction:column; gap:16px; }
+.rl-tabs { display:flex; gap:12px; padding-left:6px; }
+.rl-tab { border:0; border-radius:999px; padding:10px 26px 8px; font-family:var(--font-head); font-size:28px; color:var(--navy); cursor:pointer; opacity:.6; transition:opacity .15s; }
+.rl-tab b { font-weight:400; color:var(--green); }
+.rl-tab.pl-home { background:#F7D667; } .rl-tab.pl-school { background:#8CC0F0; } .rl-tab.pl-outside { background:#B5DFA6; } .rl-tab.pl-mine { background:#D9C8F5; }
+.rl-tab.cur { opacity:1; box-shadow:0 0 0 4px var(--navy), 0 6px 0 4px rgba(30,42,90,.2); }
+.rl-list { flex:1; background:#fff; border-radius:20px; overflow:hidden; box-shadow:0 0 0 4px var(--navy), 0 10px 0 4px rgba(30,42,90,.18); display:flex; flex-direction:column; }
+.rl-list h5 { margin:0; display:flex; align-items:center; padding:16px 26px; background:var(--sky); border-bottom:4px solid var(--navy); font-family:var(--font-head); font-weight:400; font-size:30px; color:var(--navy); }
+.rl-list .hrule { margin-left:auto; font-size:24px; color:var(--blue); }
+.rl-list .ti { position:relative; display:flex; align-items:center; gap:18px; width:100%; border:0; background:#fff; text-align:left; padding:22px 26px; border-bottom:3px dashed #E9DFC9; cursor:pointer; font:inherit; }
+.rl-list .ti:last-of-type { border-bottom:0; }
+.rl-list .ti.on { background:#FFF8EC; }
+.rl-list .rpl { flex:none; min-width:76px; text-align:center; font-family:var(--font-head); font-size:22px; color:var(--navy); border-radius:999px; padding:5px 14px 3px; }
+.rl-list .rpl.pl-home { background:#F7D667; } .rl-list .rpl.pl-school { background:#A9D3F5; } .rl-list .rpl.pl-outside { background:#B5DFA6; } .rl-list .rpl.pl-mine { background:#D9C8F5; }
+.rl-list .tt { flex:1; min-width:0; font-family:var(--font-head); font-size:30px; line-height:1.35; color:var(--navy); word-break:keep-all; }
+.rl-list .cb { flex:none; position:relative; width:48px; height:48px; border:4px solid var(--navy); border-radius:10px; background:#fff; }
+.rl-list .cb.on { background:var(--coral); }
+.rl-list .cb.on::after { content:''; position:absolute; left:12px; top:2px; width:12px; height:24px; border:solid #fff; border-width:0 6px 6px 0; transform:rotate(45deg); }
+.rl-list .ti.on .cb { animation:pxpop .3s ease-out; }
+.rl-list .del { flex:none; width:40px; height:40px; border-radius:50%; border:3px solid var(--navy); background:#fff; color:var(--navy); font-size:20px; cursor:pointer; }
+.rl-add { padding:20px 26px 6px; display:grid; grid-template-columns:1fr auto; gap:12px 16px; align-items:center; }
+.rl-add p { grid-column:1/-1; margin:0; font-family:var(--font-head); font-size:24px; color:var(--blue); }
+.rl-in { height:84px; padding:0 22px 0 26px; }
+.rl-in input { font-size:30px; }
+.rl-in input::placeholder { font-size:26px; }
+.rl-addbtn { position:relative; font-size:30px; }
+.rl-note { margin:auto 26px 18px; font-size:19px; color:var(--muted); display:flex; gap:10px; align-items:flex-start; }
+.rl-note b { flex:none; width:26px; height:26px; border-radius:50%; background:var(--coral); color:#fff; font-family:var(--font-head); font-weight:400; display:grid; place-items:center; font-size:17px; }
+.lab-rules input { user-select:text; -webkit-user-select:text; }
+.rl-list { flex:none; }
+.rl-note { margin:14px 26px 18px; }
+.rl-tab { opacity:.72; }
