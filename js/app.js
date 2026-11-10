@@ -74,7 +74,7 @@ Router.screens.S40 = (app) => {
 /* ===================== S41 약속 고르기 (11/10 다시) =====================
    연구소 판 위에: 왼쪽 수호냥 + 말풍선, 오른쪽 다이어리의 '실천한 약속' 칸과 같은 목록
    장소(집 · 학교 · 밖)마다 1가지씩 꼭 고르고, '나만의 약속'은 직접 써서 2개까지 더할 수 있어요. 고르면 바로 저장돼요. */
-const RULE_TABS = [['home', '집'], ['school', '학교'], ['outside', '밖'], ['mine', '나만의 약속']];
+const RULE_TABS = [['home', '집에서'], ['school', '학교에서'], ['outside', '밖에서'], ['mine', '나만의 약속']];
 Router.screens.RULES = (app, p) => {
   let tab = Math.max(0, Math.min(3, p.tab | 0));
   const empty = () => ({ home: [], school: [], outside: [] });
@@ -94,12 +94,12 @@ Router.screens.RULES = (app, p) => {
   const next = labBtn(b, '카드 꾸미기로 ›', 'right:40px;bottom:46px;font-size:36px', 'y');
 
   const say = () => {
-    const left = PLACES.filter(pl => !done(pl)).map(pl => RULE_TABS.find(t => t[0] === pl)[1]);
+    const left = PLACES.filter(pl => !done(pl)).map(pl => ({ home: '집', school: '학교', outside: '밖' })[pl]);
     bub.say(left.length ? `장소마다 {{1가지씩}} 골라 봐!<br>남은 곳: ${left.join(' · ')}` : '좋아! 직접 약속을 적을 수도 있어.<br>다 됐으면 {{카드 꾸미기}}로 가자!', false);
   };
   const render = () => {
     const pl = RULE_TABS[tab][0];
-    const tabs = RULE_TABS.map(([k, n], i) => `<button class="rl-tab pl-${k} ${i === tab ? 'cur' : ''}" data-t="${i}" role="tab" aria-selected="${i === tab}">${k === 'mine' ? '✏️' : window.RULES_DATA[k].icon} ${n}${done(k) ? ' <b>✓</b>' : ''}</button>`).join('');
+    const tabs = RULE_TABS.map(([k, n], i) => `<button class="rl-tab pl-${k} ${i === tab ? 'cur' : ''}" data-t="${i}" role="tab" aria-selected="${i === tab}">${window.RULES_DATA[k].icon} ${n}${done(k) ? ' <b>✓</b>' : ''}</button>`).join('');
     const pill = k => `<span class="rpl pl-${k}">${k === 'mine' ? '나' : RULE_TABS.find(t => t[0] === k)[1]}</span>`;
     let body;
     if (pl !== 'mine') {
