@@ -16,7 +16,7 @@ Router.screens.S39 = (app) => {
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-s39' });
   labPanel(b, { sub: '나만의 알레르기 방패', title: '방패 만들기' });
   labChar(b, 'staff_guide', 600, { left: 70, bottom: 10 });
-  if (Config.isEvent()) labEl(b, 'lab-org', null, 'SENSE<small>(초등보건교육연구회)</small>', 'div', 'left:auto;right:48px');   // 왼쪽 위는 제목판이라 오른쪽 위 · 행사용 첫 화면에도 연구회 이름 (11/11)
+  if (Config.isEvent()) labEl(b, 'lab-org', null, '<b>SENSE</b><span>초등보건교육연구회</span>');   // 행사용 첫 화면에도 연구회 이름 (11/11)
   const bub = labBubble(b, { x: 760, y: 330, w: 720, fs: 42, tail: 'l', name: '수호냥', staff: true });   // 수호냥 몸 가운데 높이에 맞춤 (11/10)
   bub.say('알레르기로부터 나를 지켜 줄<br>{{나만의 방패}}를 만들어 보자!');
   const start = labBtn(b, '나만의 약속 카드 만들기 ›', 'left:780px;top:640px;font-size:38px', 'y beat');
