@@ -168,3 +168,5 @@
 .tgx .tc-panel.t3 .tc-flow { flex:none; justify-content:flex-start; gap:8px; }
 .tgx .tc-panel.t3 .tc-sec { gap:8px; }
 .tgx .tc-panel.t3 .tc-foot { margin-top:4px; }
+/* 03 탭: 두 영역을 가운데로 모으고 사이 간격 72 — 양쪽 바깥 여백 같게 */
+.tgx .tc-panel.t3 { grid-template-columns:420px 800px; justify-content:center; column-gap:72px; }
