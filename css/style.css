@@ -1271,3 +1271,11 @@ body.tablet .s44.s44b .preview-wrap, .s44b .s44b-card .preview-wrap { width:min(
 body.tablet .install-dim .modal:has(.install.slim) { width:900px; }
 body.tablet .install.slim .install-top img { width:190px; }
 body.tablet .install.slim .bubble.sm { font-size:26px; line-height:1.5; }
+/* 11/10: 상자 없이 — 어두운 배경 위에 제목 · 수호냥 · 말풍선 · 시작하기 */
+.install-dim .modal:has(.install.slim), body.tablet .install-dim .modal:has(.install.slim) { background:none !important; border:0; box-shadow:none !important; padding:0; overflow:visible; }
+.install.slim { display:flex; flex-direction:column; align-items:center; }
+.install.slim .install-top { margin-top:26px; }
+.install.slim .btn.big { width:auto; min-width:0; padding:0 46px; margin-top:26px; }
+body.tablet .install.slim .btn.big { font-size:30px; min-height:76px; }
+body.tablet .install.slim .install-top img { width:250px; }
+body.tablet .install.slim .bubble.sm { font-size:28px; padding:22px 30px; }
