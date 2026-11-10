@@ -1325,3 +1325,9 @@ body.tablet .s44-top { padding:16px 0 6px 18px; }
 .s44b-side > .s44-box:first-child { flex:1 !important; }
 .s44b-side .buddies { margin:auto 0 !important; padding:3px 10px !important; gap:18px !important; }
 .s44b-side .buddy { aspect-ratio:0.82; }
+/* 카드 꾸미기 (11/10 다시): 이름표·수호냥·버튼을 한 묶음으로 붙이고, 묶음을 세로 가운데에 */
+.s44b-side { justify-content:center !important; gap:28px !important; }
+.s44b-side > .s44-box:first-child { flex:none !important; }
+.s44b-side .buddies { margin:0 !important; padding:3px 10px !important; gap:18px !important; }
+.s44b-side > .s44-box:first-child .box-tag { margin-bottom:16px !important; }
+.s44b-btns { margin-top:0 !important; }
