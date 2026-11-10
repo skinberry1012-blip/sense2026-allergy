@@ -14,7 +14,7 @@ const openTeacher = from => Router.go('T49', { returnTo: from });
    연구소 화면과 같은 판(1600×900) 위에 수호냥 + 말풍선 + 버튼 (11/10) */
 Router.screens.S39 = (app) => {
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-s39' });
-  labPanel(b, { sub: '나만의 알레르기 방패', title: '방패 만들기' });
+  secretTeacher(labPanel(b, { sub: '나만의 알레르기 방패', title: '방패 만들기' }), 'S39');   // 제목을 두 번 빠르게 누르면 선생님 설정 (11/10)
   labChar(b, 'staff_guide', 600, { left: 70, bottom: 10 });
   const bub = labBubble(b, { x: 760, y: 330, w: 720, fs: 42, tail: 'l', name: '수호냥', staff: true });   // 수호냥 몸 가운데 높이에 맞춤 (11/10)
   bub.say('알레르기로부터 나를 지켜 줄<br>{{나만의 방패}}를 만들어 보자!');
@@ -581,7 +581,7 @@ Router.screens.T49 = (app, p) => {
           <div class="tc-linkrow"><div class="tc-link" id="lnk">${esc(urlOf())}</div><button class="tc-btn" id="copy">링크 복사</button></div>
           ${okBoard() ? '<button class="tc-btn sm" id="bqr">결과 게시판 QR 보기</button>' : ''}</div>
       </section>
-      <div class="tc-foot tc-foot3"><button class="tc-btn" id="prev">‹ 이전</button><button class="tc-btn sm tc-here" id="useHere">이 기기를 학생용으로 쓰기</button><button class="tc-btn pri" id="done">설정 완료</button></div>`;
+      <div class="tc-foot tc-foot3"><button class="tc-btn" id="prev">‹ 이전</button><p class="tc-help tc-secret">이 기기를 학생용으로 쓴 뒤 선생님 화면으로 돌아오려면 학생 첫 화면의 <b>제목을 두 번 빠르게 누르세요.</b></p><button class="tc-btn sm tc-here" id="useHere">이 기기를 학생용으로 쓰기</button><button class="tc-btn pri" id="done">설정 완료</button></div>`;
       onTap($('#copy'), async () => { if (await copyText(urlOf(), $('#lnk'))) toast('링크를 복사했어요.', 1800); });
       onTap($('#bqr'), () => full('결과 게시판 QR (접속용 아님)', d.board, true));
       onTap($('#qr'), () => full('학생 접속 QR 코드', urlOf()));
@@ -599,7 +599,7 @@ Router.screens.T49 = (app, p) => {
       });
       /* [이 기기를 학생용으로 쓰기] (11/10): 행사 부스처럼 이 태블릿을 학생에게 직접 건넬 때만 — 이 기기에 설정을 적용하고 학생 화면으로 */
       onTap($('#useHere'), () => {
-        const m = Modal.open(`<div class="pop-head">이 기기를 학생용으로 쓸까요?</div><p class="pop-body">행사 부스처럼 <b>이 태블릿을 학생에게 직접 건넬 때</b>만 써요.<br>학생 화면에는 선생님 설정으로 가는 버튼이 없어요.<br>선생님 화면은 주소 뒤에 <b>?teacher</b>를 붙여 다시 열어요.</p>
+        const m = Modal.open(`<div class="pop-head">이 기기를 학생용으로 쓸까요?</div><p class="pop-body">행사 부스처럼 <b>이 태블릿을 학생에게 직접 건넬 때</b>만 써요.<br>선생님 화면으로 돌아오려면 학생 첫 화면의 <b>제목을 두 번 빠르게 누르세요.</b></p>
           <div class="pop-btns"><button class="btn white" data-autofocus id="hNo">아니요</button><button class="btn pink" id="hYes">학생용으로 쓰기</button></div>`);
         onTap($('#hNo', m), () => Modal.close());
         onTap($('#hYes', m), () => {

@@ -201,6 +201,23 @@ window.addEventListener('popstate', e => {
   if (e.state && e.state.s) { NavBtns.depth = Math.max(0, NavBtns.depth - 1); Router.render(e.state); }
 });
 
+
+/* ---------- 선생님 화면으로 돌아오기 (시크릿, 11/10): 학생 첫 화면 제목을 두 번 빠르게 누르면 확인 뒤 선생님 설정 ----------
+   주소창이 없는 홈 화면 앱·부스 태블릿에서도 ?teacher 없이 돌아오게. 우연히 눌러도 확인 창에서 [아니요] */
+function secretTeacher(el, from) {
+  if (!el || PREVIEW) return;
+  let last = 0;
+  el.addEventListener('pointerup', () => {
+    const now = Date.now();
+    if (now - last > 450) { last = now; return; }
+    last = 0;
+    const m = Modal.open(`<div class="pop-head">선생님 설정을 열까요?</div><p class="pop-body">선생님만 눌러 주세요.<br>이 태블릿의 설정을 바꿀 수 있어요.</p>
+      <div class="pop-btns"><button class="btn white" data-autofocus id="stNo">아니요</button><button class="btn pink" id="stYes">선생님 설정 열기</button></div>`);
+    $('#stNo', m).addEventListener('click', () => Modal.close());
+    $('#stYes', m).addEventListener('click', () => { Modal.close(); Router.go('T49', { returnTo: from }); });
+  });
+  el.style.touchAction = 'manipulation';   // 두 번 누를 때 화면 확대 막기
+}
 /* ---------- 이전 · 처음으로 버튼 (모든 학생 화면 왼쪽 아래, 팀 점검 11/8) ---------- */
 const NavBtns = {
   el: null,

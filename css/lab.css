@@ -824,3 +824,5 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 
 /* 스캔 불빛을 결과 창 앞으로 (11/10): 냥박사 그림(불빛 포함)을 창보다 위에 — 몸은 창 밖이라 겹치지 않아요 */
 .lab-char.scan-front { z-index:6; pointer-events:none; }
+/* 제목 두 번 누르기(선생님 설정 시크릿) 때 글자 선택·메뉴가 뜨지 않게 */
+.lab-sign, .px-panel { -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
