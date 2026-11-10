@@ -609,3 +609,4 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .place-panel .px-steps i.pl-school { background:#8CC0F0; }   /* 하늘색 안내판 위에서도 보이게 한 단계 진하게 */
 .place-panel .px-steps i { opacity:.6; }
 .place-panel .px-steps i.cur { opacity:1; } .place-panel .px-steps i.ok { opacity:.9; }
+.place-panel small { color:var(--blue); background:#fff; box-shadow:0 0 0 2px rgba(47,77,168,.35); }   /* 연구 과제 배지: 연하게 (11/10) */
