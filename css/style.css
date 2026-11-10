@@ -1301,3 +1301,5 @@ body:not(.tablet) .install.talk { zoom:.55; }
 .it-kb .px-name { display:none; }   /* 친구 말풍선은 이름표 없이 */
 .it-kb { top:60px; }
 .it-kb { top:10px; }
+.it-kb { font-size:30px; }   /* 수호냥 말풍선과 같은 글자 크기 */
+.it-kb { top:56px; right:60px; }
