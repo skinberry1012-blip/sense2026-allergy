@@ -141,3 +141,14 @@
 .tgx .tc-share { justify-content:flex-start; }
 .tgx .tc-share .tc-foot { margin-top:auto; }
 .tgx .tc-panel.t3 .tc-qrcol { justify-content:flex-start; }
+/* 03 탭 (11/10 다시): 두 영역 — 왼쪽 QR / 오른쪽 요약·링크, 위아래 끝을 같이 맞추고 남는 높이는 요약 안에서 고르게 */
+.tgx .tc-panel.t3 { align-items:stretch; }
+.tgx .tc-panel.t3 .tc-qrcol { justify-content:space-between; gap:14px; }
+.tgx .tc-panel.t3 .tc-share { padding-top:0 !important; justify-content:space-between; gap:18px; }
+.tgx .tc-panel.t3 .tc-sum { flex:1; gap:14px; }
+.tgx .tc-panel.t3 .tc-facts { padding:14px 18px; background:#fff; border:0; border-radius:10px; gap:10px; }
+.tgx .tc-panel.t3 .tc-flowbox { flex:1; display:flex; flex-direction:column; gap:10px; padding:14px 18px; background:#fff; border-radius:10px; }
+.tgx .tc-panel.t3 .tc-flow { flex:1; display:flex; flex-direction:column; justify-content:space-around; margin:0; }
+.tgx .tc-panel.t3 .tc-foot { margin-top:0; }
+.tgx .tc-panel.t3 .tc-qr { width:440px; height:440px; }
+.tgx .tc-panel.t3 .tc-qrcol .tc-help { margin-top:-6px; }
