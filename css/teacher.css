@@ -152,3 +152,7 @@
 .tgx .tc-panel.t3 .tc-foot { margin-top:0; }
 .tgx .tc-panel.t3 .tc-qr { width:440px; height:440px; }
 .tgx .tc-panel.t3 .tc-qrcol .tc-help { margin-top:-6px; }
+/* 03 탭: 오른쪽 영역 폭을 글 길이에 맞게 줄이고, 남는 폭은 QR 쪽으로 */
+.tgx .tc-panel.t3 { grid-template-columns:minmax(0,1fr) 760px; }
+.tgx .tc-panel.t3 { grid-template-columns:minmax(0,1fr) 800px; }
+.tgx .tc-panel.t3 .tc-link { font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
