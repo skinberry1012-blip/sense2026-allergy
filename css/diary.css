@@ -437,3 +437,10 @@ button.cb:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
 .drawer .cov{padding:6px 14px 6px 10px!important}
 .drawer .cov img{max-width:150px!important}
 .drawer:has(.cov){gap:8px}
+/* 진행 막대 메달 (11/10): 자기 칸 바로 아래 가운데에 붙이고, 글은 메달 왼쪽 — 칸과 이어져 보이게 */
+.prog .mk{right:auto;left:50%;top:20px;transform:translateX(-50%);flex-direction:row-reverse;gap:3px;opacity:.75;filter:grayscale(.4)}
+.prog .mk img{width:28px;height:36px}
+.prog .mk small{font-size:15px}
+.prog .mk::before{content:'';position:absolute;right:13px;top:-4px;width:2px;height:6px;background:rgba(37,46,82,.35)}
+.prog .bar i:last-child .mk{left:auto;right:0;transform:none}
+.prog .bar i:last-child .mk::before{right:13px}
