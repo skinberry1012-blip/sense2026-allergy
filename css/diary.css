@@ -481,3 +481,22 @@ button.cb:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
 .aw-t{margin-top:40px}
 /* 기간·방식·약속 이름표 (11/10): 둥근 알약, 하늘색 (노란색이 많아서) */
 .me dt{width:auto;min-width:0;background:#BFE0FA;border:0;border-radius:999px;padding:3px 12px 1px;font-size:17px;color:var(--navy)}
+
+/* ===== 11/10 점검 ===== */
+/* 왼쪽 칸 시작을 제목 상자와 같은 34px로 */
+.side{left:34px;width:356px}
+/* 체크 칸 크게 + 약속 줄 전체를 눌러도 체크 (태블릿에서 누르기 쉽게) */
+.ti:has(>button.cb){cursor:pointer}
+.ti>button.cb,.tlist.many .ti>button.cb{width:44px;height:44px;border-radius:8px}
+.ti>button.cb.on::after,.tlist.many .ti>button.cb.on::after{left:12px;top:3px;width:12px;height:22px;border-width:0 5px 5px 0}
+.ti:has(>button.cb:not(.off)):active{background:rgba(245,200,66,.18)}
+/* 진행 막대 메달 글씨 크게 ('3일 성공 · 5일 완성') */
+.prog .mk small{font-size:18px}
+/* 스티커 서랍: 4칸씩 (스티커 12개가 3줄), 잘린 줄 없이 — 넘치면 아래 안내 */
+.drawer{grid-template-columns:repeat(4,1fr);gap:8px;position:relative}
+.drawer button[data-add]{height:62px}
+.drawer button[data-add] img{max-height:52px;max-width:64px}
+.drawer .wd{font-size:15px;padding:1px 6px}
+.drawer .more-tip{position:sticky;bottom:-18px;grid-column:1/-1;height:58px;margin:-50px -12px -18px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px;font-family:var(--f-disp);font-size:17px;color:var(--navy-2);background:linear-gradient(rgba(255,255,255,0),#fff 62%);pointer-events:none;transition:opacity .2s}
+.drawer .more-tip.gone{opacity:0}
+.btns{margin-top:auto}

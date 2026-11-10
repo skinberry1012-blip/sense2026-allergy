@@ -26,8 +26,8 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .px-btn > span { position:relative; z-index:1; }
 .px-btn.w { background:#FFFDF5; } .px-btn.c { background:var(--coral); color:#fff; } .px-btn.b { background:var(--blue); color:#fff; }
 .px-btn:active { filter:brightness(.92); }
-.px-btn.off { background:rgba(255,253,245,.55) !important; color:#9AA1B8 !important;
-  box-shadow:0 -3px 0 rgba(30,42,90,.22),0 3px 0 rgba(30,42,90,.22),-3px 0 0 rgba(30,42,90,.22),3px 0 0 rgba(30,42,90,.22) !important; }   /* 잠긴 버튼: 진한 테두리·그림자 없이 옅게 (11/9) */
+.px-btn.off { background:#E9E7E0 !important; color:#8E95AD !important;
+  box-shadow:0 -3px 0 rgba(30,42,90,.22),0 3px 0 rgba(30,42,90,.22),-3px 0 0 rgba(30,42,90,.22),3px 0 0 rgba(30,42,90,.22) !important; }   /* 잠긴 버튼: 옅은 회색, 뒤가 비치지 않게 (11/9 · 11/10 불투명) */
  
 .px-btn.hide { opacity:0; pointer-events:none; }
 .px-btn[hidden] { display:none; }
@@ -771,3 +771,6 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .rl-head b.pw.pl-outside { background:linear-gradient(transparent 45%, #B5DFA6 45%, #B5DFA6 92%, transparent 92%); }
 .rl-head b.pw.pl-mine { background:linear-gradient(transparent 45%, #D9C8F5 45%, #D9C8F5 92%, transparent 92%); }
 .lab-board:has(.place-done) .place-again { visibility:hidden; }
+
+/* 장소 완료 (11/10 점검): 어두운 배경 뒤로 '발견' 도장이 비치지 않게 */
+.lab-board:has(.place-done) .lab-spot { visibility:hidden; }

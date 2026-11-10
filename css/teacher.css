@@ -192,3 +192,8 @@
 .tgx .tc-panel.t3 .tc-linkbox .tc-mode b { margin-right:6px; }
 .tgx .tc-panel.t3 .tc-link { font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .tgx .tc-panel.t3 .tc-foot3 { grid-column:1 / -1; margin:0; justify-content:flex-end; }
+
+/* 02 탭 왼쪽 칸 (11/10 점검): 아래에 설정이 더 있으면 알려 주기, 끝까지 내리면 사라짐 */
+.tgx .tc-dy .tc-more { position:sticky; bottom:0; flex:none; margin:-40px -6px 0 0; padding:34px 0 6px; text-align:center; font-weight:700; font-size:16px; color:var(--navy, #1E2A5A);
+  background:linear-gradient(rgba(255,253,246,0), #FFFDF6 55%); pointer-events:none; transition:opacity .25s; }
+.tgx .tc-dy .tc-more.gone { opacity:0; }

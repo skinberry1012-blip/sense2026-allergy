@@ -152,7 +152,7 @@ Object.entries(LAB.story).forEach(([key, d], i) => {
     labChar(b, d.pose, 640, { left: 30, bottom: 8 }, 'bob');   // 이전·처음 버튼과 안 겹치게 오른쪽으로 (11/10)
     const bub = labBubble(b, { x: 680, y: 230, w: 860, fs: 42, tail: 'l' });   // 냥박사 얼굴 옆에 붙임 (11/9)
     bub.say(d.line);
-    labBtn(b, d.label || '다음 ›', 'right:56px;bottom:62px;font-size:38px', 'y', () => { playSfx('next'); labGo(d.go); });
+    labBtn(b, d.label || '다음 ›', 'right:56px;bottom:60px;font-size:38px', 'y', () => { playSfx('next'); labGo(d.go); });
   };
 });
 
@@ -290,7 +290,7 @@ function labDone(app, key) {
   labChar(w, 'nyang_cheer', 520, { left: -50, bottom: 20 });
   labChar(w, 'staff_cheer', 495, { right: -60, bottom: 20 });   // 12가지 완료 화면과 같은 크기·자리
   setTimeout(() => playSfx('whistle'), 900);
-  labBtn(w, d.label, 'left:50%;bottom:70px;transform:translateX(-50%);font-size:40px', 'y beat', () => {
+  labBtn(w, d.label, 'left:50%;bottom:60px;transform:translateX(-50%);font-size:38px', 'y beat', () => {
     playSfx('next'); if (nb) nb.classList.remove('cele-hide');
     if (d.next === 'S36-1' && LabFound.total() < 12) return labGo(PLACE_OF[LabFound.firstMissing()]);
     labGo(d.next);
@@ -313,7 +313,7 @@ Router.screens['S36-1'] = (app) => {
   labChar(b, 'nyang_cheer', 520, { left: -50, bottom: 20 });
   labChar(b, 'staff_cheer', 495, { right: -60, bottom: 20 });   // 냥박사와 비슷하게 보이도록 약 0.95배 (11/9)
   setTimeout(() => playSfx('whistle'), 1000);
-  labBtn(b, '다음 ›', 'left:50%;bottom:70px;transform:translateX(-50%);font-size:40px', 'y beat', () => { playSfx('next'); labGo('S36-2'); });
+  labBtn(b, '다음 ›', 'left:50%;bottom:60px;transform:translateX(-50%);font-size:38px', 'y beat', () => { playSfx('next'); labGo('S36-2'); });
 };
 
 /* ===================== S36-2 증상 카드 안내 ===================== */
@@ -329,7 +329,7 @@ Router.screens['S36-2'] = (app) => {
   b2.style.left = 'auto'; b2.style.right = '330px'; b2.hidden = true;
   b1.say('이제 [알레르기 증상 카드 7개]를<br>하나씩 눌러 보자!');
   setTimeout(() => { if (!b2.isConnected) return; b2.hidden = false; replay(b2, 'pop'); b2.say('증상을 모두 확인한 다음,<br>{{대처 방법}}도 함께 알아보자!'); }, LAB_REDUCED() ? 0 : 1500);
-  labBtn(b, '다음 ›', 'left:50%;bottom:70px;transform:translateX(-50%);font-size:40px', 'y', () => { playSfx('next'); labGo('S36-3'); });
+  labBtn(b, '다음 ›', 'left:50%;bottom:60px;transform:translateX(-50%);font-size:38px', 'y', () => { playSfx('next'); labGo('S36-3'); });
 };
 
 /* ===================== S36-3 증상 카드 (뒤집기) ===================== */
@@ -355,8 +355,10 @@ Router.screens['S36-3'] = (app) => {
   const bub = labBubbleAt(labBubble(b, { x: 36, y: 0, w: 540, fs: 34, tail: 'bl' }), { bottom: 470, tailX: 300 });   // 냥박사 머리 바로 위 (11/9)
   bub.classList.add('bal');
   const lineFor = n => n >= 7 ? C.lines[7] : n >= 2 ? C.lines[2] : C.lines[n];
-  const bl = labBtn(b, '가벼운 증상 대처 방법 ›', 'left:640px;bottom:58px;font-size:28px', 'y');
-  const bs = labBtn(b, '위급한 증상 대처 방법 ›', 'left:1080px;bottom:58px;font-size:28px', 'c');
+  /* 아래 두 버튼 (11/10): 대처법 화면과 같은 크기(글자 32), 오른쪽 끝 = 카드 줄 오른쪽 끝(54) */
+  const bs = labBtn(b, '위급한 증상 대처 방법 ›', 'right:54px;bottom:60px;font-size:32px', 'c');
+  const bl = labBtn(b, '가벼운 증상 대처 방법 ›', 'right:54px;bottom:60px;font-size:32px', 'y');
+  requestAnimationFrame(() => { bl.style.right = (54 + bs.offsetWidth + 18) + 'px'; });
   bl.dataset.type = 'light'; bs.dataset.type = 'severe';
   [[bl, 'S37'], [bs, 'S38']].forEach(([btn, go]) => onTap(btn, () => {
     if (LabState.cardsSeen.length < 7) { playSfx('full'); replay(btn, 'shake'); clearTimeout(lockTimer); bub.say(C.lines.lock, false); lockTimer = setTimeout(() => bub.say(lineFor(LabState.cardsSeen.length), false), 2000); return; }
@@ -401,8 +403,8 @@ Router.screens['S36-3'] = (app) => {
       return s;
     });
     /* 아래 버튼 두 개는 오른쪽에 나란히 (11/10): 왼쪽 아래 이전·처음 버튼과 겹치지 않게, 오른쪽 끝 = 카드 오른쪽 끝 */
-    const back = labBtn(b, '‹ 증상 카드로', 'right:130px;bottom:56px;font-size:32px', 'w', () => { playSfx('tap'); labGo('S36-3'); });
-    const right = labBtn(b, '', 'right:130px;bottom:56px;font-size:32px', 'y');
+    const back = labBtn(b, '‹ 증상 카드로', 'right:130px;bottom:60px;font-size:32px', 'w', () => { playSfx('tap'); labGo('S36-3'); });
+    const right = labBtn(b, '', 'right:130px;bottom:60px;font-size:32px', 'y');
     const placeBack = () => { back.style.right = (130 + right.offsetWidth + 18) + 'px'; };
     const both = () => LabState.copeSeen.light && LabState.copeSeen.severe;
     const paintRight = () => {
@@ -472,7 +474,7 @@ Router.screens.S38A = (app) => {
     e.style.animationDelay = i * 0.08 + 's'; replay(e, 'pop');
     return e;
   });
-  const ok = labBtn(b, '방패 만들러 가기 ›', 'left:auto;right:176px;top:792px;font-size:34px'   /* 위급 대처 띠 오른쪽 아래에 붙여요 */, 'y beat');
+  const ok = labBtn(b, '방패 만들러 가기 ›', 'left:auto;right:176px;top:786px;font-size:38px'   /* 위급 대처 띠 오른쪽 아래에 붙여요 */, 'y beat');
   ok.hidden = true;
 
   let round = 'light', placed = 0, selected = null;

@@ -18,7 +18,7 @@ Router.screens.S39 = (app) => {
   labChar(b, 'staff_guide', 600, { left: 70, bottom: 10 });
   const bub = labBubble(b, { x: 760, y: 330, w: 720, fs: 42, tail: 'l', name: '수호냥', staff: true });   // 수호냥 몸 가운데 높이에 맞춤 (11/10)
   bub.say('알레르기로부터 나를 지켜 줄<br>{{나만의 방패}}를 만들어 보자!');
-  const start = labBtn(b, '나만의 약속 카드 만들기 ›', 'left:780px;top:640px;font-size:40px', 'y beat');
+  const start = labBtn(b, '나만의 약속 카드 만들기 ›', 'left:780px;top:640px;font-size:38px', 'y beat');
   onTap(start, () => {
     playSfx('next');
     if (!Store.hasRecord()) return Router.go('S40');
@@ -90,9 +90,9 @@ Router.screens.RULES = (app, p) => {
   labPanel(b, { sub: '나만의 알레르기 방패', title: '실천 약속 고르기' });
   /* 배치 (11/10): 수호냥 왼쪽(보이는 몸 왼끝 70), 말풍선은 머리 위, 상자는 오른쪽 여백 70 */
   labChar(b, 'staff_guide', 500, { left: -40, bottom: 10 });
-  const bub = labBubbleAt(labBubble(b, { x: 70, y: 0, w: 430, fs: 30, tail: 'bl', name: '수호냥', staff: true }), { bottom: 480, tailX: 190 });
+  const bub = labBubbleAt(labBubble(b, { x: 70, y: 0, w: 430, fs: 30, tail: 'bl', name: '수호냥', staff: true }), { bottom: 504, tailX: 190 });   // 11/10: 귀 끝에 겹치지 않게 조금 위로
   const box = labEl(b, 'rl-box', [560, 156, 970, 616]);   // 제목 아래 ~ 버튼 위 사이 가운데 (장소 고르기 2×2 · 약속 상자)
-  const next = labBtn(b, '카드 꾸미기로 ›', 'right:70px;top:800px;font-size:32px', 'y beat');
+  const next = labBtn(b, '카드 꾸미기로 ›', 'right:70px;top:800px;font-size:38px', 'y beat');
 
   /* 순서대로 (11/10): 집 → 학교 → 밖 → 나만의 약속(선택) → 카드 꾸미기. 하나 고르면 다음 장소로 넘어가요 */
   let step = Math.max(0, Math.min(3, p.step != null ? p.step | 0 : (PLACES.findIndex(pl => !done(pl)) + 1 || 4) - 1));
@@ -111,7 +111,7 @@ Router.screens.RULES = (app, p) => {
       const d = window.RULES_DATA.mine;
       body = custom.mine.map((c, j) => `<div class="ti ${c.checked ? 'on' : ''}" data-c="${j}" role="button" tabindex="0"><span class="tno">${j + 1}</span><span class="tt">${esc(c.text)}</span><button class="del" data-d="${j}" aria-label="삭제">✕</button><i class="cb ${c.checked ? 'on' : ''}"></i></div>`).join('')
         + (custom.mine.length < MINE_MAX ? `<div class="rl-add"><p>${d.tip}</p><label class="name-px rl-in"><input id="cin" maxlength="${CUSTOM_MAX}" placeholder="${d.placeholder}" enterkeyhint="done" aria-label="나만의 약속"><span class="count" id="ccount">0/${CUSTOM_MAX}</span></label><button class="px-btn y rl-addbtn" id="cadd" type="button"><span>+ 추가</span></button></div>` : '')
-        + `<p class="rl-note"><b>i</b>알레르기 종류나 병 이름 같은 건강 정보는 적지 않아요. 나만의 약속은 내 카드에만 나오고, 어디에도 보내지 않아요.</p>`;
+        + `<p class="rl-note"><b>i</b>병 이름 같은 건강 정보는 적지 않아요. 나만의 약속은 내 카드에만 나와요.</p>`;
     }
     /* 위: 장소 그림 띠 + 장소 이름, 아래: 약속 목록 */
     /* 11/10: 상자 위 장소 배지(누르면 그 장소로) + 상자 머리 "학교에서는 이렇게 해요"(장소 형광펜) */
@@ -456,6 +456,7 @@ Router.screens.T49 = (app, p) => {
     } else if (tab === 2) {
       /* 02 챌린지 다이어리 (11/10 시안) */
       const y = dy();
+      const keepTop = ($('.tc-dy') || {}).scrollTop || 0;   // 값을 바꿔 다시 그려도 보던 자리 그대로 (11/10 점검)
       const step1 = (k, v, unit, min, max) => `<span class="tc-step" data-k="${k}"><button data-d="-1" ${v <= min ? 'disabled' : ''} aria-label="줄이기">−</button><b>${v}${unit}</b><button data-d="1" ${v >= max ? 'disabled' : ''} aria-label="늘리기">+</button></span>`;
       const txt = (k, max, ph, sample) => `<label class="tc-url tc-txt"><span class="sr">${ph}</span><input id="dy_${k}" maxlength="${max}" placeholder="${ph}" value="${esc(y[k])}"><span class="tc-cnt" id="cn_${k}">${[...y[k]].length}/${max}</span></label>
         <button class="tc-sample" data-fill="${k}" data-text="${esc(sample)}">예: ${esc(sample)}</button>`;
@@ -472,6 +473,7 @@ Router.screens.T49 = (app, p) => {
           <div class="tc-pr"><span>${Math.min(y.min, y.count)}일 성공</span><div>${txt('praiseMin', 40, '비워 두면 예시 문구가 나와요', DY_SAMPLE.min)}</div></div>
           <div class="tc-pr"><span>완성</span><div>${txt('praiseDone', 40, '비워 두면 예시 문구가 나와요', DY_SAMPLE.done)}</div></div></section>
         <section class="tc-sec tc-inl"><h2 class="tc-h"><i>7</i>인쇄 확인란</h2>${seg('dsign', [['t', '선생님 서명'], ['n', '냥박사 도장']], y.tsign === 'n' ? 'n' : 't')}<small>종이로 할 때 맨 아래</small></section>
+        <div class="tc-more" aria-hidden="true">▾ 아래로 내리면 더 있어요</div>
       </div>
       <div class="tc-col tc-pv">
         <div class="tc-pvhead"><h2 class="tc-h">미리 보기</h2>${seg('dstep', [['S46', '매일 체크'], ['S47', '성공 메달'], ['S48', '완성']], step.dy || 'S46')}</div>
@@ -479,6 +481,9 @@ Router.screens.T49 = (app, p) => {
         <p class="tc-help">학생은 약속 카드를 저장한 뒤 이 다이어리를 꾸미고 [챌린지 시작하기]를 눌러요.</p>
         <div class="tc-foot"><button class="tc-btn" id="reset2">기본값으로</button><button class="tc-btn pri" id="toNext2">다음 · QR 코드와 공유 ›</button></div>
       </div>`;
+      { const col = $('.tc-dy'), more = $('.tc-more', col);
+        const upd = () => more.classList.toggle('gone', col.scrollTop + col.clientHeight >= col.scrollHeight - 6);
+        col.scrollTop = keepTop; col.addEventListener('scroll', upd, { passive: true }); requestAnimationFrame(upd); }
       const setY = (k, v, redraw = true) => { d.dy = Object.assign(dy(), { [k]: v }); if (d.dy.min > d.dy.count) d.dy.min = d.dy.count; Draft.set(d); if (redraw) draw(); };
       $$('.tc-step').forEach(g => g.addEventListener('click', e => { const x = e.target.closest('[data-d]'); if (!x || x.disabled) return; const k = g.dataset.k; setY(k, Math.max(1, Math.min(k === 'min' ? dy().count : 10, dy()[k] + +x.dataset.d))); }));
       $$('.tc-seg').forEach(g => g.addEventListener('click', e => {

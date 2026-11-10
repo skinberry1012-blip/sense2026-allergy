@@ -82,7 +82,7 @@ function dyDiary(m, look, { print = false } = {}) {
   };
   const prog = () => {
     const cells = Array.from({ length: n }, (_, i) => {
-      const mk = (i === c.min - 1 && c.min < n) ? ['blue', `${c.min}개 성공`] : i === n - 1 ? ['coral', `${n}개 완성`] : null;
+      const mk = (i === c.min - 1 && c.min < n) ? ['blue', `${c.min}일 성공`] : i === n - 1 ? ['coral', `${n}일 완성`] : null;
       return `<i class="${i < got ? 'on' : ''}">${mk ? `<em class="mk ${got >= i + 1 ? 'got' : ''}"><img src="${DY_IMG('medal_' + mk[0])}" alt=""><small>${mk[1]}</small></em>` : ''}</i>`;
     }).join('');
     return `<div class="prog" style="top:98px"><span class="pl">별 <b>${got}</b> / ${n}</span><span class="bar">${cells}</span></div>`;
@@ -148,7 +148,7 @@ Router.screens.S46 = (app, p = {}) => {
     const tday = DateK.today();
     let bub = '';
     if (c) {
-      if (m.medal && m.medal.gold) bub = `<b class="hi">${m.n}일 챌린지 완성!</b><br>메달${(c.promise || '').trim() ? '과 선생님 약속이' : '이'}<br>다이어리에 걸렸어요`;
+      if (m.medal && m.medal.gold) bub = `<b class="hi">${m.n}일 챌린지 완성!</b><br>메달${(c.promise || '').trim() ? '과 약속이' : '이'} 걸렸어요`;
       else if (st === 'ended') bub = `<b class="hi">기간이 끝났어요</b><br>별 ${m.got}개를 모았어요.<br>지킨 날도 소중해요!`;
       else if (st === 'before') bub = `<b class="hi">${DateK.short(c.days[0])}</b>부터<br>매일 체크를 시작해요`;
       else if (st === 'rest') { const nx = Challenge.nextCheckDay(c); bub = `오늘은 쉬는 날이에요<br>다음 체크는 <b class="hi">${nx ? DateK.short(nx) : ''}</b>`; }
@@ -174,6 +174,18 @@ Router.screens.S46 = (app, p = {}) => {
       ? `<span class="cap" style="margin:0 0 4px;grid-column:1/-1">마음에 드는 다이어리를 골라요</span>` + DY_COVERS.map(([k, l]) => `<button class="cov ${look.art === k ? 'on' : ''}" data-cover="${k}" aria-label="${l} 다이어리"><img src="${DY_IMG('diary_' + k)}" alt=""><i class="cb ${look.art === k ? 'on' : ''}"></i></button>`).join('')
       : `<div class="subtabs">${Object.entries(DY_STK_TAB).map(([k, l]) => `<button data-st="${k}" class="${k === stkTab ? 'on' : ''}">${l} ${DY_STK.filter(x => x[3] === k).length}</button>`).join('')}</div><p class="hint2">누르면 붙고, 끌어서 옮길 수 있어요</p>`
         + DY_STK.map(([t, v, w, g], i) => g !== stkTab ? '' : `<button data-add="${i}" aria-label="스티커 붙이기">${t === 'img' ? `<img src="${DY_IMG(v)}" alt="">` : `<span class="wd ${w}">${v}</span>`}</button>`).join('');
+    fitDrawer(dr);
+  }
+  /* 서랍 (11/10 점검): 넘치면 아래쪽을 흐리게 덮고 '아래로 밀면 더 있어요' — 줄이 잘려 보이지 않게 */
+  function fitDrawer(dr) {
+    requestAnimationFrame(() => {
+      dr.classList.remove('more'); dr.style.flex = ''; dr.style.height = '';
+      const old = dr.querySelector('.more-tip'); if (old) old.remove();
+      if (dr.scrollHeight <= dr.clientHeight + 2) return;
+      dr.classList.add('more');
+      const tip = document.createElement('div'); tip.className = 'more-tip'; tip.textContent = '▾ 아래로 밀면 더 있어요'; dr.appendChild(tip);
+      const upd = () => tip.classList.toggle('gone', dr.scrollTop + dr.clientHeight >= dr.scrollHeight - 4); dr.onscroll = upd; upd();
+    });
   }
   const save = () => DyLook.set(look);
   function dragify(el) {
@@ -214,6 +226,7 @@ Router.screens.S46 = (app, p = {}) => {
       return;
     }
     const cb = t.closest('button.cb[data-rule]'); if (cb) return check(cb.dataset.rule);
+    const row = t.closest('.ti'); const rb = row && row.querySelector('button.cb[data-rule]'); if (rb) return check(rb.dataset.rule);   // 약속 줄 어디를 눌러도 체크 (11/10 점검)
     if (!t.closest('.stk')) root.querySelectorAll('#dz .stk.sel').forEach(o => o.classList.remove('sel'));
   });
 

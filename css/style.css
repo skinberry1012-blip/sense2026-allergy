@@ -1331,3 +1331,8 @@ body.tablet .s44-top { padding:16px 0 6px 18px; }
 .s44b-side .buddies { margin:0 !important; padding:3px 10px !important; gap:18px !important; }
 .s44b-side > .s44-box:first-child .box-tag { margin-bottom:16px !important; }
 .s44b-btns { margin-top:0 !important; }
+
+/* 카드 꾸미기 (11/10 점검): 제목 상자·왼쪽 칸 시작을 다른 화면과 같은 34px, 버튼은 다이어리 왼쪽 버튼과 같은 크기 (높이 59 · 글자 24) */
+body.tablet .s44 { padding-left:34px; }
+body.tablet .s44-top { padding-left:0; }
+.s44b-btns .btn { min-height:59px !important; font-size:24px !important; padding:8px 12px !important; }
