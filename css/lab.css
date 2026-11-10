@@ -657,3 +657,10 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .rl-tab.cur { background:#fff !important; color:var(--navy); }
 .rl-list.pl-home h5, .rl-list.pl-school h5, .rl-list.pl-outside h5, .rl-list.pl-mine h5 { background:#fff; border-bottom:3px solid #E9DFC9; }
 .rl-list h5 { font-size:26px; color:var(--blue); padding:14px 30px 10px; }
+/* 약속 고르기 (11/10 다시): 상자는 처음 모양, 탭은 상자와 떨어져 살짝 뜬 알약 */
+.rl-list.pl-home h5, .rl-list.pl-school h5, .rl-list.pl-outside h5, .rl-list.pl-mine h5, .rl-list h5 { background:var(--sky); border-bottom:4px solid var(--navy); font-size:30px; color:var(--navy); padding:16px 26px; }
+.rl-tabs { gap:12px; padding-left:6px; margin-bottom:18px; align-items:center; }
+.rl-tab, .rl-tab.pl-home, .rl-tab.pl-school, .rl-tab.pl-outside, .rl-tab.pl-mine { margin:0; border-radius:999px; padding:10px 24px 8px; font-size:26px; background:#fff; color:var(--navy); opacity:1; filter:none;
+  box-shadow:0 0 0 3px var(--navy), 0 6px 0 3px rgba(30,42,90,.18); }
+.rl-tab.cur { padding:10px 24px 8px; font-size:26px; background:var(--navy) !important; color:#fff; box-shadow:0 0 0 3px var(--navy), 0 6px 0 3px rgba(30,42,90,.25); translate:0 -3px; }
+.rl-tab.cur b { color:#BFF0C8; }
