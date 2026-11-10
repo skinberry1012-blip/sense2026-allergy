@@ -159,7 +159,7 @@ Object.entries(LAB.story).forEach(([key, d], i) => {
 /* ===================== S05 활동 선택 ===================== */
 Router.screens.S05 = (app) => {
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream' });
-  labPanel(b, { title: '활동 고르기' });
+  labPanel(b, { title: '연구소 미션 고르기' });
   const card = (x, cls, title, sub, pose, go, reset) => {
     const c = labEl(b, 'lab-choice ' + cls, [x, 190, 560, 620], `
       <div class="ch-img"><img src="${IMG.char(pose)}" alt=""></div>
