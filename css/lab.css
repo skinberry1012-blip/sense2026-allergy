@@ -758,12 +758,3 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .rl-pic, .rl-pic.pl-home, .rl-pic.pl-school, .rl-pic.pl-outside, .rl-pic.pl-mine { height:auto; background:#E3F0FC !important; align-items:center; padding:16px 22px 14px; }
 .rl-pic.pl-mine::before { display:none; }
 .rl-pic span { box-shadow:0 0 0 3px var(--navy); font-size:30px; padding:6px 22px 4px; }
-/* 실천 약속 고르기 (11/10): 제목 아래 장소 배지 4개 (미션 상자와 같은 모양), 상자 머리는 뺌 */
-.place-panel.rl-panel .px-steps i.pl-outside { background:#B5DFA6; }
-.place-panel.rl-panel .px-steps i.pl-mine { background:#D9C8F5; }
-.place-panel.rl-panel .px-steps { margin:6px 18px 0; }
-.rl-add .rl-opt { margin-left:8px; font-size:20px; color:var(--muted); }
-.lab-rules .rl-list { border-radius:18px; }
-.lab-rules .rl-list .ti:first-child { border-radius:18px 18px 0 0; }
-.place-panel.rl-panel .px-steps i { white-space:nowrap; flex:none; padding:5px 14px 3px 8px; }
-.place-panel.rl-panel .px-steps { justify-content:center; gap:10px; }
