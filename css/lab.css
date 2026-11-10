@@ -706,3 +706,7 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 /* 배경 누르기 통일 (11/10): 밝은 크림 대신 남색으로 살짝 어둡게 — 글·상자·캐릭터가 또렷하게.
    장소 탐색(원본 그대로)과 스캔·결과(남색 .48)는 그대로 */
 .lab-dim.cream, .lab-dim.soft-r, .lab-quiz .lab-dim.cream, .lab-quiz.rounds .lab-dim.cream { background:rgba(30,42,90,.38); }
+/* 배경 3단계 (11/10 추천안): 이야기=밝게 그대로 · 활동=남색 .27 · 스캔·결과=남색 .55 */
+.lab-dim.cream, .lab-quiz .lab-dim.cream, .lab-quiz.rounds .lab-dim.cream { background:rgba(30,42,90,.27); }
+.lab-dim.soft-r { background:linear-gradient(90deg,rgba(255,248,238,0) 35%,rgba(255,248,238,.4)); }
+.lab-dim.navy { background:rgba(30,42,90,.55); }
