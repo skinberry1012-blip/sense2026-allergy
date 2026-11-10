@@ -281,14 +281,21 @@ function openInstallModal() {
   } catch (e) {}
   /* 11/10 정리: 제목 · 수호냥 · 말풍선 · [홈 화면에 추가하고 시작하기] 하나만.
      안드로이드: 버튼 → 기기 설치 창 → 결과와 상관없이 다이어리로. 아이폰: 설치 창을 띄울 수 없어 말풍선에 방법을 적고 버튼은 시작하기 */
+  /* 11/10: 제목 대신 대화 — 친구들 "약속 카드 완성!" → 수호냥 "이제 챌린지를 시작해요!" (말풍선 둘) */
   const say = ios
-    ? '이제 챌린지를 시작해요!<br>사파리 <mark>공유 ⇧ → 홈 화면에 추가</mark>를 누르면<br>매일 쉽게 열 수 있어요.'
-    : '이제 챌린지를 시작해요!<br><mark>홈 화면에 추가</mark>해 두면 매일 쉽게 열 수 있어요.';
+    ? '이제 챌린지를 시작해요!<br>사파리 {{공유 ⇧ → 홈 화면에 추가}}를 누르면<br>매일 쉽게 열 수 있어요.'
+    : '이제 챌린지를 시작해요!<br>{{홈 화면에 추가}}해 두면<br>매일 쉽게 열 수 있어요.';
+  const bub = (cls, name, nameCls, html) => `<div class="px-bub ${cls}"><span class="px-name ${nameCls}">${name}</span><div class="px-bub-txt">${labFmt(html)}</div><i class="t1"></i><i class="t2"></i></div>`;
   const m = Modal.open(`
-    <div class="install slim">
-      <h2 class="title-banner sm">🎉 나만의 <em>약속 카드</em> 완성 및 저장 완료!</h2>
-      <div class="install-top"><img src="${CAT('pinky_03')}" data-anim="staff_guide" alt=""><p class="bubble sm">${say}</p></div>
-      <button class="btn pink big" id="iMain">${ios ? '<em>시작하기</em> ›' : '＋ 홈 화면에 추가하고 <em>시작하기</em> ›'}</button>
+    <div class="install talk">
+      <div class="it-stage">
+        <img class="it-kid g" src="assets/kid/kid_girl.png" alt="">
+        <img class="it-kid b" src="assets/kid/kid_boy.png" alt="">
+        ${bub('tail-br it-kb', esc(Store.get('name', '') || '나'), '', '나만의 알레르기<br>{{실천 약속 카드}} 완성!')}
+        <img class="it-cat" src="assets/char/staff_guide.png" data-anim="staff_guide" alt="">
+        ${bub('tail-bl it-cb', '수호냥', 's', say)}
+      </div>
+      <button class="btn pink big" id="iMain">${ios ? '시작하기 ›' : '＋ 홈 화면에 추가하고 시작하기 ›'}</button>
     </div>`, { cls: 'install-dim', onBack: () => closeInstall() });
   const closeInstall = () => {
     Modal.close();
