@@ -784,3 +784,10 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .lab-menu li { font-size:21px; gap:5px; }
 .lab-menu li em { font-size:16px; }
 .lab-menu small { font-size:14px; margin-top:4px; }
+/* 급식실 메뉴판 (11/10 다시): 한 단계 더 작게 — 줄 높이를 고정해 실제 글꼴에서도 아래가 게시판 안에 */
+.lab-menu { padding:10px 18px 8px; line-height:1.2; }
+.lab-menu h4 { font-size:21px; line-height:1.2; margin:0 0 3px; }
+.lab-menu ul { padding-top:5px; gap:1px 16px; }
+.lab-menu li { font-size:18px; line-height:1.25; gap:4px; }
+.lab-menu li em { font-size:14px; }
+.lab-menu small { font-size:12.5px; line-height:1.2; margin-top:3px; }
