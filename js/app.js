@@ -489,33 +489,26 @@ Router.screens.T49 = (app, p) => {
       onTap($('#toNext2'), () => { tab = 3; draw(); });
     } else {
       $('#panel').innerHTML = `
-      <div class="tc-col tc-qrcol">
-        <h2 class="tc-h">학생 접속 QR 코드</h2>
+      <section class="tc-card3 tc-qrcard">
+        <div class="tc-cardhead"><h2 class="tc-h">학생 접속 QR 코드</h2></div>
         <button class="tc-qr" id="qr" aria-label="QR 코드 크게 보기">${QR.toSVG(urlOf())}</button>
         <p class="tc-help">QR 코드를 누르면 전체 화면으로 크게 보여요.</p>
         <div class="tc-qrbtns"><button class="tc-btn" id="qrBig">크게 보기</button><button class="tc-btn" id="qrSave">QR 이미지 저장</button></div>
-      </div>
-      <div class="tc-col tc-share">
-        <section class="tc-sum">
-          <div class="tc-sumhead"><h2 class="tc-h">설정 요약</h2><button class="tc-btn sm" id="edit">수정</button></div>
-          <dl class="tc-facts">
-            <div><dt>소리</dt><dd>효과음 ${d.sound === 'off' ? '끄기' : '켜기'} · 대기 음악 ${d.bgm === 'off' ? '끄기' : '켜기'}</dd></div>
-            <div><dt>챌린지</dt><dd>${(() => { const y = dy(); return `${y.mode === 'free' ? `${y.weeks}주 안에 자유롭게` : '학교 가는 날 이어서'} ${y.count}회 · ${Math.min(y.min, y.count)}일 성공 메달${y.promise.trim() ? ' · 선생님 약속 있음' : ''}`; })()}</dd></div>
-            <div><dt>결과 게시판</dt><dd>${okBoard() ? `<span class="ok">연결됨</span> ${esc(d.board)}` : '<span class="no">없음</span> 다이어리는 학생 기기에만 저장돼요'}</dd></div>
-          </dl>
-          <div class="tc-flowbox"><p class="tc-mode"><b>${modeName()}</b> 학생은 이렇게 해요</p>
-          <ol class="tc-flow">${T_FLOW[d.mode === 'event' ? 'event' : 'class'].map(s => `<li>${s}</li>`).join('')}</ol></div>
-        </section>
-        <section class="tc-sec">
-          <h2 class="tc-h">접속 링크</h2>
+      </section>
+      <section class="tc-card3 tc-sum">
+        <div class="tc-cardhead tc-sumhead"><h2 class="tc-h">설정 요약</h2><button class="tc-btn sm" id="edit">수정</button></div>
+        <dl class="tc-facts">
+          <div><dt>소리</dt><dd>효과음 ${d.sound === 'off' ? '끄기' : '켜기'} · 대기 음악 ${d.bgm === 'off' ? '끄기' : '켜기'}</dd></div>
+          <div><dt>챌린지</dt><dd>${(() => { const y = dy(); return `${y.mode === 'free' ? `${y.weeks}주 안에 자유롭게` : '학교 가는 날 이어서'} ${y.count}회 · ${Math.min(y.min, y.count)}일 성공 메달${y.promise.trim() ? ' · 선생님 약속 있음' : ''}`; })()}</dd></div>
+          <div><dt>결과 게시판</dt><dd>${okBoard() ? `<span class="ok">연결됨</span> ${esc(d.board)}` : '<span class="no">없음</span> 다이어리는 학생 기기에만 저장돼요'}</dd></div>
+        </dl>
+        <div class="tc-flowbox"><p class="tc-mode"><b>${modeName()}</b> 학생은 이렇게 해요</p>
+        <ol class="tc-flow">${T_FLOW[d.mode === 'event' ? 'event' : 'class'].map(s => `<li>${s}</li>`).join('')}</ol></div>
+        <div class="tc-linkbox"><p class="tc-mode"><b>접속 링크</b> 설정을 바꾸면 새 QR을 다시 찍어야 해요</p>
           <div class="tc-linkrow"><div class="tc-link" id="lnk">${esc(urlOf())}</div><button class="tc-btn" id="copy">링크 복사</button></div>
-          ${okBoard() ? '<button class="tc-btn sm" id="bqr">결과 게시판 QR 보기</button>' : ''}
-          <p class="tc-help">설정을 바꾸면 링크와 QR도 바뀌어요. 학생은 <b>새 QR을 다시 찍어야</b> 해요.</p>
-        </section>
-        <div class="tc-foot"><button class="tc-btn" id="prev">‹ 이전</button><button class="tc-btn pri" id="done">설정 완료 · 학생 화면 열기 ›</button></div>
-      </div>`;
-      /* QR 칸 높이 = 오른쪽 칸 높이 (제목 줄·아래 버튼 줄 맞춤, 11/10) */
-      requestAnimationFrame(() => { const qc = $('.tc-qrcol'), sh = $('.tc-share'); if (qc && sh) qc.style.height = sh.offsetHeight + 'px'; });
+          ${okBoard() ? '<button class="tc-btn sm" id="bqr">결과 게시판 QR 보기</button>' : ''}</div>
+      </section>
+      <div class="tc-foot tc-foot3"><button class="tc-btn" id="prev">‹ 이전</button><button class="tc-btn pri" id="done">설정 완료 · 학생 화면 열기 ›</button></div>`;
       onTap($('#copy'), async () => { if (await copyText(urlOf(), $('#lnk'))) toast('링크를 복사했어요.', 1800); });
       onTap($('#bqr'), () => full('결과 게시판 QR (접속용 아님)', d.board, true));
       onTap($('#qr'), () => full('학생 접속 QR 코드', urlOf()));

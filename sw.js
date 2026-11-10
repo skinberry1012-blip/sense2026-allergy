@@ -1,7 +1,7 @@
 /* 서비스 워커 — 화면 파일을 저장해 두어 인터넷이 끊겨도 앱이 열려요.
    ※ 파일을 고쳐서 다시 올릴 때는 아래 VERSION 숫자를 하나 올려 주세요. (예: v1 → v2)
    ※ 학생 기록은 여기 저장되지 않아요 (기록은 각 기기의 LocalStorage에만). */
-const VERSION = 'v90-t3g';
+const VERSION = 'v91-t3cards';
 const CACHE = 'allergy-shield-' + VERSION;
 const FILES = [
   './',

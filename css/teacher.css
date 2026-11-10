@@ -175,3 +175,20 @@
 /* 03 탭: 'QR 코드' 제목 줄 = '설정 요약' 제목 줄, QR 버튼 아래끝 = 이전·설정 완료 버튼 아래끝 */
 .tgx .tc-panel.t3 .tc-qrcol { align-self:stretch; justify-content:space-between; padding-top:20px; gap:0; }
 .tgx .tc-panel.t3 .tc-qrcol { align-self:center; }
+/* ===== 03 탭 (11/10 최종): 같은 모양 카드 두 장 + 아래 오른쪽 버튼 줄 ===== */
+.tgx .tc-panel.t3 { grid-template-columns:minmax(0,1fr) minmax(0,1fr); grid-template-rows:minmax(0,1fr) auto; column-gap:28px; row-gap:20px; align-items:stretch; justify-content:stretch; }
+.tgx .tc-panel.t3 .tc-card3 { background:var(--sky-l); border-radius:14px; padding:20px 24px 22px; display:flex; flex-direction:column; gap:14px; min-height:0; }
+.tgx .tc-panel.t3 .tc-cardhead { display:flex; align-items:center; justify-content:space-between; min-height:40px; }
+.tgx .tc-panel.t3 .tc-cardhead .tc-h { margin:0; text-align:left; }
+.tgx .tc-panel.t3 .tc-qrcard { align-items:stretch; }
+.tgx .tc-panel.t3 .tc-qrcard .tc-qr { align-self:center; width:auto; height:auto; flex:1; min-height:0; aspect-ratio:1; max-height:420px; }
+.tgx .tc-panel.t3 .tc-qrcard .tc-help { text-align:center; margin:0; }
+.tgx .tc-panel.t3 .tc-qrbtns { justify-content:center; }
+.tgx .tc-panel.t3 .tc-sum { flex:none; padding:20px 24px 22px; gap:14px; }
+.tgx .tc-panel.t3 .tc-facts { padding:12px 16px; background:#fff; border-radius:10px; gap:8px; border:0; }
+.tgx .tc-panel.t3 .tc-flowbox, .tgx .tc-panel.t3 .tc-linkbox { flex:none; display:flex; flex-direction:column; gap:10px; padding:12px 16px; background:#fff; border-radius:10px; }
+.tgx .tc-panel.t3 .tc-flowbox { flex:1; }
+.tgx .tc-panel.t3 .tc-flow { flex:1; display:flex; flex-direction:column; justify-content:space-around; gap:6px; margin:0; }
+.tgx .tc-panel.t3 .tc-linkbox .tc-mode b { margin-right:6px; }
+.tgx .tc-panel.t3 .tc-link { font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.tgx .tc-panel.t3 .tc-foot3 { grid-column:1 / -1; margin:0; justify-content:flex-end; }
