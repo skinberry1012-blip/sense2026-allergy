@@ -126,3 +126,7 @@ body.tablet #navBtns { left:18px; bottom:18px; gap:12px; }
 body.tablet #navBtns button { width:72px; height:80px; padding:8px 0 6px; font-size:17px; }
 body.tablet #navBtns button svg { width:34px; height:34px; }
 #navBtns button { background:#BFE0FA; }   /* 하늘색 (11/10) */
+/* 이전·처음 버튼 조금 작게 (11/10): 다이어리 아래 버튼과 겹치지 않게 */
+body.tablet #navBtns { left:16px; bottom:16px; gap:10px; }
+body.tablet #navBtns button { width:60px; height:66px; padding:6px 0 4px; font-size:14px; border-radius:16px; }
+body.tablet #navBtns button svg { width:28px; height:28px; }

@@ -161,7 +161,7 @@ Router.screens.S46 = (app, p = {}) => {
         ${bub ? `<div class="sbub">${bub}</div>` : ''}
         <div class="tabs"><button data-side="cover" class="${sideTab === 'cover' ? 'on' : ''}">표지</button><button data-side="stk" class="${sideTab === 'stk' ? 'on' : ''}">스티커</button>${cfg.photo !== false ? '<button data-side="photo">내 사진</button>' : ''}</div>
         <div class="drawer" id="drawer"></div>
-        <div class="btns">${!c ? '<button class="pbtn c" id="go">챌린지 시작하기 ›</button>' : ended ? '<button class="pbtn c" id="again">새로 도전하기 ›</button>' : ''}<div class="brow"><button class="pbtn c" id="saveImg">이미지 저장</button><button class="pbtn" id="print">인쇄하기</button></div></div>
+        <div class="btns">${!c ? '<button class="pbtn c" id="go">챌린지 시작하기 ›</button>' : ended ? '<button class="pbtn c" id="again">새로 도전하기 ›</button>' : ''}<div class="brow"><button class="pbtn${c && !ended ? ' c' : ''}" id="saveImg">이미지 저장</button><button class="pbtn" id="print">인쇄하기</button></div></div>
       </div>
       <div id="dz">${dyDiary(m, look)}${look.placed.map(dyStk).join('')}</div>`;
     paintDrawer();
@@ -171,7 +171,7 @@ Router.screens.S46 = (app, p = {}) => {
   function paintDrawer() {
     const dr = q('#drawer'); if (!dr) return;
     dr.innerHTML = sideTab === 'cover'
-      ? `<span class="cap" style="margin:0 0 4px">마음에 드는 다이어리를 골라요</span>` + DY_COVERS.map(([k, l]) => `<button class="cov ${look.art === k ? 'on' : ''}" data-cover="${k}" aria-label="${l} 다이어리"><img src="${DY_IMG('diary_' + k)}" alt=""><b>${l}</b></button>`).join('')
+      ? `<span class="cap" style="margin:0 0 4px;grid-column:1/-1">마음에 드는 다이어리를 골라요</span>` + DY_COVERS.map(([k, l]) => `<button class="cov ${look.art === k ? 'on' : ''}" data-cover="${k}" aria-label="${l} 다이어리"><img src="${DY_IMG('diary_' + k)}" alt=""><b>${l}</b></button>`).join('')
       : `<div class="subtabs">${Object.entries(DY_STK_TAB).map(([k, l]) => `<button data-st="${k}" class="${k === stkTab ? 'on' : ''}">${l} ${DY_STK.filter(x => x[3] === k).length}</button>`).join('')}</div><p class="hint2">누르면 붙고, 끌어서 옮길 수 있어요</p>`
         + DY_STK.map(([t, v, w, g], i) => g !== stkTab ? '' : `<button data-add="${i}" aria-label="스티커 붙이기">${t === 'img' ? `<img src="${DY_IMG(v)}" alt="">` : `<span class="wd ${w}">${v}</span>`}</button>`).join('');
   }
