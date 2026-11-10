@@ -1303,3 +1303,8 @@ body:not(.tablet) .install.talk { zoom:.55; }
 .it-kb { top:10px; }
 .it-kb { font-size:30px; }   /* 수호냥 말풍선과 같은 글자 크기 */
 .it-kb { top:56px; right:60px; }
+/* 11/10: 캐릭터는 가운데 나란히, 말풍선은 바깥쪽 (수호냥 왼쪽 · 친구 오른쪽) */
+.it-cat { left:250px; right:auto; height:430px; }
+.it-kid.g { left:600px; right:auto; height:450px; }
+.it-cb { left:-10px; right:auto; top:110px; }
+.it-kb { left:1010px; right:auto; top:110px; }

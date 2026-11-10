@@ -291,8 +291,8 @@ function openInstallModal() {
       <div class="it-stage">
         <img class="it-kid g" src="assets/kid/kid_girl.png" alt="">
         ${bub('tail-bl it-kb', '', '', '나만의 알레르기<br>{{실천 약속 카드}} 완성!')}
-        <img class="it-cat" src="assets/char/staff_guide.png" data-anim="staff_guide" alt="">
-        ${bub('tail-bl it-cb', '수호냥', 's', say)}
+        <img class="it-cat" src="assets/char/staff_hello.png" alt="">
+        ${bub('tail-br it-cb', '수호냥', 's', say)}
       </div>
       <button class="btn pink big" id="iMain">${ios ? '시작하기 ›' : '＋ 홈 화면에 추가하고 시작하기 ›'}</button>
     </div>`, { cls: 'install-dim', onBack: () => closeInstall() });
