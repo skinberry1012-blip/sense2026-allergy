@@ -279,49 +279,30 @@ function openInstallModal() {
     const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(Store.snapshot()))));
     history.replaceState(Router.current, '', location.pathname + location.search + '#restore=' + b64);
   } catch (e) {}
-  const guide = ios
-    ? `<div class="ig-phone ios"><div class="ig-url"></div><div class="ig-sheet"><span>⧉ 복사</span><span class="hl">＋ 홈 화면에 추가</span><span>☆ 즐겨찾기</span></div><span class="ig-btn share">⇧</span></div>
-       <div class="ig-steps"><span>① 공유 버튼 ⇧</span><span>② 홈 화면에 추가</span><span>③ 오른쪽 위 [추가]</span></div>
-       <p class="ig-keep">홈 화면의 알레르기 약속 카드 아이콘으로 열어도 기록이 이어져요</p>`
-    : `<div class="ig-phone android"><div class="ig-url"></div><span class="ig-btn menu">⋮</span><div class="ig-sheet"><span>↻ 새 탭</span><span class="hl">＋ 홈 화면에 추가</span><span>☆ 북마크</span></div></div>
-       <div class="ig-steps"><span>① 메뉴 ⋮</span><span>② 홈 화면에 추가</span><span>③ [설치] 또는 [추가]</span></div>
-       <p class="ig-keep">삼성 인터넷은 메뉴(≡) → 페이지 추가 → 홈 화면</p>`;
+  /* 11/10 정리: 제목 · 수호냥 · 말풍선 · [홈 화면에 추가하고 시작하기] 하나만.
+     안드로이드: 버튼 → 기기 설치 창 → 결과와 상관없이 다이어리로. 아이폰: 설치 창을 띄울 수 없어 말풍선에 방법을 적고 버튼은 시작하기 */
+  const say = ios
+    ? '이제 챌린지를 시작해요!<br>사파리 <mark>공유 ⇧ → 홈 화면에 추가</mark>를 누르면<br>매일 쉽게 열 수 있어요.'
+    : '이제 챌린지를 시작해요!<br><mark>홈 화면에 추가</mark>해 두면 매일 쉽게 열 수 있어요.';
   const m = Modal.open(`
-    <button class="pop-x" id="iX" aria-label="닫기">✕</button>
-    <div class="install">
+    <div class="install slim">
       <h2 class="title-banner sm">🎉 나만의 <em>약속 카드</em> 완성 및 저장 완료!</h2>
-      <div class="install-grid">
-        <div class="install-left">
-          <div class="install-top"><img src="${CAT('pinky_03')}" data-anim="staff_guide" alt=""><p class="bubble sm">이제 챌린지를 시작해요!<br><mark>앱을 홈 화면에 추가</mark>해 두면 쉽게 열 수 있어요.</p></div>
-          <span class="lab-pill">나의 카드 고유번호</span>
-          <div class="cardno">${esc(Store.get('cardNo', ''))}</div>
-          <p class="saved-ok">※ 카드 저장이 완료되었습니다!</p>
-        </div>
-        <div class="install-guide" id="iGuide"><h4><b>홈 화면에 추가</b> 하는 방법</h4>${guide}</div>
-      </div>
-      <button class="btn pink big" id="iMain">＋ 홈 화면에 추가하고 <em>시작하기</em> ›</button>
-      <button class="link" id="iWeb">웹 브라우저로 그냥 볼래요</button>
-    </div>`, { cls: 'install-dim', onBack: () => closeInstall(false) });
-  let done = false;
-  const closeInstall = (web) => {
+      <div class="install-top"><img src="${CAT('pinky_03')}" data-anim="staff_guide" alt=""><p class="bubble sm">${say}</p></div>
+      <button class="btn pink big" id="iMain">${ios ? '<em>시작하기</em> ›' : '＋ 홈 화면에 추가하고 <em>시작하기</em> ›'}</button>
+    </div>`, { cls: 'install-dim', onBack: () => closeInstall() });
+  const closeInstall = () => {
     Modal.close();
     history.replaceState({ s: 'S46', p: {} }, '', location.pathname + location.search + location.hash);
     Router.current = { s: 'S46', p: {} };
-    if (web && ios && !sessionStorage.getItem('sevenDayTip')) { sessionStorage.setItem('sevenDayTip', '1'); toast('브라우저에서는 7일 동안 열지 않으면 기록이 지워질 수 있어요. 매일 들어와 주세요!', 4000); }
+    if (ios && !sessionStorage.getItem('sevenDayTip')) { sessionStorage.setItem('sevenDayTip', '1'); toast('사파리에서 7일 동안 열지 않으면 기록이 지워질 수 있어요. 매일 들어와 주세요!', 4000); }
   };
-  const setDone = () => { done = true; m.classList.add('flash'); $('#iMain', m).innerHTML = '다 했어요, <em>시작하기</em> ›'; };
   onTap($('#iMain', m), async () => {
-    if (done) return closeInstall(false);
     if (!ios && deferredInstall) {
-      deferredInstall.prompt();
-      const r = await deferredInstall.userChoice; deferredInstall = null;
-      if (r && r.outcome === 'accepted') return closeInstall(false);
-      return;
+      try { deferredInstall.prompt(); await deferredInstall.userChoice; } catch (e) {}
+      deferredInstall = null;
     }
-    setDone();
+    closeInstall();
   });
-  onTap($('#iWeb', m), () => closeInstall(true));
-  onTap($('#iX', m), () => closeInstall(true));
 }
 
 /* S46~S48 (5일 챌린지 체크·결과·메달)은 챌린지 다이어리(js/diary.js)로 바뀌었어요 (11/10) */

@@ -1264,3 +1264,10 @@ body.tablet .s44.s44b .preview-wrap, .s44b .s44b-card .preview-wrap { width:min(
 /* 챌린지 다이어리 인쇄 (A4 가로, 11/10) */
 .dy-print { width:1196px; height:810px; }
 @media print { .dy-print { zoom:.86; } }
+/* 설치 안내 11/10 정리: 제목 · 수호냥 · 말풍선 · 버튼 하나 */
+.install.slim h2 { margin:0; text-align:center; }
+.install.slim .install-top { justify-content:center; align-items:center; gap:18px; margin-top:22px; }
+.install-dim .modal:has(.install.slim) { width:min(760px,100%); }
+body.tablet .install-dim .modal:has(.install.slim) { width:900px; }
+body.tablet .install.slim .install-top img { width:190px; }
+body.tablet .install.slim .bubble.sm { font-size:26px; line-height:1.5; }
