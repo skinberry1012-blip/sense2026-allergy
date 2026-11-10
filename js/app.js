@@ -14,7 +14,7 @@ const openTeacher = from => Router.go('T49', { returnTo: from });
    연구소 화면과 같은 판(1600×900) 위에 수호냥 + 말풍선 + 버튼 (11/10) */
 Router.screens.S39 = (app) => {
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-s39' });
-  secretTeacher(labPanel(b, { sub: '나만의 알레르기 방패', title: '방패 만들기' }), 'S39');   // 제목을 두 번 빠르게 누르면 선생님 설정 (11/10)
+  labPanel(b, { sub: '나만의 알레르기 방패', title: '방패 만들기' });
   labChar(b, 'staff_guide', 600, { left: 70, bottom: 10 });
   const bub = labBubble(b, { x: 760, y: 330, w: 720, fs: 42, tail: 'l', name: '수호냥', staff: true });   // 수호냥 몸 가운데 높이에 맞춤 (11/10)
   bub.say('알레르기로부터 나를 지켜 줄<br>{{나만의 방패}}를 만들어 보자!');
@@ -384,8 +384,6 @@ const T_FLOW = {
 Router.screens.T49 = (app, p) => {
   const returnTo = p.returnTo || 'S00';
   let tab = p.tab || 1, d = Draft.get(), dev = 'tablet', view = Draft.get().mode === 'event' ? 'card' : 'lab';
-  /* 학생 화면에서 시크릿으로 들어오면 이 태블릿의 지금 설정에서 시작 (11/10) — [학생 화면 열기]를 눌러도 게시판 주소 등이 지워지지 않게 */
-  if (p.secret) { const c = Config.get(); d = Object.assign({}, d, { mode: c.mode === 'event' ? 'event' : 'class', board: c.board || '', bgm: c.bgm === false ? 'off' : 'on' }); view = d.mode === 'event' ? 'card' : 'lab'; }
   const step = { lab: 'S00', card: 'S39' };   // 부분마다 마지막으로 연 화면
   const local = location.protocol === 'file:' || ['localhost', '127.0.0.1', ''].includes(location.hostname);
   const base = local ? DEMO_BASE : location.origin + location.pathname;
@@ -583,7 +581,7 @@ Router.screens.T49 = (app, p) => {
           <div class="tc-linkrow"><div class="tc-link" id="lnk">${esc(urlOf())}</div><button class="tc-btn" id="copy">링크 복사</button></div>
           ${okBoard() ? '<button class="tc-btn sm" id="bqr">결과 게시판 QR 보기</button>' : ''}</div>
       </section>
-      <div class="tc-foot tc-foot3"><button class="tc-btn" id="prev">‹ 이전</button><p class="tc-help tc-secret">학생 화면을 연 뒤 선생님 화면으로 돌아오려면 학생 첫 화면의 제목 <b>${d.mode === 'event' ? "'방패 만들기'" : "'알레르기 연구소'"}를 두 번 빠르게 누르세요.</b></p><button class="tc-btn sm tc-here" id="useHere">학생 화면 열기</button><button class="tc-btn pri" id="done">설정 완료</button></div>`;
+      <div class="tc-foot tc-foot3"><button class="tc-btn" id="prev">‹ 이전</button><button class="tc-btn pri" id="done">설정 완료 · 학생 화면 열기 ›</button></div>`;
       onTap($('#copy'), async () => { if (await copyText(urlOf(), $('#lnk'))) toast('링크를 복사했어요.', 1800); });
       onTap($('#bqr'), () => full('결과 게시판 QR (접속용 아님)', d.board, true));
       onTap($('#qr'), () => full('학생 접속 QR 코드', urlOf()));
@@ -592,24 +590,10 @@ Router.screens.T49 = (app, p) => {
       onTap($('#edit'), () => { tab = 1; draw(); });
       onTap($('#prev'), () => { tab = 2; draw(); });
       /* [설정 완료] (11/10 최종): 이 기기에도 설정을 적용해요 — 부스 태블릿처럼 선생님 설정에서 행사용을 고른 기기는 계속 행사용 */
-      /* [설정 완료] (11/10): 학생은 QR로 자기 태블릿에서 들어오니, 선생님 화면에 그대로 머물러요 */
       onTap($('#done'), () => {
-        const m = Modal.open(`<div class="pop-head">설정을 마쳤어요</div><p class="pop-body">학생에게 <b>QR 코드</b>를 보여 주거나 <b>링크</b>를 보내 주세요.<br>학생은 자기 태블릿으로 QR을 찍어 들어와요.</p>
-          <div class="pop-btns"><button class="btn white" id="dOk">닫기</button><button class="btn pink" data-autofocus id="dQr">QR 크게 보기</button></div>`);
-        onTap($('#dOk', m), () => Modal.close());
-        onTap($('#dQr', m), () => { Modal.close(); full('학생 접속 QR 코드', urlOf()); });
-      });
-      /* [이 기기를 학생용으로 쓰기] (11/10): 행사 부스처럼 이 태블릿을 학생에게 직접 건넬 때만 — 이 기기에 설정을 적용하고 학생 화면으로 */
-      onTap($('#useHere'), () => {
-        const m = Modal.open(`<div class="pop-head">이 기기에서 학생 화면을 열까요?</div><p class="pop-body">행사 부스처럼 <b>이 태블릿을 학생에게 직접 건넬 때</b>만 써요.<br>선생님 화면으로 돌아오려면 학생 첫 화면의 제목 <b>${d.mode === 'event' ? "'방패 만들기'" : "'알레르기 연구소'"}를 두 번 빠르게 누르세요.</b></p>
-          <div class="pop-btns"><button class="btn white" data-autofocus id="hNo">아니요</button><button class="btn pink" id="hYes">학생 화면 열기</button></div>`);
-        onTap($('#hNo', m), () => Modal.close());
-        onTap($('#hYes', m), () => {
-          Modal.close();
-          Config.set(Object.assign(Config.get(), { mode: d.mode === 'event' ? 'event' : 'class', board: okBoard() ? d.board : '', bgm: d.bgm !== 'off' }));
-          setSound(d.sound !== 'off');
-          Router.go(d.mode === 'event' ? 'S39' : (returnTo === 'S39' ? 'S00' : returnTo));
-        });
+        Config.set(Object.assign(Config.get(), { mode: d.mode === 'event' ? 'event' : 'class', board: okBoard() ? d.board : '', bgm: d.bgm !== 'off' }));
+        setSound(d.sound !== 'off');
+        Router.go(d.mode === 'event' ? 'S39' : (returnTo === 'S39' ? 'S00' : returnTo));
       });
     }
     drawPrev();

@@ -202,5 +202,3 @@
 .tgx .tc-evwarn { margin:0; padding:10px 14px; border-radius:12px; background:#FFF3C4; color:#1E2A5A; font-size:16px; line-height:1.5; }
 .tgx .tc-dy.ev-off .tc-sec { opacity:.5; }
 .tgx .tc-evnote { margin-top:8px; color:#8A5A00; }
-.tgx .tc-foot3 .tc-here { margin-left:auto; margin-right:4px; }   /* 보조 버튼: 작게, [설정 완료] 왼쪽 */
-.tgx .tc-foot3 .tc-secret { flex:1; margin:0 12px; font-size:14.5px; line-height:1.45; color:var(--muted, #5E6587); }

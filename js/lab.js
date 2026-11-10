@@ -128,8 +128,7 @@ const labGo = (to, p = {}, o = {}) => Router.go(to, p, o);
 /* ===================== S00 첫 화면 ===================== */
 Router.screens.S00 = (app) => {
   const b = labBoard(app, LAB.bg.entrance, { cls: 'lab-s00' });
-  const sign = labEl(b, 'lab-sign', [378, 222, 842, 172], `<div><span class="px-tag">냥박사의</span><b><em>알레르기</em> 연구소</b></div>`);
-  secretTeacher(sign, 'S00');   // 제목을 두 번 빠르게 누르면 선생님 설정 (11/10)
+  labEl(b, 'lab-sign', [378, 222, 842, 172], `<div><span class="px-tag">냥박사의</span><b><em>알레르기</em> 연구소</b></div>`);
   labChar(b, 'nyang_welcome', 560, { left: -40, bottom: 22 });
   labChar(b, 'staff_hello', 530, { right: -20, bottom: 22 });   // 머리·모자가 커서 냥박사의 약 0.95배로 맞춰요 (11/9)
   const go = labBtn(b, '입장하기 ›', 'left:50%;bottom:64px;transform:translateX(-50%);font-size:52px;padding:20px 64px 16px', 'y shine beat');
