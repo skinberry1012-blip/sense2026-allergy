@@ -442,7 +442,7 @@ Router.screens.S38A = (app) => {
   /* 띠: [230,196,1140,360] 안에 빈칸 3개 (240×280) + 화살표 */
   /* 오른쪽 칸 x 560~1552: 띠와 카드 받침의 폭·위치를 같게 */
   const BX = 560, BY = 214, BW = 992, BH = 340, SW = 210, SH = 250, AG = 128, SX0 = (BW - (SW * 3 + AG * 2)) / 2, SY = (BH - SH) / 2 + 18;   // 칸 사이 넓혀 좌우 여백 줄이고, 칸은 이름표 아래로 조금 내림 (11/10)
-  const ROUND = { light: { label: '가벼운 증상 대처', hint: '가벼운 증상일 땐 어떻게 할까?<br>카드를 골라 {{순서대로}} 넣어 봐!' }, severe: { label: '위급한 증상 대처', hint: '이번엔 위급한 증상!<br>남은 카드를 {{순서대로}} 넣어 봐!' } };
+  const ROUND = { light: { label: '가벼운 증상 대처', hint: '<b class="kw light">가벼운 증상</b>일 땐 어떻게 할까?<br>카드를 골라 순서대로 넣어 봐!' }, severe: { label: '위급한 증상 대처', hint: '이번엔 <b class="kw severe">위급한 증상</b>!<br>남은 카드를 순서대로 넣어 봐!' } };
   const bands = {}, slots = {};
   const makeBand = t => {
     const band = labEl(b, 'quiz-band ' + t, [BX, BY, BW, BH], `<span class="qb-tag">${ROUND[t].label}</span>`);

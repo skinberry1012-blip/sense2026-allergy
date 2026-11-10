@@ -733,3 +733,8 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 /* 기억 체크 띠 이름표 크게 (11/10) */
 .qb-tag { top:-32px; left:28px; font-size:36px; padding:9px 34px 6px; box-shadow:0 0 0 4px #FFFDF5, 0 0 0 7px rgba(30,42,90,.18); }
 .qb-tag { top:-44px; }   /* 이름표를 띠 위로 더 올림, 띠는 18px 내림 (11/10) */
+/* 기억 체크 말풍선 강조어 (11/10): 띠 이름표와 같은 색 형광펜 */
+.px-bub b.kw { font-weight:400; font-family:var(--font-head); padding:0 4px; color:var(--navy); }
+.px-bub b.kw.light { background:linear-gradient(transparent 45%, #F5C842 45%, #F5C842 92%, transparent 92%); }
+.px-bub b.kw.severe { color:#C9573A; background:linear-gradient(transparent 45%, #FFD9CC 45%, #FFD9CC 92%, transparent 92%); }
+.px-bub b.kw { padding:0; }
