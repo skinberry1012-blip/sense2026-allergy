@@ -139,7 +139,7 @@ Router.screens.S46 = (app, p = {}) => {
   const W = root.querySelector('.dyb');
   let look = DyLook.get(), sideTab = 'stk', stkTab = 's';
   const cfg = DyCfg();
-  /* 결과 게시판 (11/10): 성공 메달(최소 목표)이나 완성 메달을 받은 뒤에만 [게시판에 올리기] — 한 학생이 매일 올려 패들렛이 복잡해지지 않게 */
+  /* 결과 게시판 (11/10): 챌린지가 끝나면(완성 또는 기간 끝) [게시판에 올리기] — 한 사람당 마지막 결과 한 장 */
   const BOARD = Config.get().board || '';
   let sentReady = false;   // 이 화면에서 이미지를 저장했나 (저장해야 패들렛에서 고를 수 있어요)
   const live = () => { const c = Challenge.get(); return c && c.v ? c : null; };
@@ -164,7 +164,7 @@ Router.screens.S46 = (app, p = {}) => {
         ${bub ? `<div class="sbub">${bub}</div>` : ''}
         <div class="tabs"><button data-side="cover" class="${sideTab === 'cover' ? 'on' : ''}">표지</button><button data-side="stk" class="${sideTab === 'stk' ? 'on' : ''}">스티커</button>${cfg.photo !== false ? '<button data-side="photo">내 사진</button>' : ''}</div>
         <div class="drawer" id="drawer"></div>
-        <div class="btns">${!c ? '<button class="pbtn y" id="go">챌린지 시작하기 ›</button>' : ended ? '<button class="pbtn y" id="again">새로 도전하기 ›</button>' : ''}<div class="brow"><button class="pbtn${c && !ended ? ' y' : ''}" id="saveImg">이미지 저장</button><button class="pbtn" id="print">인쇄하기</button></div>${c && BOARD && m.got >= Math.min(c.min, m.n) ? `<button class="pbtn${sentReady ? ' ready' : ''}" id="toBoard" ${sentReady ? '' : 'disabled aria-disabled="true"'}>게시판에 올리기 ›</button>` : ''}</div>
+        <div class="btns">${!c ? '<button class="pbtn y" id="go">챌린지 시작하기 ›</button>' : ended ? '<button class="pbtn y" id="again">새로 도전하기 ›</button>' : ''}<div class="brow"><button class="pbtn${c && !ended ? ' y' : ''}" id="saveImg">이미지 저장</button><button class="pbtn" id="print">인쇄하기</button></div>${c && BOARD && (ended || (m.medal && m.medal.gold)) ? `<button class="pbtn${sentReady ? ' ready' : ''}" id="toBoard" ${sentReady ? '' : 'disabled aria-disabled="true"'}>게시판에 올리기 ›</button>` : ''}</div>
       </div>
       <div id="dz">${dyDiary(m, look)}${look.placed.map(dyStk).join('')}</div>`;
     paintDrawer();
