@@ -249,7 +249,7 @@ Router.screens.S46 = (app, p = {}) => {
     const tier = big ? `${n}일 모두 약속을 지켰어요!` : (n > k ? (hasP ? `${n - k}일 더 하면 완성! 선생님 약속을 받아요` : `${n - k}일 더 하면 ${n}일 챌린지 완성!`) : '');
     const box = document.createElement('div'); box.className = 'cele-wrap';
     box.innerHTML = `<div class="veil"></div><div class="cele ${big ? 'big' : ''}">
-      <h3>${big ? `${n}일 챌린지 완성!` : `${k}일 챌린지 성공!`}</h3>
+      <h3 class="ribbon"><span>${big ? `${n}일 챌린지 완성!` : `${k}일 챌린지 성공!`}</span></h3>
       <div class="crow"><div class="bd"><div class="halo ${big ? 'big' : ''}"><div class="rays"></div>${big ? '<div class="rays2"></div>' : ''}<div class="glow"></div></div>${dyBadge(m.got, n, big)}</div>
         <div class="cmemo"><h5>선생님 한마디</h5><p>${dyEsc(pr)}</p>${big ? (hasP ? `<div class="coupon"><b>선생님 약속</b><span>${dyEsc(c.promise.trim())}</span></div>` : `<small>${tier}</small>`) : (tier ? `<small>${tier}</small>` : '')}</div></div>
       <div class="act"><button class="pbtn y" id="hang">다이어리에 붙이기 ›</button></div>
