@@ -181,9 +181,8 @@ Object.entries(LAB.places).forEach(([place, d]) => {
     const PICON = { home: '🏠', school: '🍴', ground: '⚽' };
     $('div', pan).insertAdjacentHTML('beforeend', `<span class="px-steps">${Object.entries(LAB.places).map(([k, q]) =>
       `<i class="${k === place ? 'cur' : ''} ${LabFound.count(k) >= 4 ? 'ok' : ''}">${PICON[k]} ${q.name}${LabFound.count(k) >= 4 ? ' ✓' : ''}</i>`).join('')}</span>`);
-    labEl(b, 'px-chip big', null, `찾은 원인 <b class="lc">${n}</b>개`, 'div', 'right:190px;top:26px');   // 숫자 하나만 (팀 점검 11/10)
-    const hint = labEl(b, 'px-icon y', null, '<svg viewBox="0 0 24 24" fill="none" stroke="#1E2A5A" stroke-width="2.5"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5V16h8v-2.5A6 6 0 0 0 12 3z"/></svg>', 'button', 'right:104px;top:26px');
-    hint.setAttribute('aria-label', '힌트');
+    labEl(b, 'sym-cnt place-cnt', null, `<b class="lc">${n}</b> / 4`, 'div', 'right:48px;top:35px');   // 증상 카드처럼 알약 배지 (11/10)
+    /* 힌트 버튼은 뺐어요 (11/10): 찾을 물건이 처음부터 노란 빛·물결·모서리로 강조돼 있어요 */
     /* 스캔할 곳 */
     const spots = d.points.map((pt, i) => {
       const done = found.includes(pt.item);
@@ -211,12 +210,6 @@ Object.entries(LAB.places).forEach(([place, d]) => {
       slot.innerHTML = `<div class="ts-box">${done ? `<img src="${IMG.item(pt.item)}" alt="">` : '<span>?</span>'}</div><b>${done ? LAB.items[pt.item] : ''}</b>`;   // 이름 자리 ??? 없앰 (11/10)
       if (p.just === pt.item) replay(slot, 'pop');
       tray.appendChild(slot);
-    });
-    onTap(hint, () => {
-      const i = d.points.findIndex(pt => !found.includes(pt.item));
-      if (i < 0) return;
-      playSfx('hint'); spots.forEach(s => s.classList.remove('glow')); replay(spots[i], 'glow');
-      setTimeout(() => spots[i].classList.remove('glow'), 3000);
     });
     if (n >= 4) {
       setTimeout(() => { if (Router.current && Router.current.s === d.scene) labDone(app, d.done); }, p.just ? 900 : 300);

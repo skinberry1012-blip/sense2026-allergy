@@ -593,3 +593,6 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .name-bub .name-px:focus-within { box-shadow:0 0 0 4px var(--navy), 0 0 0 12px rgba(245,200,66,.55); }
 .name-bub .name-px input { font-size:46px; }
 .name-bub .name-px input::placeholder { font-size:30px; }
+/* 장소 화면 찾은 원인: 알약 배지 (11/10) */
+.place-cnt { font-size:32px; padding:9px 26px 7px; }
+.place-cnt b.lc { font-size:38px; }
