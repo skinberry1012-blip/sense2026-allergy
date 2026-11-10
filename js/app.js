@@ -384,6 +384,8 @@ const T_FLOW = {
 Router.screens.T49 = (app, p) => {
   const returnTo = p.returnTo || 'S00';
   let tab = p.tab || 1, d = Draft.get(), dev = 'tablet', view = Draft.get().mode === 'event' ? 'card' : 'lab';
+  /* 학생 화면에서 시크릿으로 들어오면 이 태블릿의 지금 설정에서 시작 (11/10) — [학생 화면 열기]를 눌러도 게시판 주소 등이 지워지지 않게 */
+  if (p.secret) { const c = Config.get(); d = Object.assign({}, d, { mode: c.mode === 'event' ? 'event' : 'class', board: c.board || '', bgm: c.bgm === false ? 'off' : 'on' }); view = d.mode === 'event' ? 'card' : 'lab'; }
   const step = { lab: 'S00', card: 'S39' };   // 부분마다 마지막으로 연 화면
   const local = location.protocol === 'file:' || ['localhost', '127.0.0.1', ''].includes(location.hostname);
   const base = local ? DEMO_BASE : location.origin + location.pathname;
@@ -581,7 +583,7 @@ Router.screens.T49 = (app, p) => {
           <div class="tc-linkrow"><div class="tc-link" id="lnk">${esc(urlOf())}</div><button class="tc-btn" id="copy">링크 복사</button></div>
           ${okBoard() ? '<button class="tc-btn sm" id="bqr">결과 게시판 QR 보기</button>' : ''}</div>
       </section>
-      <div class="tc-foot tc-foot3"><button class="tc-btn" id="prev">‹ 이전</button><p class="tc-help tc-secret">이 기기를 학생용으로 쓴 뒤 선생님 화면으로 돌아오려면 학생 첫 화면의 제목 <b>${d.mode === 'event' ? "'방패 만들기'" : "'알레르기 연구소'"}를 두 번 빠르게 누르세요.</b></p><button class="tc-btn sm tc-here" id="useHere">이 기기를 학생용으로 쓰기</button><button class="tc-btn pri" id="done">설정 완료</button></div>`;
+      <div class="tc-foot tc-foot3"><button class="tc-btn" id="prev">‹ 이전</button><p class="tc-help tc-secret">학생 화면을 연 뒤 선생님 화면으로 돌아오려면 학생 첫 화면의 제목 <b>${d.mode === 'event' ? "'방패 만들기'" : "'알레르기 연구소'"}를 두 번 빠르게 누르세요.</b></p><button class="tc-btn sm tc-here" id="useHere">학생 화면 열기</button><button class="tc-btn pri" id="done">설정 완료</button></div>`;
       onTap($('#copy'), async () => { if (await copyText(urlOf(), $('#lnk'))) toast('링크를 복사했어요.', 1800); });
       onTap($('#bqr'), () => full('결과 게시판 QR (접속용 아님)', d.board, true));
       onTap($('#qr'), () => full('학생 접속 QR 코드', urlOf()));
@@ -599,8 +601,8 @@ Router.screens.T49 = (app, p) => {
       });
       /* [이 기기를 학생용으로 쓰기] (11/10): 행사 부스처럼 이 태블릿을 학생에게 직접 건넬 때만 — 이 기기에 설정을 적용하고 학생 화면으로 */
       onTap($('#useHere'), () => {
-        const m = Modal.open(`<div class="pop-head">이 기기를 학생용으로 쓸까요?</div><p class="pop-body">행사 부스처럼 <b>이 태블릿을 학생에게 직접 건넬 때</b>만 써요.<br>선생님 화면으로 돌아오려면 학생 첫 화면의 제목 <b>${d.mode === 'event' ? "'방패 만들기'" : "'알레르기 연구소'"}를 두 번 빠르게 누르세요.</b></p>
-          <div class="pop-btns"><button class="btn white" data-autofocus id="hNo">아니요</button><button class="btn pink" id="hYes">학생용으로 쓰기</button></div>`);
+        const m = Modal.open(`<div class="pop-head">이 기기에서 학생 화면을 열까요?</div><p class="pop-body">행사 부스처럼 <b>이 태블릿을 학생에게 직접 건넬 때</b>만 써요.<br>선생님 화면으로 돌아오려면 학생 첫 화면의 제목 <b>${d.mode === 'event' ? "'방패 만들기'" : "'알레르기 연구소'"}를 두 번 빠르게 누르세요.</b></p>
+          <div class="pop-btns"><button class="btn white" data-autofocus id="hNo">아니요</button><button class="btn pink" id="hYes">학생 화면 열기</button></div>`);
         onTap($('#hNo', m), () => Modal.close());
         onTap($('#hYes', m), () => {
           Modal.close();

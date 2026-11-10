@@ -214,7 +214,7 @@ function secretTeacher(el, from) {
     const m = Modal.open(`<div class="pop-head">선생님 설정을 열까요?</div><p class="pop-body">선생님만 눌러 주세요.<br>이 태블릿의 설정을 바꿀 수 있어요.</p>
       <div class="pop-btns"><button class="btn white" data-autofocus id="stNo">아니요</button><button class="btn pink" id="stYes">선생님 설정 열기</button></div>`);
     $('#stNo', m).addEventListener('click', () => Modal.close());
-    $('#stYes', m).addEventListener('click', () => { Modal.close(); Router.go('T49', { returnTo: from }); });
+    $('#stYes', m).addEventListener('click', () => { Modal.close(); Router.go('T49', { returnTo: from, secret: true }); });
   });
   el.style.touchAction = 'manipulation';   // 두 번 누를 때 화면 확대 막기
 }
