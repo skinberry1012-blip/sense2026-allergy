@@ -197,3 +197,8 @@
 .tgx .tc-dy .tc-more { position:sticky; bottom:0; flex:none; margin:-40px -6px 0 0; padding:34px 0 6px; text-align:center; font-weight:700; font-size:16px; color:var(--navy, #1E2A5A);
   background:linear-gradient(rgba(255,253,246,0), #FFFDF6 55%); pointer-events:none; transition:opacity .25s; }
 .tgx .tc-dy .tc-more.gone { opacity:0; }
+/* 행사용 (11/10 최종) */
+.tgx .tc-privacy { margin-top:-4px; color:#8A5A00; }
+.tgx .tc-evwarn { margin:0; padding:10px 14px; border-radius:12px; background:#FFF3C4; color:#1E2A5A; font-size:16px; line-height:1.5; }
+.tgx .tc-dy.ev-off .tc-sec { opacity:.5; }
+.tgx .tc-evnote { margin-top:8px; color:#8A5A00; }

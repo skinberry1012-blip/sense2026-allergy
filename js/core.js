@@ -24,23 +24,35 @@ const isStandalone = () => window.matchMedia('(display-mode: standalone)').match
 
 /* ---------- 저장 (이 기기의 LocalStorage에만) ---------- */
 const PREVIEW = new URLSearchParams(location.search).has('preview'); // 선생님 설정 미리 보기(iframe)
-const KEY = PREVIEW ? 'preview.promiseCard.' : 'promiseCard.';
+/* 행사용 (11/10 최종): 기록을 수업용과 따로 저장해요 — 학생 개인 태블릿에서 행사용 QR을 찍어도 수업 챌린지는 그대로 */
+const KEY_OF = () => PREVIEW ? 'preview.promiseCard.' : (Config.get().mode === 'event' ? 'event.promiseCard.' : 'promiseCard.');
 const CFG_KEY = PREVIEW ? 'preview.appConfig' : 'appConfig';
+const SCFG_KEY = PREVIEW ? 'preview.sessionConfig' : 'sessionConfig';   // QR로 들어온 행사용: 이 창을 닫을 때까지만
 const Store = {
-  get(k, d = null) { try { const v = localStorage.getItem(KEY + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
-  set(k, v) { try { localStorage.setItem(KEY + k, JSON.stringify(v)); } catch (e) { toast('저장 공간에 저장하지 못했어요.'); } },
-  clearAll() { try { Object.keys(localStorage).filter(k => k.startsWith(KEY)).forEach(k => localStorage.removeItem(k)); } catch (e) {} },
+  get(k, d = null) { try { const v = localStorage.getItem(KEY_OF() + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(KEY_OF() + k, JSON.stringify(v)); } catch (e) { toast('저장 공간에 저장하지 못했어요.'); } },
+  clearAll() { try { const K = KEY_OF(); Object.keys(localStorage).filter(k => k.startsWith(K)).forEach(k => localStorage.removeItem(k)); } catch (e) {} },
   hasRecord() { return !!(Store.get('cardNo') || Store.get('challenge')); },
+  /* 행사용 '앞 친구 기록' 판단: 카드를 저장하기 전에 떠난 사람(이름·약속만)도 잡아요 */
+  hasAny() { try { const K = KEY_OF(); return Object.keys(localStorage).some(k => k.startsWith(K)); } catch (e) { return false; } },
   snapshot() {
     const o = {};
-    try { Object.keys(localStorage).filter(k => k.startsWith(KEY) || k === 'appConfig').forEach(k => { o[k] = localStorage.getItem(k); }); } catch (e) {}
+    try { const K = KEY_OF(); Object.keys(localStorage).filter(k => k.startsWith(K) || k === 'appConfig').forEach(k => { o[k] = localStorage.getItem(k); }); } catch (e) {}
     return o;
   },
   restore(o) { try { Object.entries(o).forEach(([k, v]) => localStorage.setItem(k, v)); } catch (e) {} }
 };
 const Config = {
-  get() { try { return Object.assign({ mode: 'class', board: '', bgm: true }, JSON.parse(localStorage.getItem(CFG_KEY) || '{}')); } catch (e) { return { mode: 'class', board: '', bgm: true }; } },
-  set(c) { try { localStorage.setItem(CFG_KEY, JSON.stringify(c)); } catch (e) {} }
+  get() {
+    let c; try { c = Object.assign({ mode: 'class', board: '', bgm: true }, JSON.parse(localStorage.getItem(CFG_KEY) || '{}')); } catch (e) { c = { mode: 'class', board: '', bgm: true }; }
+    let s = null; try { s = JSON.parse(sessionStorage.getItem(SCFG_KEY) || 'null'); } catch (e) {}
+    return s ? Object.assign(c, s) : c;
+  },
+  /* 이 기기에 계속 (수업용 QR · 선생님 설정의 [설정 완료]) — 창 단위 행사용은 끝내요 */
+  set(c) { try { localStorage.setItem(CFG_KEY, JSON.stringify(c)); sessionStorage.removeItem(SCFG_KEY); } catch (e) {} },
+  /* 이 창에서만 (QR로 들어온 행사용) */
+  setSession(c) { try { sessionStorage.setItem(SCFG_KEY, JSON.stringify(c)); } catch (e) {} },
+  isEvent() { return Config.get().mode === 'event'; }
 };
 const Draft = {
   get() { try { return Object.assign({ mode: 'class', board: '', sound: 'on', bgm: 'on' }, JSON.parse(localStorage.getItem('teacherPanel.draft') || '{}')); } catch (e) { return { mode: 'class', board: '', sound: 'on', bgm: 'on' }; } },
@@ -192,7 +204,7 @@ window.addEventListener('popstate', e => {
 /* ---------- 이전 · 처음으로 버튼 (모든 학생 화면 왼쪽 아래, 팀 점검 11/8) ---------- */
 const NavBtns = {
   el: null,
-  home() { return (typeof Config !== 'undefined' && Config.get().mode === 'event') ? 'S39' : 'S00'; },
+  home() { return (typeof Config !== 'undefined' && Config.isEvent()) ? 'S39' : 'S00'; },
   update(screen) {
     if (!NavBtns.el) {
       const w = document.createElement('div'); w.id = 'navBtns';
@@ -204,10 +216,11 @@ const NavBtns = {
       });
       $('#navHome', w).addEventListener('click', () => {
         if (typeof playSfx === 'function') playSfx('tap');
-        const m = Modal.open(`<div class="pop-head">처음 화면으로 갈까요?</div><p class="pop-body">지금까지 한 연구와 약속 카드 기록은 그대로 남아 있어요.</p>
+        const ev = Config.isEvent();   // 행사용 (11/10): 함께 쓰는 태블릿이라 처음으로 가면 기록을 지워요 — 다시 하고 싶을 때도 이 버튼
+        const m = Modal.open(`<div class="pop-head">처음 화면으로 갈까요?</div><p class="pop-body">${ev ? '처음으로 가면 <b class="red">내 기록(서명 포함)이 지워져요.</b>' : '지금까지 한 연구와 약속 카드 기록은 그대로 남아 있어요.'}</p>
           <div class="pop-btns"><button class="btn white" data-autofocus id="nhNo">아니요</button><button class="btn pink" id="nhYes">처음 화면으로</button></div>`);
         $('#nhNo', m).addEventListener('click', () => Modal.close());
-        $('#nhYes', m).addEventListener('click', () => { Modal.close(); Router.go(NavBtns.home()); });
+        $('#nhYes', m).addEventListener('click', () => { Modal.close(); if (ev) { Store.clearAll(); NavBtns.depth = 0; Router.go(NavBtns.home(), {}, { replace: true }); } else Router.go(NavBtns.home()); });
       });
     }
     const hide = PREVIEW || screen === 'T49' || screen === 'T50' || screen === 'S44' || screen === NavBtns.home();   // S44는 왼쪽에 자체 이동 버튼

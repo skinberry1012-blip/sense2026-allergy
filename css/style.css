@@ -1339,3 +1339,11 @@ body.tablet .s44-top { padding-left:0; }
 /* 버튼 색 규칙 (11/10): 지금 누를 버튼 = 노랑, 보조 = 흰색, 산호색은 '위급'에만 — 저장 버튼도 노랑 + 남색 글씨 */
 .s44b-btns #save { background:#F5C842 !important; color:#1E2A5A !important; }
 .s44b-btns #save em { color:#1E2A5A !important; }
+
+/* ===== 행사용 (11/10 최종): 카드 꾸미기 아래 버튼 ===== */
+.s44b-btns #big { background:#F5C842 !important; color:#1E2A5A !important; }
+.s44b-btns .ev-step:disabled { opacity:.45; cursor:not-allowed; }
+.s44b-btns .ev-step.ready { background:#fff !important; animation:pxbeat 1.6s ease-in-out infinite; }
+.s44b-btns .ev-pass { margin-top:6px !important; }
+.ev-bigmodal .modal, .modal-dim.ev-bigmodal > * { max-width:min(1180px, 94vw) !important; width:auto; }
+.ev-big { padding:6px 18px 0; } .ev-big img { display:block; width:100%; max-height:70vh; object-fit:contain; border-radius:8px; box-shadow:0 6px 20px rgba(30,42,90,.18); }

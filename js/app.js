@@ -21,6 +21,12 @@ Router.screens.S39 = (app) => {
   const start = labBtn(b, '나만의 약속 카드 만들기 ›', 'left:780px;top:640px;font-size:38px', 'y beat');
   onTap(start, () => {
     playSfx('next');
+    /* 행사용 (11/10 최종): 함께 쓰는 태블릿 — 시작할 때마다 깨끗하게 (카드를 저장하기 전에 떠난 사람의 이름·약속·서명까지) */
+    if (Config.isEvent()) {
+      const had = Store.hasAny(); Store.clearAll(); NavBtns.depth = 0;
+      if (had) toast('앞 친구 기록을 지우고 시작할게요.', 2200);
+      return Router.go('S40', {}, { replace: true });
+    }
     if (!Store.hasRecord()) return Router.go('S40');
     const back = () => Router.go('S46');
     const m = Modal.open(`
@@ -42,7 +48,7 @@ Router.screens.S40 = (app) => {
   labChar(b, 'staff_hello', 560, { left: 14, bottom: 10 });   // 좌우 여백 맞춤 (11/10)
   /* 말풍선 안에 이름 칸 (11/10 다시): 수호냥이 묻고, 말풍선 안에서 바로 써요 */
   const bub = labEl(b, 'px-bub tail-l name-bub', null, `<span class="px-name s">수호냥</span>
-    <div class="px-bub-txt">약속 카드에 들어갈<br>{{이름}}을 입력해 보아요!</div>
+    <div class="px-bub-txt">${Config.isEvent() ? '약속 카드에 들어갈<br>{{이름}}이나 별명을 써 보아요!' : '약속 카드에 들어갈<br>{{이름}}을 입력해 보아요!'}</div>
     <label class="name-px"><input id="name" type="text" maxlength="12" placeholder="이름 (번호도 쓸 수 있어요)" autocomplete="off" enterkeyhint="done" aria-label="이름"><span class="count" id="count">0/${NAME_MAX}</span></label>
     <i class="t1"></i><i class="t2"></i>`.replace(/\{\{(.+?)\}\}/g, '<b class="lc">$1</b>'), 'div', 'left:694px;top:300px;width:700px');
   const field = $('.name-px', bub);
@@ -76,6 +82,7 @@ Router.screens.S40 = (app) => {
    장소(집 · 학교 · 밖)마다 1가지씩 꼭 고르고, '나만의 약속'은 직접 써서 2개까지 더할 수 있어요. 고르면 바로 저장돼요. */
 const RULE_TABS = [['home', '집에서'], ['school', '학교에서'], ['outside', '밖에서'], ['mine', '나만의 약속']];
 Router.screens.RULES = (app, p) => {
+  if (!Store.get('name', '')) return Router.go('S40', {}, { replace: true });   // 이름 없이 들어오면(넘긴 뒤 뒤로 가기 등) 이름 쓰기부터 (11/10)
   let tab = Math.max(0, Math.min(3, p.tab | 0));
   const empty = () => ({ home: [], school: [], outside: [] });
   const rules = Object.assign(empty(), Store.get('rules', empty()));
@@ -175,6 +182,10 @@ Router.screens.S44 = (app) => {
   const st = { design: 'certificate', buddy: Store.get('buddy', 'pinky_01'), step: 1 };
   if (!BUDDIES[st.buddy]) st.buddy = 'pinky_01';   // 수호 친구는 4가지만 (11/9)
   const rules = selectedRules(), name = Store.get('name', '');
+  /* 행사용 (11/10 최종): 함께 쓰는 태블릿 — 카드 이미지 저장·게시판 올리기(게시판이 없으면 크게 보기) → 다음 친구에게 넘기기. 인쇄·다이어리 없음 */
+  const EV = Config.isEvent(), BOARD = EV ? (Config.get().board || '') : '';
+  if (!rules.length) return Router.go(EV ? 'S39' : 'RULES', {}, { replace: true });   // 넘긴 뒤 뒤로 가기로 빈 카드가 열리지 않게
+  let saved = false;
   /* 배치 (11/9): 헌혈 임명장처럼 — 오른쪽 크게 약속 카드, 왼쪽에 수호 친구 고르기 · 저장 · 인쇄 · 처음으로 */
   app.innerHTML = `
   <div class="sc outdoor s44 s44b">
@@ -185,8 +196,11 @@ Router.screens.S44 = (app) => {
       <aside class="s44b-side">
         <section class="s44-box"><h3 class="box-tag">나의 수호 친구 고르기</h3><div class="buddies" id="buddies"></div></section>
         <div class="s44b-btns">
-          <button class="btn pink" id="save">약속 카드 저장하기</button>
-          <div class="s44b-row"><button class="btn white" id="print">인쇄하기</button><button class="btn white" id="home">처음으로</button></div>
+          ${!EV ? `<button class="btn pink" id="save">약속 카드 저장하기</button>
+          <div class="s44b-row"><button class="btn white" id="print">인쇄하기</button><button class="btn white" id="home">처음으로</button></div>`
+          : (BOARD ? `<button class="btn pink" id="save">① 카드 이미지 저장</button><button class="btn white ev-step" id="toBoard" disabled aria-disabled="true">② 게시판에 올리기</button>`
+                   : `<button class="btn pink" id="big">카드 크게 보기</button>`)
+            + `<button class="btn white ev-pass" id="pass">다음 친구에게 넘기기 ›</button>`}
         </div>
       </aside>
       <section class="s44b-card">
@@ -267,11 +281,45 @@ Router.screens.S44 = (app) => {
     if (!res.fit) {
       toast('약속이 카드에 다 들어가지 않아요. [다시 꾸미기]에서 약속을 줄이거나 짧게 고쳐 주세요.', 3500); return;
     }
-    try { await saveCanvasPNG(out, `약속카드_${(name || '나').replace(/[^가-힣a-zA-Z0-9]/g, '')}_${DateK.today().replace(/-/g, '').slice(4)}.png`); }
+    /* 행사용 파일 이름은 이름 대신 시각 (함께 쓰는 태블릿 사진첩에 이름이 쌓이지 않게, 같은 이름끼리 겹치지 않게) */
+    const tm = new Date(), p2 = n => String(n).padStart(2, '0');
+    const fname = EV ? `약속카드_${DateK.today().replace(/-/g, '').slice(4)}_${p2(tm.getHours())}${p2(tm.getMinutes())}${p2(tm.getSeconds())}.png`
+      : `약속카드_${(name || '나').replace(/[^가-힣a-zA-Z0-9]/g, '')}_${DateK.today().replace(/-/g, '').slice(4)}.png`;
+    try { await saveCanvasPNG(out, fname); }
     catch (e) { toast(e && e.name === 'AbortError' ? '카드 저장이 취소됐어요. 다시 눌러 주세요.' : '저장하지 못했어요. 다시 눌러 주세요.', 2500); return; }
+    if (EV) {
+      saved = true; playSfx('save');
+      const tb = $('#toBoard'); if (tb) { tb.disabled = false; tb.setAttribute('aria-disabled', 'false'); tb.classList.add('ready'); }
+      toast('카드를 저장했어요! 이제 ② 게시판에 올리기를 눌러요.', 3000);
+      return;
+    }
     st.step = 4; playSfx('save'); render();
     Store.set('design', st.design); Store.set('buddy', st.buddy);
     Router.go('S46', { install: !isStandalone() });
+  });
+  /* ---- 행사용 버튼 ---- */
+  onTap($('#toBoard'), () => {
+    if (!saved) { playSfx('full'); toast('먼저 ① 카드 이미지 저장을 눌러요.'); return; }
+    playSfx('tap'); window.open(BOARD, '_blank', 'noopener');
+    toast('게시판에 카드 이미지를 올린 뒤, 이 화면으로 돌아와 [다음 친구에게 넘기기]를 눌러요.', 5000);
+  });
+  onTap($('#big'), async () => {
+    const out = document.createElement('canvas');
+    if (!Store.get('cardDate')) Store.set('cardDate', DateK.today());
+    await drawPromiseCard(out, { ...st, name, date: cardDay(), rules, sigImg: signatureImg, preview: false });
+    const m = Modal.open(`<div class="pop-head">휴대폰 카메라로 카드를 찍어 가요</div>
+      <div class="ev-big"><img src="${out.toDataURL('image/png')}" alt="알레르기 예방 약속 카드"></div>
+      <div class="pop-btns"><button class="btn pink" data-autofocus id="bigOk">다 찍었어요</button></div>`, { cls: 'ev-bigmodal' });
+    onTap($('#bigOk', m), () => Modal.close());
+  });
+  onTap($('#pass'), () => {
+    const msg = !BOARD ? '내 카드와 기록이 지워지고, 다음 친구가 처음부터 시작해요.'
+      : saved ? '게시판에 올렸나요?<br>함께 쓰는 태블릿이에요. <b class="red">사진첩에 저장한 내 카드 이미지는 지워 주세요.</b>'
+      : '<b class="red">아직 카드를 저장하지 않았어요.</b><br>넘기면 내 카드가 사라져요.';
+    const m = Modal.open(`<div class="pop-head">다음 친구에게 넘길까요?</div><p class="pop-body">${msg}</p>
+      <div class="pop-btns"><button class="btn white" data-autofocus id="pNo">아직이에요</button><button class="btn pink" id="pYes">네, 넘길게요</button></div>`);
+    onTap($('#pNo', m), () => Modal.close());
+    onTap($('#pYes', m), () => { Modal.close(); playSfx('delete'); Store.clearAll(); NavBtns.depth = 0; Router.go('S39', {}, { replace: true }); toast('다음 친구 차례예요!', 2000); });
   });
   render();
 };
@@ -331,7 +379,7 @@ const PREVIEW_STEPS = {
 };
 const T_FLOW = {
   class: ['미션 · 숨은 알레르기 원인 12가지 찾기', '증상 카드 · 대처 방법 익히기', '나만의 예방 약속 카드 만들기', '챌린지 다이어리 꾸미기 → 매일 체크 → 메달'],
-  event: ['나만의 예방 약속 카드 만들기', '챌린지 다이어리 꾸미기 → 매일 체크 → 메달']
+  event: ['나만의 예방 약속 카드 만들기', '카드 이미지를 게시판에 올리기 (게시판이 없으면 휴대폰으로 찍어 가기)', '다음 친구에게 넘기기 (이 태블릿 기록 지움)']
 };
 Router.screens.T49 = (app, p) => {
   const returnTo = p.returnTo || 'S00';
@@ -347,6 +395,7 @@ Router.screens.T49 = (app, p) => {
   const query = () => '?mode=' + (d.mode === 'event' ? 'event' : 'class') + (okBoard() ? '&board=' + encodeURIComponent(d.board) : '') + (d.sound === 'off' ? '&sound=off' : '') + (d.bgm === 'off' ? '&bgm=off' : '') + dyQuery();
   const urlOf = () => base + query();
   const modeName = () => d.mode === 'event' ? '행사용' : '수업용';
+  const BOARD_HELP = () => d.mode === 'event' ? '학생이 약속 카드 이미지를 올릴 패들렛·띵커벨 보드 주소예요. 비워 두면 학생이 휴대폰으로 카드를 찍어 가요.' : '챌린지 다이어리 이미지를 올릴 패들렛·띵커벨 보드 주소예요.';
   app.innerHTML = `<div class="sc tgx">
     <header class="tc-head">
       <h1 class="tc-title">냥박사의 알레르기 연구소 <span>선생님 설정</span></h1>
@@ -369,7 +418,7 @@ Router.screens.T49 = (app, p) => {
     if (tab !== 1) return;
     if (d.mode === 'event' && view === 'lab') view = 'card';
     paintSeg('view', view);
-    $('#steps').innerHTML = PREVIEW_STEPS[view].map(([k, n]) => `<button data-s="${k}" class="${k === step[view] ? 'on' : ''}">${n}</button>`).join('');
+    $('#steps').innerHTML = PREVIEW_STEPS[view].filter(([k]) => !(d.mode === 'event' && /^S4[6-8]$/.test(k))).map(([k, n]) => `<button data-s="${k}" class="${k === step[view] ? 'on' : ''}">${n}</button>`).join('');
     $$('.tc-seg[data-k="view"] button').forEach(x => { x.disabled = x.dataset.v === 'lab' && d.mode === 'event'; });
     $('#pv').src = pvSrc(); fitFrame();
     $('#pvcap').textContent = view === 'lab' ? '수업용: 학생은 연구소 첫 화면에서 시작해요. 연구소를 마치면 약속 카드로 넘어가요.'
@@ -406,7 +455,7 @@ Router.screens.T49 = (app, p) => {
           <h2 class="tc-h"><i>1</i>실행 모드</h2>
           <div class="tc-modes" id="modes">
             <button data-m="class" class="${d.mode !== 'event' ? 'on' : ''}"><span class="rd"></span><span><b>수업용</b><small>연구소 학습을 마친 뒤 약속 카드를 만들어요</small></span></button>
-            <button data-m="event" class="${d.mode === 'event' ? 'on' : ''}"><span class="rd"></span><span><b>행사용</b><small>연구소를 건너뛰고 약속 카드부터 시작해요</small></span></button>
+            <button data-m="event" class="${d.mode === 'event' ? 'on' : ''}"><span class="rd"></span><span><b>행사용</b><small>연구소를 건너뛰고 약속 카드부터 · 함께 쓰는 태블릿용(다이어리 없음)</small></span></button>
           </div>
         </section>
         <section class="tc-sec">
@@ -417,7 +466,8 @@ Router.screens.T49 = (app, p) => {
         <section class="tc-sec">
           <h2 class="tc-h"><i>3</i>결과 공유 게시판 <em>선택</em></h2>
           <label class="tc-url" id="uf"><span class="sr">게시판 주소</span><input type="url" inputmode="url" id="board" placeholder="예: https://padlet.com/…" value="${esc(d.board)}"></label>
-          <p class="tc-help" id="err">챌린지 다이어리 이미지를 올릴 패들렛·띵커벨 보드 주소예요.</p>
+          <p class="tc-help" id="err">${BOARD_HELP()}</p>
+          <p class="tc-help tc-privacy">게시판은 우리 학교만 볼 수 있게(비공개·비밀번호) 설정해 주세요.${d.mode === 'event' ? ' 행사용은 로그인 없이 올리기를 허용해 주세요.' : ''}</p>
         </section>
         <section class="tc-device">
           <button class="tc-btn sm danger" id="wipe">이 기기 기록 지우기</button>
@@ -433,12 +483,21 @@ Router.screens.T49 = (app, p) => {
         <p class="tc-help" id="pvcap"></p>
         <div class="tc-foot"><button class="tc-btn" id="reset">기본값으로</button><button class="tc-btn pri" id="toNext">다음 · 챌린지 다이어리 ›</button></div>
       </div>`;
-      $('#modes').addEventListener('click', e => { const b = e.target.closest('[data-m]'); if (!b) return; d.mode = b.dataset.m; Draft.set(d); view = d.mode === 'event' ? 'card' : 'lab';
-        $$('#modes button').forEach(x => x.classList.toggle('on', x === b)); drawPrev(); });
+      $('#modes').addEventListener('click', e => { const b = e.target.closest('[data-m]'); if (!b) return; const was = d.mode; d.mode = b.dataset.m; Draft.set(d); view = d.mode === 'event' ? 'card' : 'lab';
+        $$('#modes button').forEach(x => x.classList.toggle('on', x === b)); drawPrev();
+        draw();
+        /* 행사용 (11/10 최종): 게시판 주소가 없으면 한 번 알려 줘요 — 비워 두면 학생은 휴대폰으로 카드를 찍어 가요 */
+        if (d.mode === 'event' && was !== 'event' && !okBoard()) {
+          const m = Modal.open(`<div class="pop-head">결과 게시판 주소를 넣어 주세요</div>
+            <p class="pop-body">게시판 주소를 넣으면 학생이 약속 카드 이미지를 게시판으로 보내요. 선생님이 게시판에서 출력해 나눠 줄 수 있어요.<br><b>비워 두면</b> 학생이 자기 휴대폰으로 카드를 찍어 가요.</p>
+            <div class="pop-btns"><button class="btn white" id="bLater">비워 둘게요</button><button class="btn pink" data-autofocus id="bNow">주소 넣기</button></div>`);
+          onTap($('#bLater', m), () => Modal.close());
+          onTap($('#bNow', m), () => { Modal.close(); const i = $('#board'); if (i) i.focus(); });
+        } });
       $('#board').addEventListener('change', e => { d.board = e.target.value.trim(); Draft.set(d);
         const bad = d.board && !isHttps(d.board); $('#uf').classList.toggle('bad', !!bad);
         $('#err').classList.toggle('bad', !!bad);
-        $('#err').textContent = bad ? 'https로 시작하는 주소를 넣어 주세요.' : '챌린지 다이어리 이미지를 올릴 패들렛·띵커벨 보드 주소예요.'; });
+        $('#err').textContent = bad ? 'https로 시작하는 주소를 넣어 주세요.' : BOARD_HELP(); });
       $('#steps').addEventListener('click', e => { const b = e.target.closest('[data-s]'); if (!b) return; step[view] = b.dataset.s; drawPrev(); });
       $$('.tc-seg').forEach(g => g.addEventListener('click', e => {
         const x = e.target.closest('[data-v]'); if (!x || x.disabled) return; const k = g.dataset.k;
@@ -463,7 +522,8 @@ Router.screens.T49 = (app, p) => {
       const txt = (k, max, ph, sample) => `<label class="tc-url tc-txt"><span class="sr">${ph}</span><input id="dy_${k}" maxlength="${max}" placeholder="${ph}" value="${esc(y[k])}"><span class="tc-cnt" id="cn_${k}">${[...y[k]].length}/${max}</span></label>
         <button class="tc-sample" data-fill="${k}" data-text="${esc(sample)}">예: ${esc(sample)}</button>`;
       $('#panel').innerHTML = `
-      <div class="tc-col tc-set tc-dy">
+      <div class="tc-col tc-set tc-dy${d.mode === 'event' ? ' ev-off' : ''}">
+        ${d.mode === 'event' ? '<p class="tc-evwarn"><b>행사용</b>은 다이어리를 쓰지 않아요. 아래 설정은 수업용에서만 쓰여요.</p>' : ''}
         <section class="tc-sec tc-inl"><h2 class="tc-h"><i>1</i>챌린지 횟수</h2>${step1('count', y.count, '회', 1, 10)}<small>1~10회 · 기본 5회</small></section>
         <section class="tc-sec tc-inl"><h2 class="tc-h"><i>2</i>성공 메달</h2>${step1('min', Math.min(y.min, y.count), '일', 1, y.count)}<small>별을 이만큼 모으면 성공 메달</small></section>
         <section class="tc-sec"><h2 class="tc-h"><i>3</i>진행 방식</h2>
@@ -512,10 +572,11 @@ Router.screens.T49 = (app, p) => {
         <dl class="tc-facts">
           <div><dt>소리</dt><dd>효과음 ${d.sound === 'off' ? '끄기' : '켜기'} · 대기 음악 ${d.bgm === 'off' ? '끄기' : '켜기'}</dd></div>
           <div><dt>챌린지</dt><dd>${(() => { const y = dy(); return `${y.mode === 'free' ? `${y.weeks}주 안에 자유롭게` : '학교 가는 날 이어서'} ${y.count}회 · ${Math.min(y.min, y.count)}일 성공 메달${y.promise.trim() ? ' · 선생님 약속 있음' : ''}`; })()}</dd></div>
-          <div><dt>결과 게시판</dt><dd>${okBoard() ? `<span class="ok">연결됨</span> ${esc(d.board)}` : '<span class="no">없음</span> 다이어리는 학생 기기에만 저장돼요'}</dd></div>
+          <div><dt>결과 게시판</dt><dd>${okBoard() ? `<span class="ok">연결됨</span> ${esc(d.board)}` : d.mode === 'event' ? '<span class="no">없음</span> 학생은 휴대폰으로 카드를 찍어 가요' : '<span class="no">없음</span> 다이어리는 학생 기기에만 저장돼요'}</dd></div>
         </dl>
         <div class="tc-flowbox"><p class="tc-mode"><b>${modeName()}</b> 학생은 이렇게 해요</p>
-        <ol class="tc-flow">${T_FLOW[d.mode === 'event' ? 'event' : 'class'].map(s => `<li>${s}</li>`).join('')}</ol></div>
+        <ol class="tc-flow">${T_FLOW[d.mode === 'event' ? 'event' : 'class'].map(s => `<li>${s}</li>`).join('')}</ol>
+        ${d.mode === 'event' ? '<p class="tc-help tc-evnote">행사가 끝나면 태블릿 사진첩·다운로드 폴더의 카드 이미지를 지워 주세요.</p>' : ''}</div>
         <div class="tc-linkbox"><p class="tc-mode"><b>접속 링크</b> 설정을 바꾸면 새 QR을 다시 찍어야 해요</p>
           <div class="tc-linkrow"><div class="tc-link" id="lnk">${esc(urlOf())}</div><button class="tc-btn" id="copy">링크 복사</button></div>
           ${okBoard() ? '<button class="tc-btn sm" id="bqr">결과 게시판 QR 보기</button>' : ''}</div>
@@ -528,7 +589,12 @@ Router.screens.T49 = (app, p) => {
       onTap($('#qrSave'), saveQR);
       onTap($('#edit'), () => { tab = 1; draw(); });
       onTap($('#prev'), () => { tab = 2; draw(); });
-      onTap($('#done'), () => Router.go(returnTo));
+      /* [설정 완료] (11/10 최종): 이 기기에도 설정을 적용해요 — 부스 태블릿처럼 선생님 설정에서 행사용을 고른 기기는 계속 행사용 */
+      onTap($('#done'), () => {
+        Config.set(Object.assign(Config.get(), { mode: d.mode === 'event' ? 'event' : 'class', board: okBoard() ? d.board : '', bgm: d.bgm !== 'off' }));
+        setSound(d.sound !== 'off');
+        Router.go(d.mode === 'event' ? 'S39' : (returnTo === 'S39' ? 'S00' : returnTo));
+      });
     }
     drawPrev();
   };
@@ -605,7 +671,11 @@ const TestBar = {
     const dyv = (qs.get('dy') || '').split('.');
     if (dyv.length >= 6) cfg.diary = { count: Math.max(1, Math.min(10, +dyv[0] || 5)), mode: dyv[1] === 'f' ? 'free' : 'row', weeks: Math.max(1, Math.min(4, +dyv[2] || 2)), min: Math.max(1, +dyv[3] || 3), photo: dyv[4] !== '0', tsign: dyv[5] === 'n' ? 'n' : 't',
       promise: (qs.get('dp') || '').slice(0, 20), praiseMin: (qs.get('dm') || '').slice(0, 40), praiseDone: (qs.get('dd') || '').slice(0, 40) };
-    Config.set(cfg);
+    if (cfg.mode === 'event' && !PREVIEW) {
+      /* 행사용 QR (11/10 최종): 이 창을 닫을 때까지만 행사용 — 학생 개인 태블릿은 다시 열면 원래대로(수업 다이어리) */
+      if (!configured) { try { localStorage.setItem(CFG_KEY, JSON.stringify({ mode: 'class', board: '', bgm: true })); } catch (e) {} }
+      Config.setSession(cfg);
+    } else Config.set(cfg);
     if (!PREVIEW) setSound(qs.get('sound') !== 'off');
     ['mode', 'board', 'sound', 'bgm', 'dy', 'dp', 'dm', 'dd'].forEach(k => qs.delete(k));
   }
@@ -624,7 +694,7 @@ const TestBar = {
   if (PREVIEW) { seedPreview(qs.get('view')); Router.go(qs.get('view') || 'S00', {}, { replace: true }); return; }
   /* 4) 시작 화면 판단 */
   const st = Challenge.status();
-  const first = st !== 'none' ? 'S46' : Config.get().mode === 'event' ? 'S39' : 'S00';
+  const first = Config.isEvent() ? 'S39' : st !== 'none' ? 'S46' : 'S00';   // 행사용은 늘 방패 만들기부터 (다이어리 없음)
   /* 선생님 화면 먼저 (팀 점검 11/8): 주소만으로 연 기기(QR 설정·학생 기록 없음)는 선생님 설정부터.
      QR·공유 링크로 들어온 학생 기기는 바로 학생 화면. 선생님 기기에서 다시 열 때는 주소 뒤 ?teacher */
   const teacherFirst = !fromLink && !configured && !Store.hasRecord() && LabFound.total() === 0;
