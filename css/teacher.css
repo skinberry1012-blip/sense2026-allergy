@@ -156,3 +156,15 @@
 .tgx .tc-panel.t3 { grid-template-columns:minmax(0,1fr) 760px; }
 .tgx .tc-panel.t3 { grid-template-columns:minmax(0,1fr) 800px; }
 .tgx .tc-panel.t3 .tc-link { font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+/* 03 탭 (11/10 다시): 여백을 줄여 촘촘하게 — 늘리지 않고 붙이고, 두 영역을 세로 가운데에 */
+.tgx .tc-panel.t3 { align-items:center; }
+.tgx .tc-panel.t3 .tc-qrcol { justify-content:center; gap:12px; }
+.tgx .tc-panel.t3 .tc-qrcol .tc-help { margin-top:0; }
+.tgx .tc-panel.t3 .tc-qr { width:400px; height:400px; }
+.tgx .tc-panel.t3 .tc-share { justify-content:center; gap:14px; }
+.tgx .tc-panel.t3 .tc-sum { flex:none; gap:10px; padding:14px 18px; }
+.tgx .tc-panel.t3 .tc-facts { padding:10px 16px; gap:6px; }
+.tgx .tc-panel.t3 .tc-flowbox { flex:none; padding:10px 16px; gap:8px; }
+.tgx .tc-panel.t3 .tc-flow { flex:none; justify-content:flex-start; gap:8px; }
+.tgx .tc-panel.t3 .tc-sec { gap:8px; }
+.tgx .tc-panel.t3 .tc-foot { margin-top:4px; }
