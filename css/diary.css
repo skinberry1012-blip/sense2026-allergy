@@ -467,3 +467,8 @@ button.cb:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
 .cele h3.ribbon{padding:0 76px}
 .cele h3.ribbon::before,.cele h3.ribbon::after{top:20px;width:104px;height:88px}
 .cele h3.ribbon::before,.cele h3.ribbon::after{top:40px}
+
+/* 축하 리본 색: 3일 성공·완성 모두 노랑 (11/10) */
+.cele h3.ribbon.blue span,.cele h3.ribbon.coral span{background:#F5C842;color:var(--navy)}
+.cele h3.ribbon.blue::before,.cele h3.ribbon.coral::before{background-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2790%27 height=%2776%27 viewBox=%270 0 90 76%27 shape-rendering=%27crispEdges%27%3E%3Cpolygon points=%2770,58 90,58 90,74%27 fill=%27%23C48F12%27 stroke=%27%2314182A%27 stroke-width=%274%27 stroke-linejoin=%27miter%27/%3E%3Cpolygon points=%270,0 90,0 90,58 0,58 24,29%27 fill=%27%23F5C842%27 stroke=%27%2314182A%27 stroke-width=%275%27 stroke-linejoin=%27miter%27/%3E%3C/svg%3E")}
+.cele h3.ribbon.blue::after,.cele h3.ribbon.coral::after{background-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2790%27 height=%2776%27 viewBox=%270 0 90 76%27 shape-rendering=%27crispEdges%27%3E%3Cpolygon points=%270,58 20,58 0,74%27 fill=%27%23C48F12%27 stroke=%27%2314182A%27 stroke-width=%274%27 stroke-linejoin=%27miter%27/%3E%3Cpolygon points=%270,0 90,0 66,29 90,58 0,58%27 fill=%27%23F5C842%27 stroke=%27%2314182A%27 stroke-width=%275%27 stroke-linejoin=%27miter%27/%3E%3C/svg%3E")}
