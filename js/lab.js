@@ -177,12 +177,13 @@ Object.entries(LAB.places).forEach(([place, d]) => {
   Router.screens[d.scene] = (app, p) => {
     const b = labBoard(app, LAB.bg[place]);
     const found = LabFound.get()[place], n = found.length;
-    const pan = labPanel(b, { x: 28, y: 24, sub: `미션 ${d.no} · ${d.name}`, title: '숨은 알레르기 원인 4가지 찾기', fs: 34 });
-    pan.classList.add('place-panel');   // 연구 과제 · 장소 표시를 알약 배지로 (11/10)
-    /* 장소 미션 3가지 표시 (집 3-1 · 급식실 3-2 · 운동장 3-3) */
-    const PICON = { home: '🏠', school: '🍴', ground: '⚽' };
-    $('div', pan).insertAdjacentHTML('beforeend', `<span class="px-steps">${Object.entries(LAB.places).map(([k, q]) =>
-      `<i class="pl-${k} ${k === place ? 'cur' : ''} ${LabFound.count(k) >= 4 ? 'ok' : ''}">${PICON[k]} ${q.name}${LabFound.count(k) >= 4 ? ' ✓' : ''}</i>`).join('')}</span>`);
+    const pan = labPanel(b, { title: '숨은 알레르기 원인 4가지 찾기' });
+    pan.classList.add('place-panel');
+    /* 미션 3곳 (11/10): 위 칩은 빼고, 아래 배지에 번호 ①②③ — 끝낸 곳은 ✓, 지금 장소는 테두리. 제목 폭보다 살짝 좁게 고르게 */
+    $('div', pan).insertAdjacentHTML('beforeend', `<span class="px-steps">${Object.entries(LAB.places).map(([k, q], j) => {
+      const ok = LabFound.count(k) >= 4;
+      return `<i class="pl-${k} ${k === place ? 'cur' : ''} ${ok ? 'ok' : ''}"><span class="no">${ok ? '✓' : j + 1}</span>${q.name}</i>`;
+    }).join('')}</span>`);
     labEl(b, 'sym-cnt place-cnt top-cnt', null, `<b class="lc">${n}</b> / 4`, 'div', 'right:40px;top:40px');   // 증상 카드처럼 알약 배지 (11/10)
     /* 힌트 버튼은 뺐어요 (11/10): 찾을 물건이 처음부터 노란 빛·물결·모서리로 강조돼 있어요 */
     /* 스캔할 곳 */
