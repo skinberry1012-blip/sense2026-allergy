@@ -86,25 +86,28 @@ Router.screens.RULES = (app, p) => {
   const done = pl => pl === 'mine' ? custom.mine.some(c => c.checked) : rules[pl].length > 0;
   const allPlaces = () => PLACES.every(done);
 
-  const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-rules' });
-  labPanel(b, { y: 26, title: '나만의 약속을 골라 보세요!', center: true, fs: 38 });
+  /* 11/10 다시: 장소 배경 위에서 고르기 — 배경이 곧 장소 그림, 위 안내판은 장소 탐색과 같은 모양(알약 진행 표시) */
+  const RBG = { home: LAB.bg.home, school: LAB.bg.school, outside: LAB.bg.ground, mine: LAB.bg.lab };
+  const b = labBoard(app, LAB.bg.home, { dim: 'cream', cls: 'lab-rules' });
+  const pan = labPanel(b, { y: 22, title: '', center: true, fs: 34 }); pan.classList.add('place-panel', 'rl-panel');
   labChar(b, 'staff_guide', 500, { left: -60, bottom: 10 });
   const bub = labBubbleAt(labBubble(b, { x: 40, y: 0, w: 470, fs: 30, tail: 'bl', name: '수호냥', staff: true }), { bottom: 470, tailX: 200 });
-  const box = labEl(b, 'rl-box', [560, 156, 1000, 616]);   // 제목 아래 ~ 버튼 위 사이 가운데 (장소 고르기 2×2 · 약속 상자)
+  const box = labEl(b, 'rl-box', [560, 196, 1000, 560]);   // 제목 아래 ~ 버튼 위 사이 가운데 (장소 고르기 2×2 · 약속 상자)
   const next = labBtn(b, '다음 ›', 'right:40px;bottom:46px;font-size:36px', 'y');
 
   /* 순서대로 (11/10): 집 → 학교 → 밖 → 나만의 약속(선택) → 카드 꾸미기. 하나 고르면 다음 장소로 넘어가요 */
   let step = Math.max(0, Math.min(3, p.step != null ? p.step | 0 : (PLACES.findIndex(pl => !done(pl)) + 1 || 4) - 1));
-  const chip = labEl(b, 'px-chip quiz-step rl-step', null, '', 'div', 'top:46px');
   const say = () => {
     const k = RULE_TABS[step][0];
-    if (k === 'mine') return bub.say(allPlaces() ? '내가 지킬 약속을<br>{{직접}} 적어도 좋아!' : '집 · 학교 · 밖에서<br>하나씩 먼저 정해 줘!', false);
-    bub.say(done(k) ? '좋아! {{다음}}을 눌러<br>다른 장소로 가 보자!' : '여기서 꼭 지킬 것을<br>{{하나}} 정해 봐!', false);
+    if (k === 'mine') return bub.say(allPlaces() ? `내가 지킬 약속을<br>{{직접}} 적어도 좋아! (${MINE_MAX}개까지)` : '집 · 학교 · 밖에서<br>하나씩 먼저 정해 줘!', false);
+    bub.say(done(k) ? '좋아! {{다음}}을 눌러<br>다른 장소로 가 보자!' : '나라면 어떤 걸<br>{{꼭}} 지킬 수 있을까?', false);
   };
   const render = () => {
     const pl = RULE_TABS[step][0];
-    chip.innerHTML = `<b class="lc">${step + 1}</b> / 4`;
-    chip.style.left = (800 + $('.px-panel', b).offsetWidth / 2 + 18) + 'px';
+    const bg = RBG[pl]; $('.lab-bgimg', b).src = bg; $('.lab-back', b.closest('.lab')).style.backgroundImage = `url(${bg})`;
+    const PIC = { home: '🏠', school: '🏫', outside: '🌳', mine: '⭐' };
+    pan.innerHTML = `<div><small>방패 약속 ${step + 1} / 4</small><b style="font-size:34px">${pl === 'mine' ? '나만의 약속 <em class="rl-opt">(안 적어도 돼요)</em>' : `${RULE_TABS[step][1]} 지킬 약속`}</b><span class="px-steps">${RULE_TABS.map(([k, nm], i) =>
+      `<i class="pl-${k} ${i === step ? 'cur' : ''} ${k !== 'mine' && done(k) ? 'ok' : ''}">${PIC[k]} ${k === 'mine' ? '나만의' : nm.replace('에서', '')}${k !== 'mine' && done(k) ? ' ✓' : ''}</i>`).join('')}</span></div>`;
     let body;
     if (pl !== 'mine') {
       body = window.RULES_DATA[pl].rules.map((r, n) =>
@@ -116,7 +119,7 @@ Router.screens.RULES = (app, p) => {
         + `<p class="rl-note"><b>i</b>알레르기 종류나 병 이름 같은 건강 정보는 적지 않아요. 나만의 약속은 내 카드에만 나오고, 어디에도 보내지 않아요.</p>`;
     }
     /* 위: 장소 그림 띠 + 장소 이름, 아래: 약속 목록 */
-    box.innerHTML = `<div class="tlist rl-list"><div class="rl-pic pl-${pl}"><span>${window.RULES_DATA[pl].icon} ${RULE_TABS[step][1]}</span>${pl === 'mine' ? `<em>안 적어도 돼요 · ${MINE_MAX}개까지</em>` : ''}</div>${body}</div>`;
+    box.innerHTML = `<div class="tlist rl-list">${body}</div>`;
     const cin = $('#cin', box);
     if (cin) {
       cin.addEventListener('input', () => { $('#ccount', box).textContent = `${[...cin.value].length}/${CUSTOM_MAX}`; });

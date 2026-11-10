@@ -703,3 +703,10 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .rl-pic em { position:relative; font-style:normal; font-family:var(--font-head); font-size:24px; color:var(--navy); background:rgba(255,255,255,.85); border-radius:999px; padding:6px 18px 4px; }
 .rl-list .ti { padding:22px 30px; }
 .rl-step { white-space:nowrap; }
+/* 약속 고르기 11/10 다시: 장소 배경 + 장소 탐색 안내판 모양 */
+.rl-panel > div { align-items:center; }
+.rl-panel .rl-opt { font-style:normal; font-size:24px; color:var(--blue); }
+.place-panel.rl-panel .px-steps i.pl-outside { background:#B5DFA6; }
+.place-panel.rl-panel .px-steps i.pl-mine { background:#D9C8F5; }
+.lab-rules .lab-dim.cream { background:rgba(255,248,238,.35); }
+.lab-rules .rl-box { justify-content:center; }
