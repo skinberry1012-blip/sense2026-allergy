@@ -88,10 +88,11 @@ Router.screens.RULES = (app, p) => {
 
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-rules' });
   labPanel(b, { sub: '나만의 알레르기 방패', title: '실천 약속 고르기' });
-  labChar(b, 'staff_guide', 500, { left: -60, bottom: 10 });
-  const bub = labBubbleAt(labBubble(b, { x: 40, y: 0, w: 470, fs: 30, tail: 'bl', name: '수호냥', staff: true }), { bottom: 470, tailX: 200 });
-  const box = labEl(b, 'rl-box', [560, 156, 1000, 616]);   // 제목 아래 ~ 버튼 위 사이 가운데 (장소 고르기 2×2 · 약속 상자)
-  const next = labBtn(b, '다음 ›', 'right:40px;top:800px;font-size:32px', 'y');
+  /* 배치 (11/10): 수호냥 왼쪽(보이는 몸 왼끝 70), 말풍선은 머리 위, 상자는 오른쪽 여백 70 */
+  labChar(b, 'staff_guide', 500, { left: -40, bottom: 10 });
+  const bub = labBubbleAt(labBubble(b, { x: 70, y: 0, w: 430, fs: 30, tail: 'bl', name: '수호냥', staff: true }), { bottom: 480, tailX: 190 });
+  const box = labEl(b, 'rl-box', [560, 156, 970, 616]);   // 제목 아래 ~ 버튼 위 사이 가운데 (장소 고르기 2×2 · 약속 상자)
+  const next = labBtn(b, '카드 꾸미기로 ›', 'right:70px;top:800px;font-size:32px', 'y beat');
 
   /* 순서대로 (11/10): 집 → 학교 → 밖 → 나만의 약속(선택) → 카드 꾸미기. 하나 고르면 다음 장소로 넘어가요 */
   let step = Math.max(0, Math.min(3, p.step != null ? p.step | 0 : (PLACES.findIndex(pl => !done(pl)) + 1 || 4) - 1));
@@ -99,7 +100,7 @@ Router.screens.RULES = (app, p) => {
   const say = () => {
     const k = RULE_TABS[step][0];
     if (k === 'mine') return bub.say(allPlaces() ? '내가 지킬 약속을<br><b class="kw light">직접</b> 적어도 좋아!' : '집 · 학교 · 밖에서<br>하나씩 먼저 정해 줘!', false);
-    bub.say(done(k) ? '좋아! <b class="kw light">다음</b>을 눌러<br>다른 장소로 가 보자!' : '여기서 꼭 지킬 것을<br><b class="kw light">하나</b> 정해 봐!', false);
+    bub.say(allPlaces() ? '모두 정했어!<br><b class="kw light">카드 꾸미기</b>로 가 보자!' : done(k) ? '좋아! 위의 <b class="kw light">장소</b>를 눌러<br>다른 곳도 정해 봐!' : '여기서 꼭 지킬 것을<br><b class="kw light">하나</b> 정해 봐!', false);
   };
   const render = () => {
     const pl = RULE_TABS[step][0];
@@ -126,21 +127,18 @@ Router.screens.RULES = (app, p) => {
       cin.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) add(); });
       onTap($('#cadd', box), add);
     }
-    prev.hidden = step === 0;
-    if (step > 0) $('span', prev).textContent = `‹ ${RULE_TABS[step - 1][1]}`;
-    const last = pl === 'mine';
-    $('span', next).textContent = last ? '카드 꾸미기로 ›' : '다음 ›';
-    const ok = last ? allPlaces() : done(pl);
-    next.classList.toggle('off', !ok); next.setAttribute('aria-disabled', String(!ok));
+    /* 아래 버튼 (11/10): 장소 이동은 위 배지로만 — 집·학교·밖을 다 고르면 [카드 꾸미기로 ›] 하나만 나와요 */
+    prev.hidden = true;
+    $('span', next).textContent = '카드 꾸미기로 ›';
+    next.hidden = !allPlaces();
     say();
     /* 정리 (11/10): 상자 + 아래 버튼 줄을 한 묶음으로 제목 아래~화면 아래 사이 세로 가운데, 버튼은 오른쪽에 나란히 (끝 = 상자 끝) */
     requestAnimationFrame(() => {
       const list = $('.rl-stack', box); if (!list) return;
-      const h = list.offsetHeight, bh = next.offsetHeight, gap = 26, y0 = 140, y1 = 880;
+      const h = list.offsetHeight, bh = 70, gap = 26, y0 = 130, y1 = 880;
       const top = Math.round(y0 + Math.max(0, (y1 - y0 - (h + gap + bh)) / 2));
       box.style.top = top + 'px'; box.style.height = h + 'px';
-      next.style.top = prev.style.top = (top + h + gap) + 'px';
-      prev.style.right = (40 + next.offsetWidth + 16) + 'px';
+      next.style.top = (top + h + gap) + 'px';
     });
   };
   const prev = labBtn(b, '‹', 'right:40px;top:800px;font-size:32px', 'w');
@@ -165,11 +163,6 @@ Router.screens.RULES = (app, p) => {
   });
   onTap(prev, () => { if (step > 0) { playSfx('tap'); go(step - 1); } });
   onTap(next, () => {
-    const pl = RULE_TABS[step][0];
-    if (pl !== 'mine') {
-      if (!done(pl)) { playSfx('full'); replay(next, 'shake'); return toast('약속을 하나 골라 주세요.'); }
-      playSfx('next'); return go(step + 1);
-    }
     if (!allPlaces()) { playSfx('full'); replay(next, 'shake'); go(PLACES.findIndex(x => !done(x))); return toast('집 · 학교 · 밖에서 하나씩 골라 주세요.'); }
     playSfx('next'); Router.go('S44');
   });
