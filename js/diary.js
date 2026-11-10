@@ -289,7 +289,7 @@ Router.screens.S46 = (app, p = {}) => {
       <div style="position:absolute;left:716px;top:180px;width:588px;display:flex;flex-direction:column;gap:14px">
         <p style="margin:0;font-size:22px">카메라를 쓸 수 없거나 사진을 넣기 싫으면 수호냥을 골라요.</p>
         <div class="tiles" style="grid-template-columns:repeat(4,1fr)">${DY_BUDDY.map(k => `<button type="button" data-buddy="${k}" class="${k === pick && look.photo !== 'cam' ? 'on' : ''}" style="height:136px"><img src="${DY_IMG(k === 'staff_guide' ? 'staff_guide' : k)}" alt=""></button>`).join('')}</div>
-        <div style="display:flex;gap:14px"><button class="pbtn" id="retake" style="font-size:24px">다시 찍기</button><button class="pbtn y" id="use" style="font-size:24px">이걸로 할래요</button></div>
+        <div style="display:flex;gap:14px;margin-top:24px"><button class="pbtn" id="retake" style="font-size:24px">다시 찍기</button><button class="pbtn y" id="use" style="font-size:24px">이걸로 할래요</button></div>
       </div>
       <button class="mdl-skip" id="later" style="left:36px;bottom:26px">나중에 넣을래요 ›</button></div>`;
     W.appendChild(box);

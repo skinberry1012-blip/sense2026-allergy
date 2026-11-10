@@ -500,3 +500,6 @@ button.cb:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
 .drawer .more-tip{position:sticky;bottom:-18px;grid-column:1/-1;height:58px;margin:-50px -12px -18px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px;font-family:var(--f-disp);font-size:17px;color:var(--navy-2);background:linear-gradient(rgba(255,255,255,0),#fff 62%);pointer-events:none;transition:opacity .2s}
 .drawer .more-tip.gone{opacity:0}
 .btns{margin-top:auto}
+/* 내 사진 넣기 · 수호냥 칸 (11/10): 그림이 칸 아래로 삐져나와 버튼에 닿지 않게 — 칸 안에 맞춤 */
+.tiles button{display:flex;align-items:center;justify-content:center;overflow:hidden;box-sizing:border-box}
+.tiles button img{width:auto;height:auto;max-width:100%;max-height:100%;padding:8px;box-sizing:border-box}
