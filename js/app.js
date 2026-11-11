@@ -533,7 +533,7 @@ Router.screens.T49 = (app, p) => {
       onTap($('#reset'), () => { d = { mode: 'class', ev: 'card', board: '', sound: 'on', bgm: 'on', dy: d.dy }; Draft.set(d); view = 'lab'; draw(); toast('기본값으로 되돌렸어요'); });
     } else if (tab === 2) {
       /* 02 챌린지 다이어리 (11/10 시안) */
-      const y = dy(), EVD = d.mode === 'event' && evD();   // 행사용 다이어리: 횟수·선생님 약속·완성 확인만 (11/11)
+      const y = dy(), EVD = d.mode === 'event' && evD();   // 행사용 다이어리: 성공 메달(최소 목표)만 빼고 모두 (11/11)
       let no = 0; const N = () => ++no;
       const keepTop = ($('.tc-dy') || {}).scrollTop || 0;   // 값을 바꿔 다시 그려도 보던 자리 그대로 (11/10 점검)
       const step1 = (k, v, unit, min, max) => `<span class="tc-step" data-k="${k}"><button data-d="-1" ${v <= min ? 'disabled' : ''} aria-label="줄이기">−</button><b>${v}${unit}</b><button data-d="1" ${v >= max ? 'disabled' : ''} aria-label="늘리기">+</button></span>`;
@@ -541,21 +541,21 @@ Router.screens.T49 = (app, p) => {
         ${sample ? `<button class="tc-sample" data-fill="${k}" data-text="${esc(sample)}">예: ${esc(sample)}</button>` : ''}`;
       $('#panel').innerHTML = `
       <div class="tc-col tc-set tc-dy">
-        ${EVD ? '<p class="tc-evwarn"><b>행사용 다이어리</b>는 꾸며서 인쇄해 가고, 체크는 집에서 종이에 해요.</p>' : ''}
+        ${EVD ? '<p class="tc-evwarn"><b>행사용 다이어리</b>는 꾸며서 인쇄해 가고, 체크는 집에서 종이에 해요. 성공 메달은 없어요.</p>' : ''}
         <section class="tc-sec tc-inl"><h2 class="tc-h"><i>${N()}</i>챌린지 횟수</h2>${step1('count', y.count, '회', 1, 10)}</section>
         ${EVD ? '' : `<section class="tc-sec tc-inl"><h2 class="tc-h"><i>${N()}</i>성공 메달</h2>${step1('min', Math.min(y.min, y.count), '일', 1, y.count)}<small>최소 목표예요<br>다 모으면 완성 메달</small></section>`}
-        ${EVD ? '' : `<section class="tc-sec tc-inl tc-way"><h2 class="tc-h"><i>${N()}</i>진행 방식</h2>${seg('dmode', [['row', '이어서'], ['free', '자유롭게']], y.mode)}
-          <div class="tc-sub">${y.mode === 'free' ? seg('weeks', [['1', '1주'], ['2', '2주'], ['3', '3주'], ['4', '4주']], String(y.weeks)) : ''}<small>${y.mode === 'free' ? `${y.weeks}주 안에 아무 날이나 ${y.count}번 (주말 포함)` : `시작한 다음 날부터 학교 가는 날 ${y.count}번 이어서`}</small></div></section>`}
-        ${EVD ? '' : `<section class="tc-sec tc-inl"><h2 class="tc-h"><i>${N()}</i>사진 찍기</h2>${seg('dphoto', [['1', '켜기'], ['0', '끄기']], y.photo === false ? '0' : '1')}</section>`}
+        <section class="tc-sec tc-inl tc-way"><h2 class="tc-h"><i>${N()}</i>진행 방식</h2>${seg('dmode', [['row', '이어서'], ['free', '자유롭게']], y.mode)}
+          <div class="tc-sub">${y.mode === 'free' ? seg('weeks', [['1', '1주'], ['2', '2주'], ['3', '3주'], ['4', '4주']], String(y.weeks)) : ''}<small>${y.mode === 'free' ? `${y.weeks}주 안에 아무 날이나 ${y.count}번 (주말 포함)` : `시작한 다음 날부터 학교 가는 날 ${y.count}번 이어서`}</small></div></section>
+        <section class="tc-sec tc-inl"><h2 class="tc-h"><i>${N()}</i>사진 찍기</h2>${seg('dphoto', [['1', '켜기'], ['0', '끄기']], y.photo === false ? '0' : '1')}</section>
         <section class="tc-sec"><h2 class="tc-h"><i>${N()}</i>선생님 약속 <em>선택</em></h2>${txt('promise', 30, '예: 다 완성하면 선생님이 간식을 쏠게요!', '')}</section>
-        ${EVD ? '' : `<section class="tc-sec"><h2 class="tc-h"><i>${N()}</i>선생님 칭찬</h2>
+        <section class="tc-sec${EVD ? ' tc-dim' : ''}"><h2 class="tc-h"><i>${N()}</i>선생님 칭찬${EVD ? '<em>행사용은 축하 창이 없어요</em>' : ''}</h2>
           <div class="tc-pr"><span>${Math.min(y.min, y.count)}일 성공</span><div>${txt('praiseMin', 40, '비워 두면 예시 문구가 나와요', DY_SAMPLE.min)}</div></div>
-          <div class="tc-pr"><span>완성</span><div>${txt('praiseDone', 40, '비워 두면 예시 문구가 나와요', DY_SAMPLE.done)}</div></div></section>`}
+          <div class="tc-pr"><span>완성</span><div>${txt('praiseDone', 40, '비워 두면 예시 문구가 나와요', DY_SAMPLE.done)}</div></div></section>
         <section class="tc-sec tc-inl tc-way"><h2 class="tc-h"><i>${N()}</i>완성 확인</h2>${seg('dsign', [['t', '선생님 서명'], ['n', '냥박사 도장']], y.tsign === 'n' ? 'n' : 't')}</section>
         <div class="tc-more" aria-hidden="true">▾ 아래로 내리면 더 있어요</div>
       </div>
       <div class="tc-col tc-pv">
-        <div class="tc-pvhead"><h2 class="tc-h">미리 보기</h2>${EVD ? seg('dstep', [['S46', '다이어리 꾸미기']], 'S46') : seg('dstep', [...(y.photo !== false ? [['S46P', '사진 찍기']] : []), ['S46', '매일 체크'], ['S47', '성공 메달'], ['S48', '완성']], step.dy || 'S46')}</div>
+        <div class="tc-pvhead"><h2 class="tc-h">미리 보기</h2>${EVD ? seg('dstep', [...(y.photo !== false ? [['S46P', '사진 찍기']] : []), ['S46', '다이어리 꾸미기']], step.dy === 'S46P' && y.photo !== false ? 'S46P' : 'S46') : seg('dstep', [...(y.photo !== false ? [['S46P', '사진 찍기']] : []), ['S46', '매일 체크'], ['S47', '성공 메달'], ['S48', '완성']], step.dy || 'S46')}</div>
         <div class="tc-frame" id="frame"><iframe id="pv" title="챌린지 다이어리 미리 보기"></iframe></div>
         <div class="tc-foot"><button class="tc-btn" id="reset2">기본값으로</button><button class="tc-btn pri" id="toNext2">다음 · QR 코드와 공유 ›</button></div>
       </div>`;

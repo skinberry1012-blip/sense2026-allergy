@@ -287,3 +287,5 @@
 /* 01·02 탭 (11/11): 왼쪽 첫 제목(1 실행 모드 / 1 챌린지 횟수)과 오른쪽 '미리 보기' 제목 줄 높이 맞춤 */
 .tgx .tc-panel.t1 .tc-set { padding-top:6px; }
 .tgx .tc-panel.t2 .tc-dy { padding-top:3px; }
+.tgx .tc-dy .tc-dim { opacity:.5; }
+.tgx .tc-dy .tc-dim .tc-h em { font-style:normal; font-family:var(--font-body, inherit); font-size:14px; color:var(--muted); margin-left:8px; }

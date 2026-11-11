@@ -60,6 +60,7 @@ function dyPawSeal(cls) {
 /* ---------- 다이어리 한 권 (시안 diary() 그대로) ---------- */
 function dyDiary(m, look, { print = false } = {}) {
   const { c, rules, n, slots, ti, star, got } = m;
+  const EVX = Config.isEvent();   // 행사용 (11/11): 태블릿에서 체크하지 않아 '오늘'·별 범례·메달 막대 없음
   const name = Store.get('name', '') || '나';
   const PR = (c.promise || '').trim();
   /* 선생님 약속 30자 (11/11): 한 줄에 안 들어가면(17자 넘음) 메모지 안에서 두 줄로, 아래 안내 줄은 빼요 */
@@ -76,7 +77,7 @@ function dyDiary(m, look, { print = false } = {}) {
   const rp = r => `<span class="rpl p${DY_PLACE[r.place][1]}">${DY_PLACE[r.place][0]}</span>`;
   const logOf = d => (d && c.log[d]) || {};
   const day = (d, i) => {
-    const done = !print && !!d && Challenge.touched(c, d) && i !== ti, ok = done && star(d), isT = i === ti && !print;   // 인쇄 양식은 별 칸을 비워 둬요
+    const done = !print && !!d && Challenge.touched(c, d) && i !== ti, ok = done && star(d), isT = i === ti && !print && !EVX;   // 인쇄 양식은 별 칸을 비워 둬요
     const lab = c.mode === 'free' ? `<b>${i + 1}번째</b>${d ? `<small>${DateK.md(d)}</small>` : ''}` : `<b>${DateK.md(d)}</b><small>${DateK.wd(d)}</small>`;
     const tdone = !print && isT && Challenge.touched(c, d), tok = tdone && star(d);
     const fill = done ? (ok ? '#F5C842' : '#9EA3AB') : tdone ? (tok ? '#F5C842' : '#9EA3AB') : '#FFFFFF';
@@ -94,9 +95,9 @@ function dyDiary(m, look, { print = false } = {}) {
   const signTop = 290 + 50 + Math.min(rules.length, 7) * (rules.length > 4 ? 64 : 86) + 92;
   const Rt = `<div class="r-head"><h4>매일 체크</h4></div>
     ${print ? `<div class="psign" style="top:${signTop}px">${c.tsign === 'n' ? `<span class="nyang">확인했어요<em>냥박사</em><b class="pspot">${dyPawSeal('pseal')}</b></span>` : `<span>확인했어요<i></i><b class="pspot">${dyPawSeal('pseal ghost')}</b></span>`}</div>`
-      : `<div class="slegend" style="top:344px"><span><svg viewBox="-0.5 -1 16 16" width="30" height="30"><use href="#star" fill="#F5C842"/></svg> 별 받음</span><span><svg viewBox="-0.5 -1 16 16" width="30" height="30"><use href="#star" fill="#9EA3AB"/></svg> 했지만 별 없음</span></div>`}
+      : EVX ? '' : `<div class="slegend" style="top:344px"><span><svg viewBox="-0.5 -1 16 16" width="30" height="30"><use href="#star" fill="#F5C842"/></svg> 별 받음</span><span><svg viewBox="-0.5 -1 16 16" width="30" height="30"><use href="#star" fill="#9EA3AB"/></svg> 했지만 별 없음</span></div>`}
     <div class="dayrow" ${print ? 'style="top:104px"' : ''}>${slots.map(day).join('')}</div>
-    ${print ? '' : prog()}
+    ${print || EVX ? '' : prog()}
     <div class="tlist${many}" ${print ? 'style="top:290px"' : ''}><h5>${print ? `실천한 날에 체크해요<span class="pdates">${slots.map(d => `<b>${c.mode === 'free' || !d ? '__' : DateK.md(d).split('/')[1]}</b>`).join('')}</span>` : `${ti >= 0 ? '오늘 실천한 약속' : '실천한 약속'}<span class="hrule">${m.need}개 이상 지키면 별 하나</span>`}</h5>
       ${rules.map(r => {
         const v = todayD ? logOf(todayD)[r.id] : '';
@@ -141,9 +142,9 @@ Router.screens.S46 = (app, p = {}) => {
   const W = root.querySelector('.dyb');
   let look = DyLook.get(), sideTab = 'stk', stkTab = 's';
   /* 행사용 다이어리 (11/11): 꾸미기 → 인쇄·이미지 저장(·게시판) → 다음 친구에게 넘기기.
-     태블릿에서 날마다 체크·메달·내 사진·설치 안내는 없음. 날짜 칸은 비워 두고 집에서 종이에 체크 (자유롭게 방식) */
+     태블릿에서 날마다 체크·메달·설치 안내는 없음. 체크는 집에서 인쇄한 종이에 */
   const EV = Config.isEvent();
-  const cfg = EV ? Object.assign(DyCfg(), { mode: 'free', photo: false }) : DyCfg();
+  const cfg = DyCfg();   // 11/11: 행사용도 선생님 설정(횟수·진행 방식·사진 찍기 등)을 그대로 따라요
   let evSaved = false, evPrinted = false;
   /* 결과 게시판 (11/10): 챌린지가 끝나면(완성 또는 기간 끝) [게시판에 올리기] — 한 사람당 마지막 결과 한 장 */
   const BOARD = Config.get().board || '';
