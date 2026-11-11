@@ -268,7 +268,15 @@ Router.screens.S44 = (app) => {
   let signWarned = false;
   const needSign = () => {
     if (signatureImg || signWarned) return false;
-    signWarned = true; playSfx('warn'); toast('✍ 서명을 하지 않았어요', 2000); replay($('#toast'), 'warn');
+    signWarned = true;
+    /* 배지 화면처럼 화면이 흐려지고 가운데 수호냥이 호루라기를 불며 알려요 — 잠깐 보였다가 사라짐(누르면 바로 닫힘) */
+    const sc = document.getElementById('stage') || document.body;   // 화면 전체(판 1600×900)를 흐리게
+    const w = document.createElement('div'); w.className = 'sign-warn';
+    w.innerHTML = `<div class="sw-in"><div class="px-bub tail-n sw-say"><div class="px-bub-txt"><b>잠깐만!</b><br>서명을 아직 안 했어요!</div></div><img src="assets/char/staff_cheer.png" alt=""></div>`;
+    sc.appendChild(w);
+    playSfx('whistle'); setTimeout(() => playSfx('warn'), 450);
+    let gone = false; const close = () => { if (gone) return; gone = true; w.classList.add('out'); setTimeout(() => w.remove(), 300); };
+    w.addEventListener('click', close); setTimeout(close, 2200);
     return true;
   };
   /* 인쇄: 저장용과 같은 카드를 그려서 인쇄 전용 칸에 넣고 인쇄 창을 열어요 */

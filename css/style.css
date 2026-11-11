@@ -1370,3 +1370,15 @@ body.tablet .s44b-side .buddies { grid-template-columns:repeat(2,1fr); }
 #toast.warn { background:#E2563F; box-shadow:0 0 0 4px rgba(255,255,255,.85), 0 8px 20px rgba(226,86,63,.35); animation:toastshake .5s ease-in-out .05s 2; }
 @keyframes toastshake { 0%,100% { margin-left:0; } 15%,55% { margin-left:-14px; } 35%,75% { margin-left:14px; } }
 @media (prefers-reduced-motion: reduce) { #toast.warn { animation:none; } }
+/* 서명 안 했을 때 (11/11): 흐린 화면 + 가운데 호루라기 부는 수호냥 + 흔들리는 말풍선, 잠깐 뒤 사라짐 */
+.sign-warn { position:fixed; inset:0; z-index:60; display:grid; place-items:center; background:rgba(30,42,90,.45); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); animation:swin .2s ease-out; cursor:pointer; }
+.sign-warn.out { opacity:0; transition:opacity .3s; }
+.sign-warn .sw-in { display:flex; flex-direction:column; align-items:center; gap:4px; }
+.sign-warn img { width:420px; height:auto; animation:swhop .5s cubic-bezier(.2,1.6,.4,1) both; }
+.sign-warn .sw-say { position:relative; padding:22px 40px 18px; text-align:center; animation:swshake .45s ease-in-out .35s 2; }
+.sign-warn .sw-say .px-bub-txt { font-family:var(--font-head); font-size:38px; line-height:1.35; color:var(--navy); white-space:nowrap; }
+.sign-warn .sw-say b { font-weight:400; font-size:46px; color:#E2563F; }
+@keyframes swin { from { opacity:0; } to { opacity:1; } }
+@keyframes swhop { from { transform:scale(.6) translateY(40px); opacity:0; } to { transform:none; opacity:1; } }
+@keyframes swshake { 0%,100% { translate:0 0; } 15%,55% { translate:-16px 0; rotate:-2deg; } 35%,75% { translate:16px 0; rotate:2deg; } }
+@media (prefers-reduced-motion: reduce) { .sign-warn, .sign-warn img, .sign-warn .sw-say { animation:none; } }
