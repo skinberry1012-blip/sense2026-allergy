@@ -18,11 +18,8 @@ Router.screens.S39 = (app) => {
   labChar(b, 'staff_guide', 600, { left: 70, bottom: 10 });
   if (Config.isEvent()) doubleTap(labEl(b, 'lab-org', null, '<b>SENSE</b><span>초등보건교육연구회</span>'), () => openTeacher('S39'));   // 행사용 첫 화면에도 연구회 이름 + 선생님 화면 입구 (11/11)
   const bub = labBubble(b, { x: 760, y: 330, w: 720, fs: 42, tail: 'l', name: '수호냥', staff: true });   // 수호냥 몸 가운데 높이에 맞춤 (11/10)
-  /* 11/11: 버튼은 '방패 만들러 출발!' 하나로, 무엇을 만드는지는 수호냥 말풍선이 알려 줘요 (행사 활동에 따라) */
-  const SAY = { card: '알레르기로부터 지켜 줄<br>{{나만의 방패}}를<br>{{약속 카드}}로 만들어 보자!',
-    diary: '알레르기로부터 지켜 줄<br>{{나만의 방패}}를<br>{{챌린지 다이어리}}로 만들어 보자!',
-    both: '알레르기로부터 지켜 줄<br>{{나만의 방패}}를 {{약속 카드}}와<br>{{챌린지 다이어리}}로 만들어 보자!' };
-  bub.say(Config.isEvent() ? SAY[Config.evAct()] : '알레르기로부터 지켜 줄<br>{{나만의 방패}}를 만들어 보자!');
+  /* 11/11: 버튼은 '방패 만들러 출발!', 말풍선은 수업용·행사용(활동과 상관없이) 모두 같은 말로 통일 */
+  bub.say('알레르기로부터 지켜 줄<br>{{나만의 방패}}를 만들어 보자!');
   const start = labBtn(b, '방패 만들러 출발! ›', 'top:640px;width:520px;box-sizing:border-box;text-align:center;font-size:46px', 'y beat');
   start.style.left = Math.round(bub.offsetLeft + bub.offsetWidth / 2 - 260) + 'px';   // 말풍선 가운데 아래 (글자가 짧아도 버튼 너비는 고정)
   onTap(start, () => {
