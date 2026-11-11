@@ -544,3 +544,8 @@ button.cb:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
 .a4p .dayrow.two .day .sc svg{width:50px;height:50px}
 /* 11/12: 화면의 다이어리 좌우 여백 맞춤(오른쪽 탭이 화면 끝에 붙던 것) — 화면에서만, 저장·인쇄 그림은 그대로 */
 #dz.live{transform:scale(.975);transform-origin:402px 450px}
+/* 11/12: 수업용 화면의 약속 칸도 행사용·인쇄와 같은 줄 간격(약속이 많아도 아래를 덮지 않게), 체크 칸은 조금 작게 */
+.tlist:not(.plist) .ti,.tlist.many:not(.plist) .ti{padding:9px 16px}
+.tlist:not(.plist) .ti .tt,.tlist.many:not(.plist) .ti .tt{font-size:19px;line-height:1.35}
+.tlist:not(.plist) .ti>button.cb{width:36px;height:36px;border-radius:7px}
+.tlist:not(.plist) .ti>button.cb.on::after{left:10px;top:2px;width:10px;height:18px;border-width:0 4px 4px 0}
