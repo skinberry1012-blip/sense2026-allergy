@@ -722,7 +722,12 @@ const TestBar = {
   else Router.go(first, {}, { replace: true });
   /* 5) 오프라인 실행 (https에서만) */
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+    navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).catch(() => {});
+    /* 11/11: 새 버전이 설치되면 한 번 저절로 새로고침 — 배포 뒤 예전 화면이 남지 않게 (처음 설치 때는 하지 않음) */
+    if (navigator.serviceWorker.controller) {
+      let reloaded = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => { if (reloaded) return; reloaded = true; location.reload(); });
+    }
   }
   /* 6) 자정이 지나면 다시 그리기 */
   let day = DateK.today();
