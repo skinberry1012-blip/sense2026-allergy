@@ -148,7 +148,7 @@ Router.screens.S46 = (app, p = {}) => {
   const b = labBoard(app, LAB.bg.ground, { cls: 'lab-diary' });
   const host = document.createElement('div'); host.className = 'dy-host'; b.appendChild(host);
   const root = host.attachShadow({ mode: 'open' });
-  root.innerHTML = `<link rel="stylesheet" href="./css/diary.css">${DY_STAR_DEF}<div class="dyb"></div>`;
+  root.innerHTML = `<link rel="stylesheet" href="./css/diary.css?v=${window.JS_V}">${DY_STAR_DEF}<div class="dyb"></div>`;
   const W = root.querySelector('.dyb');
   let look = DyLook.get(), sideTab = 'stk', stkTab = 's';
   /* 행사용 다이어리 (11/11): 꾸미기 → 인쇄·이미지 저장(·게시판) → 다음 친구에게 넘기기.
@@ -448,7 +448,7 @@ async function dyFontCSS(text) {
 async function dyRender(m, look, scale = 1.5, { print = false } = {}) {
   /* print: 인쇄 양식(흰 바탕 1196×810)을 그림으로 — 11/11 점검: 기기마다 인쇄가 잘리거나 두 쪽으로 나뉘던 것, 그림 한 장이면 종이에 맞춰 줄어요 */
   const X = print ? 0 : 380, Y = 0, W = print ? 1196 : 1220, H = print ? 810 : 900;   // 화면용은 왼쪽 도구 칸을 빼고 다이어리 쪽만
-  let css = await (await fetch('./css/diary.css')).text();
+  let css = await (await fetch('./css/diary.css?v=' + window.JS_V)).text();
   const abs = u => new URL(u, location.href.replace(/[^/]*$/, '') + 'css/').href;
   for (const u of [...new Set((css.match(/url\(([^)]+)\)/g) || []).map(x => x.slice(4, -1).replace(/['"]/g, '')))]) { try { css = css.split(`url(${u})`).join(`url(${await dyDataURL(abs(u))})`); } catch (e) {} }
   css = css.replace(':host{', '.dyroot{');

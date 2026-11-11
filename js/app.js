@@ -682,7 +682,7 @@ const TestBar = {
   update() {
     if (!TestBar.el) {
       const b = document.createElement('div'); b.className = 'test-bar';
-      b.style.cssText = 'position:fixed;left:8px;top:8px;z-index:9999;display:flex;gap:8px;align-items:center;padding:6px 10px;border-radius:10px;background:#252E52;color:#fff;font:600 13px/1.3 sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.25)';
+      b.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);top:6px;z-index:9999;white-space:nowrap;display:flex;gap:8px;align-items:center;padding:6px 10px;border-radius:10px;background:#252E52;color:#fff;font:600 13px/1.3 sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.25)';
       document.body.appendChild(b); TestBar.el = b;
       b.addEventListener('click', e => {
         if (!e.target.closest('[data-tnext]')) return;
@@ -690,13 +690,18 @@ const TestBar = {
         Router.go('S46', {}, { replace: true });
       });
     }
+    /* 11/12 최종 점검: 띠는 다이어리 화면에서만, 위 가운데 (선생님 설정·제목을 가리지 않게, 미리 보기 안에는 안 보임) */
+    const onDiary = !PREVIEW && Router.current && Router.current.s === 'S46';
+    TestBar.el.style.display = onDiary ? 'flex' : 'none';
+    if (!onDiary) return;
     const c = Challenge.get();
-    if (!c) { TestBar.el.innerHTML = '🧪 점검 모드 · 약속 카드를 만들면 챌린지를 바로 시작해요'; return; }
+    if (!c) { TestBar.el.innerHTML = '🧪 점검 모드 · [챌린지 시작하기]를 누르면 하루씩 넘겨 볼 수 있어요'; return; }
     const i = TestMode.idx(c), n = TestMode.len(c), ended = Challenge.status(c) === 'ended';
     const btn = 'style="border:0;border-radius:8px;padding:4px 10px;background:#FFB199;color:#252E52;font:700 13px sans-serif;cursor:pointer"';
+    const free = c.mode === 'free', cnt = c.count || n;
     TestBar.el.innerHTML = ended
-      ? `🧪 점검 모드 · ${n}회 완료`
-      : `🧪 점검 모드 · ${Math.min(i + 1, n)} / ${n}회째 <button data-tnext ${btn}>다음 날로 ›</button>`;
+      ? `🧪 점검 모드 · 챌린지 끝`
+      : `🧪 점검 모드 · ${free ? `${Math.min(i + 1, n)}일째 (${n}일 안에 ${cnt}번)` : `${Math.min(i + 1, n)} / ${n}회째`} <button data-tnext ${btn}>다음 날로 ›</button>`;
   }
 };
 
@@ -725,7 +730,8 @@ const TestBar = {
     ['mode', 'ev', 'board', 'sound', 'bgm', 'dy', 'dp', 'dm', 'dd'].forEach(k => qs.delete(k));
   }
   /* 선생님 설정: 사이트 주소 뒤 ?teacher, 또는 홈 화면 연구회 이름표를 두 번 빠르게 누르기 (11/11) */
-  const teacher = qs.has('teacher') || location.hash === '#teacher'; qs.delete('teacher');
+  /* 점검 사이트(?test)를 바로 열면 지난 기록과 상관없이 늘 선생님 설정부터 (11/12). 학생 링크(&test가 붙은 QR)는 학생 화면 */
+  const teacher = qs.has('teacher') || location.hash === '#teacher' || (TestMode.on && !fromLink); qs.delete('teacher');
   if (location.hash === '#teacher') history.replaceState(null, '', location.pathname + location.search);
   /* 2) 아이폰·아이패드 홈 화면 앱 첫 실행: Safari 기록 이어 받기 */
   if (location.hash.startsWith('#restore=')) {

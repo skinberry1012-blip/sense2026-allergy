@@ -15,10 +15,22 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap">
-<link rel="stylesheet" href="./css/style.css">
-<link rel="stylesheet" href="./css/lab.css">
-<link rel="stylesheet" href="./css/theme.css">
-<link rel="stylesheet" href="./css/teacher.css">
+<link rel="stylesheet" href="./css/style.css?v=v196-fresh">
+<link rel="stylesheet" href="./css/lab.css?v=v196-fresh">
+<link rel="stylesheet" href="./css/theme.css?v=v196-fresh">
+<link rel="stylesheet" href="./css/teacher.css?v=v196-fresh">
+<script>
+/* 11/12: 이 기기에 예전 화면 파일이 저장돼 있으면(버전이 다르면) 저장본을 지우고 한 번만 새로 열어요 */
+window.APP_V = 'v196-fresh';
+window.addEventListener('load', function () {
+  if (window.JS_V === window.APP_V) return;
+  try { if (sessionStorage.getItem('appVfix') === window.APP_V) return; sessionStorage.setItem('appVfix', window.APP_V); } catch (e) { return; }
+  var jobs = [];
+  if (window.caches) jobs.push(caches.keys().then(function (k) { return Promise.all(k.map(function (x) { return caches.delete(x); })); }));
+  if (navigator.serviceWorker) jobs.push(navigator.serviceWorker.getRegistrations().then(function (r) { return Promise.all(r.map(function (x) { return x.update().catch(function () {}); })); }));
+  Promise.all(jobs).catch(function () {}).then(function () { location.reload(); });
+});
+</script>
 </head>
 <body>
   <div id="stage"><main id="app" class="screen"></main><div id="layer"></div></div>
@@ -28,16 +40,16 @@
 
   <noscript>이 교육도구는 자바스크립트가 필요해요. 브라우저 설정을 확인해 주세요.</noscript>
 
-  <script src="./data/rules.js"></script>
-  <script src="./data/holidays.js"></script>
-  <script src="./data/lab-items.js"></script>
-  <script src="./js/qr.js"></script>
-  <script src="./js/sfx.js"></script>
-  <script src="./js/core.js"></script>
-  <script src="./js/card.js"></script>
-  <script src="./js/anim.js"></script>
-  <script src="./js/lab.js"></script>
-  <script src="./js/diary.js"></script>
-  <script src="./js/app.js"></script>
+  <script src="./data/rules.js?v=v196-fresh"></script>
+  <script src="./data/holidays.js?v=v196-fresh"></script>
+  <script src="./data/lab-items.js?v=v196-fresh"></script>
+  <script src="./js/qr.js?v=v196-fresh"></script>
+  <script src="./js/sfx.js?v=v196-fresh"></script>
+  <script src="./js/core.js?v=v196-fresh"></script>
+  <script src="./js/card.js?v=v196-fresh"></script>
+  <script src="./js/anim.js?v=v196-fresh"></script>
+  <script src="./js/lab.js?v=v196-fresh"></script>
+  <script src="./js/diary.js?v=v196-fresh"></script>
+  <script src="./js/app.js?v=v196-fresh"></script>
 </body>
 </html>
