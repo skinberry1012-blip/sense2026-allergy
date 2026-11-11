@@ -69,8 +69,10 @@ const DateK = {
   today() {
     if (DateK.override) return DateK.override;
     if (TestMode.on) { const c = Store.get('challenge', null); if (c) return TestMode.day(c); }
-    return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+    return DateK.real();
   },
+  /* 점검 모드의 '다음 날로'와 상관없는 실제 오늘 (11/12: 행사용 다이어리 날짜는 늘 실제 날짜 기준) */
+  real() { return DateK.override || new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); },
   parse(s) { const [y, m, d] = s.split('-').map(Number); return new Date(Date.UTC(y, m - 1, d)); },
   str(dt) { return dt.toISOString().slice(0, 10); },
   add(s, n) { const d = DateK.parse(s); d.setUTCDate(d.getUTCDate() + n); return DateK.str(d); },

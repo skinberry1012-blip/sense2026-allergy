@@ -542,3 +542,14 @@ button.cb:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
 .a4p .dayrow.two .day{flex-basis:calc((100% - (var(--cols) - 1) * 8px) / var(--cols));padding:6px 2px 6px}
 .a4p .dayrow.two .day .sc{width:54px;height:52px}
 .a4p .dayrow.two .day .sc svg{width:50px;height:50px}
+
+/* 11/12: 시작 날짜 달력 아이콘 */
+.r-head .dycal{display:inline-flex;vertical-align:-3px;margin-left:12px;width:30px;height:30px;padding:3px;border:2px solid var(--navy);border-radius:6px;background:#FFF6DC;cursor:pointer;box-shadow:0 2px 0 var(--navy)}
+.r-head .dycal svg{width:100%;height:100%}
+.r-head .dycal:active{transform:translateY(2px);box-shadow:none}
+.r-head h4{position:relative}
+.dydate{position:absolute;left:0;top:100%;width:1px;height:1px;opacity:0;border:0;padding:0;pointer-events:none}
+.r-head .dycal{position:relative}
+.r-head .dycal::after{content:'시작 날짜 정하기';position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%);white-space:nowrap;font-family:var(--f-disp);font-size:16px;line-height:1;color:#fff;background:var(--navy);border-radius:6px;padding:7px 10px 5px;opacity:0;pointer-events:none;transition:opacity .15s}
+.r-head .dycal::before{content:'';position:absolute;left:50%;bottom:calc(100% + 2px);transform:translateX(-50%);border:6px solid transparent;border-bottom:0;border-top-color:var(--navy);opacity:0;transition:opacity .15s}
+@media (hover:hover){.r-head .dycal:hover::after,.r-head .dycal:hover::before{opacity:1}}
