@@ -10,7 +10,7 @@ const LAB_SIREN = "<svg viewBox='0 0 16 13' shape-rendering='crispEdges' aria-hi
 'use strict';
 
 const LabState = { cardsSeen: [], copeSeen: { light: false, severe: false }, quizDone: false };
-const LAB_REDUCED = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const LAB_REDUCED = () => false /* 11/11: Windows '애니메이션 효과'가 꺼져 있어도 태블릿과 똑같이 움직여요 */;
 const PLACE_OF = { home: 'S06', school: 'S15', ground: 'S24' };
 const IMG = {
   char: k => `assets/char/${k}.png`, item: k => `assets/item/${k}.png`, sym: k => `assets/sym/${k}.png`,

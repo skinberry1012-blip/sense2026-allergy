@@ -40,7 +40,7 @@ const ANIM = {
 const Anim = {
   src: (k, sfx = '') => `assets/char/${k}${sfx}.png`,
   cache: {},
-  reduced: () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  reduced: () => false /* 11/11: Windows '애니메이션 효과'가 꺼져 있어도 태블릿과 똑같이 움직여요 */,
 
   /* 그림을 미리 불러 두기 (바꿔 끼울 때 깜빡이지 않게) */
   preload(keys, sfx = '') {

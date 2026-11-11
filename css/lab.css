@@ -256,7 +256,7 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .breathe img { transform-origin:50% 100%; animation:breathe 2.8s ease-in-out infinite; }
 @keyframes breathe { 0%,100% { transform:scale(1,1); } 50% { transform:scale(1.012,.985); } }
 
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce) and (min-width: 99999px) {
   .px-btn.shine::after, .px-btn.beat, .lab-spot.pulse, .lab-spot.pulse > i, .lab-spot.pulse::before, .lab-spot.pulse > img, .lab-lens.pulse, .mites i, .mites em, .lab-card:not(.seen), .bob, .breathe img { animation:none !important; }
   .lab-card > span { transition:none; }
 }
@@ -309,7 +309,7 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
   box-shadow:0 0 0 4px #fff, 0 6px 0 rgba(30,42,90,.18); animation:alertblink 1.4s ease-in-out infinite; }
 .cope-alert svg { width:34px; height:34px; fill:none; stroke:#fff; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; }
 @keyframes alertblink { 50% { filter:brightness(1.15); transform:scale(1.04); } }
-@media (prefers-reduced-motion: reduce) { .cope-alert { animation:none; } }
+@media (prefers-reduced-motion: reduce) and (min-width: 99999px) { .cope-alert { animation:none; } }
 
 /* 응급 표시 더 크게·진하게 (11/9) */
 .cope-alert { font-size:44px; gap:12px; padding:14px 30px 12px 22px; background:#D93A25; box-shadow:0 0 0 5px #fff, 0 0 0 9px #D93A25, 0 10px 0 9px rgba(30,42,90,.2); animation:alertpulse 1.2s ease-in-out infinite; }
@@ -331,7 +331,7 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 @keyframes sirenlamp { 0% { filter:none; } 50% { filter:brightness(1.35) saturate(1.2); } }
 @keyframes sirenrays { 0% { opacity:1; } 50% { opacity:0; } }
 @keyframes sirenglow { 0% { opacity:1; } 50% { opacity:0; } }
-@media (prefers-reduced-motion: reduce) { .cope-siren .lamp, .cope-siren .rays, .cope-siren::after { animation:none; } }
+@media (prefers-reduced-motion: reduce) and (min-width: 99999px) { .cope-siren .lamp, .cope-siren .rays, .cope-siren::after { animation:none; } }
 
 /* 원인 결과 창 안쪽 네모 줄이기 (11/9): 안쪽 칸은 둥글고 옅은 테두리, 그림 칸도 둥글게 */
 .rs-screen { border-radius:16px; }
@@ -429,7 +429,7 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .lab-board > .quiz-wrap { left:0; top:0; width:1600px; height:900px; transform-origin:0 0; transition:transform .7s cubic-bezier(.3,.8,.3,1); pointer-events:none; z-index:3; }
 .quiz-wrap > * { position:absolute; }
 .quiz-wrap.go { transform:translate(-163px, 18px) scale(.86); }
-@media (prefers-reduced-motion: reduce) { .lab-board > .quiz-wrap { transition:none; } }
+@media (prefers-reduced-motion: reduce) and (min-width: 99999px) { .lab-board > .quiz-wrap { transition:none; } }
 /* ===== 기억 체크 디자인 점검 반영 (11/9) ===== */
 /* 이름표: 상자 위 테두리에 걸치기, 위급 이름표는 진한 코랄(글씨 대비) */
 .quiz-deck span, .lab-quiz .quiz-group span { top:-22px; left:26px; font-size:26px; padding:6px 22px 4px; box-shadow:0 0 0 3px #FFFDF5; }
@@ -515,7 +515,7 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .quiz-band.away { opacity:0; pointer-events:none; }
 .quiz-band.sum-top { transform:translate(420px, -40px) scale(.8); }
 .quiz-band.sum-bot { transform:translate(420px, 266px) scale(.8); }
-@media (prefers-reduced-motion: reduce) { .quiz-band { transition:none; } }
+@media (prefers-reduced-motion: reduce) and (min-width: 99999px) { .quiz-band { transition:none; } }
 .quiz-band.sum-top { transform:translate(370px, -52px) scale(.8); }
 .quiz-band.sum-bot { transform:translate(370px, 258px) scale(.8); }
 .quiz-hand { background:rgba(255,253,245,.78); }
@@ -579,7 +579,7 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .px-bub.tail-n i { display:none; }
 .cheer-say { white-space:nowrap; text-align:center; font-family:var(--font-head); font-size:44px; line-height:1.35; padding:4px 22px 0; }
 .cheer-say b.big { font-size:60px; }
-@media (prefers-reduced-motion: reduce) { .tr-halo, .tr-glow, .lab-trophy img { animation:none; } }
+@media (prefers-reduced-motion: reduce) and (min-width: 99999px) { .tr-halo, .tr-glow, .lab-trophy img { animation:none; } }
 /* 6·7 약속 카드 시작 · 이름 쓰기 (연구소 판으로, 11/10) */
 .name-px { display:flex; align-items:center; gap:14px; padding:0 30px 0 36px; background:#fff; border-radius:24px; cursor:text;
   box-shadow:0 0 0 5px var(--navy), 0 10px 0 5px rgba(30,42,90,.18); transition:box-shadow .2s; }
@@ -812,7 +812,7 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .rs-ok .px-bub.tail-r i.t1 { background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8' shape-rendering='crispEdges'><rect x='0' y='0' width='1' height='1' fill='%231E2A5A'/><rect x='1' y='0' width='1' height='1' fill='%231E2A5A'/><rect x='2' y='0' width='1' height='1' fill='%231E2A5A'/><rect x='3' y='0' width='1' height='1' fill='%231E2A5A'/><rect x='4' y='0' width='1' height='1' fill='%231E2A5A'/><rect x='5' y='0' width='1' height='1' fill='%231E2A5A'/><rect x='6' y='0' width='1' height='1' fill='%231E2A5A'/><rect x='7' y='0' width='1' height='1' fill='%231E2A5A'/><rect x='1' y='1' width='1' height='1' fill='%231E2A5A'/><rect x='2' y='1' width='1' height='1' fill='%23F5C842'/><rect x='3' y='1' width='1' height='1' fill='%23F5C842'/><rect x='4' y='1' width='1' height='1' fill='%23F5C842'/><rect x='5' y='1' width='1' height='1' fill='%23F5C842'/><rect x='6' y='1' width='1' height='1' fill='%23F5C842'/><rect x='7' y='1' width='1' height='1' fill='%23F5C842'/><rect x='2' y='2' width='1' height='1' fill='%231E2A5A'/><rect x='3' y='2' width='1' height='1' fill='%23F5C842'/><rect x='4' y='2' width='1' height='1' fill='%23F5C842'/><rect x='5' y='2' width='1' height='1' fill='%23F5C842'/><rect x='6' y='2' width='1' height='1' fill='%23F5C842'/><rect x='7' y='2' width='1' height='1' fill='%23F5C842'/><rect x='3' y='3' width='1' height='1' fill='%231E2A5A'/><rect x='4' y='3' width='1' height='1' fill='%23F5C842'/><rect x='5' y='3' width='1' height='1' fill='%23F5C842'/><rect x='6' y='3' width='1' height='1' fill='%23F5C842'/><rect x='7' y='3' width='1' height='1' fill='%23F5C842'/><rect x='4' y='4' width='1' height='1' fill='%231E2A5A'/><rect x='5' y='4' width='1' height='1' fill='%23F5C842'/><rect x='6' y='4' width='1' height='1' fill='%23F5C842'/><rect x='7' y='4' width='1' height='1' fill='%23F5C842'/><rect x='5' y='5' width='1' height='1' fill='%231E2A5A'/><rect x='6' y='5' width='1' height='1' fill='%23F5C842'/><rect x='7' y='5' width='1' height='1' fill='%23F5C842'/><rect x='6' y='6' width='1' height='1' fill='%231E2A5A'/><rect x='7' y='6' width='1' height='1' fill='%23F5C842'/><rect x='7' y='7' width='1' height='1' fill='%231E2A5A'/></svg>") no-repeat center/100% 100%; }
 .rs-ok.show { animation:pxpop .35s ease-out, pxbeat 1.6s ease-in-out .6s infinite; }
 .rs-ok:hover .rs-say, .rs-ok:active .rs-say { filter:brightness(.94); }
-@media (prefers-reduced-motion: reduce) { .rs-ok.show { animation:none; } }
+@media (prefers-reduced-motion: reduce) and (min-width: 99999px) { .rs-ok.show { animation:none; } }
 
 /* '알겠어요!' 누르라는 느낌 더 (11/10 다시): 크게 두근 + 노란 빛 퍼짐 + 픽셀 손가락이 톡톡 */
 @keyframes rsbeat { 0%,55%,100% { scale:1; } 20% { scale:1.12; } 35% { scale:.98; } }
@@ -826,7 +826,7 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .rs-tap { position:absolute; left:calc(100% - 196px); top:76px; width:60px; height:65px; z-index:3; pointer-events:none; opacity:0;
   background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='13' viewBox='0 0 12 13' shape-rendering='crispEdges'><rect x='4' y='0' width='1' height='1' fill='%231E2A5A'/><rect x='5' y='0' width='1' height='1' fill='%231E2A5A'/><rect x='3' y='1' width='1' height='1' fill='%231E2A5A'/><rect x='4' y='1' width='1' height='1' fill='%23fff'/><rect x='5' y='1' width='1' height='1' fill='%23fff'/><rect x='6' y='1' width='1' height='1' fill='%231E2A5A'/><rect x='3' y='2' width='1' height='1' fill='%231E2A5A'/><rect x='4' y='2' width='1' height='1' fill='%23fff'/><rect x='5' y='2' width='1' height='1' fill='%23fff'/><rect x='6' y='2' width='1' height='1' fill='%231E2A5A'/><rect x='3' y='3' width='1' height='1' fill='%231E2A5A'/><rect x='4' y='3' width='1' height='1' fill='%23fff'/><rect x='5' y='3' width='1' height='1' fill='%23fff'/><rect x='6' y='3' width='1' height='1' fill='%231E2A5A'/><rect x='7' y='3' width='1' height='1' fill='%231E2A5A'/><rect x='8' y='3' width='1' height='1' fill='%231E2A5A'/><rect x='3' y='4' width='1' height='1' fill='%231E2A5A'/><rect x='4' y='4' width='1' height='1' fill='%23fff'/><rect x='5' y='4' width='1' height='1' fill='%23fff'/><rect x='6' y='4' width='1' height='1' fill='%231E2A5A'/><rect x='7' y='4' width='1' height='1' fill='%23fff'/><rect x='8' y='4' width='1' height='1' fill='%23fff'/><rect x='9' y='4' width='1' height='1' fill='%231E2A5A'/><rect x='10' y='4' width='1' height='1' fill='%231E2A5A'/><rect x='3' y='5' width='1' height='1' fill='%231E2A5A'/><rect x='4' y='5' width='1' height='1' fill='%23fff'/><rect x='5' y='5' width='1' height='1' fill='%23fff'/><rect x='6' y='5' width='1' height='1' fill='%231E2A5A'/><rect x='7' y='5' width='1' height='1' fill='%23fff'/><rect x='8' y='5' width='1' height='1' fill='%23fff'/><rect x='9' y='5' width='1' height='1' fill='%231E2A5A'/><rect x='10' y='5' width='1' height='1' fill='%23fff'/><rect x='11' y='5' width='1' height='1' fill='%231E2A5A'/><rect x='1' y='6' width='1' height='1' fill='%231E2A5A'/><rect x='2' y='6' width='1' height='1' fill='%231E2A5A'/><rect x='3' y='6' width='1' height='1' fill='%231E2A5A'/><rect x='4' y='6' width='1' height='1' fill='%23fff'/><rect x='5' y='6' width='1' height='1' fill='%23fff'/><rect x='6' y='6' width='1' height='1' fill='%23fff'/><rect x='7' y='6' width='1' height='1' fill='%23fff'/><rect x='8' y='6' width='1' height='1' fill='%23fff'/><rect x='9' y='6' width='1' height='1' fill='%23fff'/><rect x='10' y='6' width='1' height='1' fill='%23fff'/><rect x='11' y='6' width='1' height='1' fill='%231E2A5A'/><rect x='0' y='7' width='1' height='1' fill='%231E2A5A'/><rect x='1' y='7' width='1' height='1' fill='%23fff'/><rect x='2' y='7' width='1' height='1' fill='%23fff'/><rect x='3' y='7' width='1' height='1' fill='%231E2A5A'/><rect x='4' y='7' width='1' height='1' fill='%23fff'/><rect x='5' y='7' width='1' height='1' fill='%23fff'/><rect x='6' y='7' width='1' height='1' fill='%23fff'/><rect x='7' y='7' width='1' height='1' fill='%23fff'/><rect x='8' y='7' width='1' height='1' fill='%23fff'/><rect x='9' y='7' width='1' height='1' fill='%23fff'/><rect x='10' y='7' width='1' height='1' fill='%23fff'/><rect x='11' y='7' width='1' height='1' fill='%231E2A5A'/><rect x='0' y='8' width='1' height='1' fill='%231E2A5A'/><rect x='1' y='8' width='1' height='1' fill='%23fff'/><rect x='2' y='8' width='1' height='1' fill='%23fff'/><rect x='3' y='8' width='1' height='1' fill='%23fff'/><rect x='4' y='8' width='1' height='1' fill='%23fff'/><rect x='5' y='8' width='1' height='1' fill='%23fff'/><rect x='6' y='8' width='1' height='1' fill='%23fff'/><rect x='7' y='8' width='1' height='1' fill='%23fff'/><rect x='8' y='8' width='1' height='1' fill='%23fff'/><rect x='9' y='8' width='1' height='1' fill='%23fff'/><rect x='10' y='8' width='1' height='1' fill='%23fff'/><rect x='11' y='8' width='1' height='1' fill='%231E2A5A'/><rect x='1' y='9' width='1' height='1' fill='%231E2A5A'/><rect x='2' y='9' width='1' height='1' fill='%23fff'/><rect x='3' y='9' width='1' height='1' fill='%23fff'/><rect x='4' y='9' width='1' height='1' fill='%23fff'/><rect x='5' y='9' width='1' height='1' fill='%23fff'/><rect x='6' y='9' width='1' height='1' fill='%23fff'/><rect x='7' y='9' width='1' height='1' fill='%23fff'/><rect x='8' y='9' width='1' height='1' fill='%23fff'/><rect x='9' y='9' width='1' height='1' fill='%23fff'/><rect x='10' y='9' width='1' height='1' fill='%23fff'/><rect x='11' y='9' width='1' height='1' fill='%231E2A5A'/><rect x='2' y='10' width='1' height='1' fill='%231E2A5A'/><rect x='3' y='10' width='1' height='1' fill='%23fff'/><rect x='4' y='10' width='1' height='1' fill='%23fff'/><rect x='5' y='10' width='1' height='1' fill='%23fff'/><rect x='6' y='10' width='1' height='1' fill='%23fff'/><rect x='7' y='10' width='1' height='1' fill='%23fff'/><rect x='8' y='10' width='1' height='1' fill='%23fff'/><rect x='9' y='10' width='1' height='1' fill='%23fff'/><rect x='10' y='10' width='1' height='1' fill='%231E2A5A'/><rect x='3' y='11' width='1' height='1' fill='%231E2A5A'/><rect x='4' y='11' width='1' height='1' fill='%23fff'/><rect x='5' y='11' width='1' height='1' fill='%23fff'/><rect x='6' y='11' width='1' height='1' fill='%23fff'/><rect x='7' y='11' width='1' height='1' fill='%23fff'/><rect x='8' y='11' width='1' height='1' fill='%23fff'/><rect x='9' y='11' width='1' height='1' fill='%23fff'/><rect x='10' y='11' width='1' height='1' fill='%231E2A5A'/><rect x='3' y='12' width='1' height='1' fill='%231E2A5A'/><rect x='4' y='12' width='1' height='1' fill='%231E2A5A'/><rect x='5' y='12' width='1' height='1' fill='%231E2A5A'/><rect x='6' y='12' width='1' height='1' fill='%231E2A5A'/><rect x='7' y='12' width='1' height='1' fill='%231E2A5A'/><rect x='8' y='12' width='1' height='1' fill='%231E2A5A'/><rect x='9' y='12' width='1' height='1' fill='%231E2A5A'/><rect x='10' y='12' width='1' height='1' fill='%231E2A5A'/></svg>") no-repeat center/100% 100%; filter:drop-shadow(3px 4px 0 rgba(30,42,90,.3)); }
 .rs-ok.show .rs-tap { opacity:1; transition:opacity .3s .5s; animation:rstap 1.4s ease-in-out .5s infinite; }
-@media (prefers-reduced-motion: reduce) { .rs-ok.show .rs-say, .rs-ok.show .rs-say::before, .rs-ok.show .rs-tap { animation:none; } }
+@media (prefers-reduced-motion: reduce) and (min-width: 99999px) { .rs-ok.show .rs-say, .rs-ok.show .rs-say::before, .rs-ok.show .rs-tap { animation:none; } }
 
 /* 스캔 불빛을 결과 창 앞으로 (11/10): 냥박사 그림(불빛 포함)을 창보다 위에 — 몸은 창 밖이라 겹치지 않아요 */
 .lab-char.scan-front { z-index:6; pointer-events:none; }
@@ -841,4 +841,4 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .lab-orgtip .px-bub-txt small { font-size:20px; color:var(--navy); }
 .lab-orgtip .rs-tap { left:auto; right:40px; top:0; opacity:1; animation:orgtap 1.6s ease-in-out infinite; }
 @keyframes orgtap { 0%,60%,100% { translate:0 0; } 12% { translate:-6px -12px; } 22% { translate:0 0; } 34% { translate:-6px -12px; } 44% { translate:0 0; } }
-@media (prefers-reduced-motion: reduce) { .lab-org.try, .lab-orgtip .rs-tap { animation:none; } }
+@media (prefers-reduced-motion: reduce) and (min-width: 99999px) { .lab-org.try, .lab-orgtip .rs-tap { animation:none; } }
