@@ -398,7 +398,7 @@ Router.screens.T49 = (app, p) => {
   /* 챌린지 다이어리 설정도 학생 링크에 담아요: dy=횟수.방식.주.성공기준.사진.확인란 · 문구는 dp(약속) dm(성공 칭찬) dd(완성 칭찬) */
   const dyQuery = () => { const y = dy(); return `&dy=${y.count}.${y.mode === 'free' ? 'f' : 'r'}.${y.weeks}.${y.min}.${y.photo === false ? 0 : 1}.${y.tsign === 'n' ? 'n' : 't'}`
     + (y.promise.trim() ? '&dp=' + encodeURIComponent(y.promise.trim()) : '') + (y.praiseMin.trim() ? '&dm=' + encodeURIComponent(y.praiseMin.trim()) : '') + (y.praiseDone.trim() ? '&dd=' + encodeURIComponent(y.praiseDone.trim()) : ''); };
-  const query = () => '?mode=' + (d.mode === 'event' ? 'event&ev=' + evA()[0] : 'class') + (okBoard() ? '&board=' + encodeURIComponent(d.board) : '') + (d.sound === 'off' ? '&sound=off' : '') + (d.bgm === 'off' ? '&bgm=off' : '') + dyQuery();
+  const query = () => '?mode=' + (d.mode === 'event' ? 'event&ev=' + evA()[0] : 'class') + (okBoard() ? '&board=' + encodeURIComponent(d.board) : '') + (d.sound === 'off' ? '&sound=off' : '') + dyQuery();
   const urlOf = () => base + query();
   const modeName = () => d.mode === 'event' ? '행사용' : '수업용';
   /* 행사 활동 (11/11): d.ev = 'card' | 'diary' | 'both', 기본 약속 카드만 */
@@ -470,10 +470,8 @@ Router.screens.T49 = (app, p) => {
             <button data-a="card" class="${evC() ? 'on' : ''}" aria-pressed="${evC()}"><i></i>약속 카드</button><button data-a="diary" class="${evD() ? 'on' : ''}" aria-pressed="${evD()}"><i></i>다이어리</button></span>
             <small>하나 이상 골라요 · 다이어리는 꾸미고 인쇄해 가요</small></div>` : ''}
         </section>
-        <section class="tc-sec">
-          <h2 class="tc-h"><i>2</i>소리</h2>
-          <div class="tc-row"><span class="tc-lbl">효과음</span>${seg('sound', [['on', '켜기'], ['off', '끄기']], d.sound === 'off' ? 'off' : 'on')}</div>
-          <div class="tc-row"><span class="tc-lbl">대기 음악</span>${seg('bgm', [['on', '켜기'], ['off', '끄기']], d.bgm === 'off' ? 'off' : 'on')}<small>첫 화면에서만 나와요</small></div>
+        <section class="tc-sec tc-inl">
+          <h2 class="tc-h"><i>2</i>소리</h2>${seg('sound', [['on', '켜기'], ['off', '끄기']], d.sound === 'off' ? 'off' : 'on')}<small>효과음 · 첫 화면 대기 음악</small>
         </section>
         <section class="tc-sec">
           <h2 class="tc-h"><i>3</i>결과 공유 게시판 <em>선택</em></h2>
@@ -589,7 +587,7 @@ Router.screens.T49 = (app, p) => {
         <div class="tc-cardhead tc-sumhead"><h2 class="tc-h">설정 요약</h2><button class="tc-btn sm" id="edit">수정</button></div>
         <dl class="tc-facts">
           <div><dt>실행 모드</dt><dd><b>${d.mode === 'event' ? '행사용' : '수업용'}</b> · ${d.mode === 'event' ? `함께 쓰는 태블릿 · 행사 활동: <b>${evName()}</b>` : '1인 1태블릿 (챌린지 다이어리)'}</dd></div>
-          <div><dt>소리</dt><dd>효과음 ${d.sound === 'off' ? '끄기' : '켜기'} · 대기 음악 ${d.bgm === 'off' ? '끄기' : '켜기'}</dd></div>
+          <div><dt>소리</dt><dd>${d.sound === 'off' ? '끄기' : '켜기'}</dd></div>
           <div><dt>챌린지</dt><dd>${(() => { const y = dy(); return `${y.mode === 'free' ? `${y.weeks}주 안에 자유롭게` : '학교 가는 날 이어서'} ${y.count}회 · ${Math.min(y.min, y.count)}일 성공 메달${y.promise.trim() ? ' · 선생님 약속 있음' : ''}`; })()}</dd></div>
           <div><dt>결과 게시판</dt><dd>${okBoard() ? `<span class="ok">연결됨</span> ${esc(d.board)}` : d.mode === 'event' ? '<span class="no">없음</span> 학생은 카드를 인쇄하거나 이미지로 저장해요' : '<span class="no">없음</span> 다이어리는 학생 기기에만 저장돼요'}</dd></div>
         </dl>
@@ -610,7 +608,7 @@ Router.screens.T49 = (app, p) => {
       onTap($('#prev'), () => { tab = d.mode === 'event' ? 1 : 2; draw(); });
       /* [설정 완료] (11/10 최종): 이 기기에도 설정을 적용해요 — 부스 태블릿처럼 선생님 설정에서 행사용을 고른 기기는 계속 행사용 */
       onTap($('#done'), () => {
-        Config.set(Object.assign(Config.get(), { mode: d.mode === 'event' ? 'event' : 'class', ev: evA(), board: okBoard() ? d.board : '', bgm: d.bgm !== 'off' }));
+        Config.set(Object.assign(Config.get(), { mode: d.mode === 'event' ? 'event' : 'class', ev: evA(), board: okBoard() ? d.board : '', bgm: d.sound !== 'off' }));   // 소리 하나로 (11/11): 효과음·대기 음악 함께
         setSound(d.sound !== 'off');
         Router.go(d.mode === 'event' ? 'S39' : (returnTo === 'S39' ? 'S00' : returnTo));
       });
@@ -686,7 +684,7 @@ const TestBar = {
   if (fromLink) {
     const board = qs.get('board') || '';
     const evq = qs.get('ev');
-    const cfg = { mode: qs.get('mode') === 'event' ? 'event' : 'class', ev: evq === 'd' ? 'diary' : evq === 'b' ? 'both' : 'card', board: isHttps(board) ? board : '', bgm: qs.get('bgm') !== 'off' };
+    const cfg = { mode: qs.get('mode') === 'event' ? 'event' : 'class', ev: evq === 'd' ? 'diary' : evq === 'b' ? 'both' : 'card', board: isHttps(board) ? board : '', bgm: qs.get('bgm') !== 'off' && qs.get('sound') !== 'off' };   // 소리를 끄면 대기 음악도 꺼요 (11/11)
     /* 챌린지 다이어리 설정 (선생님 링크 dy · dp · dm · dd) */
     const dyv = (qs.get('dy') || '').split('.');
     if (dyv.length >= 6) cfg.diary = { count: Math.max(1, Math.min(10, +dyv[0] || 5)), mode: dyv[1] === 'f' ? 'free' : 'row', weeks: Math.max(1, Math.min(4, +dyv[2] || 2)), min: Math.max(1, +dyv[3] || 3), photo: dyv[4] !== '0', tsign: dyv[5] === 'n' ? 'n' : 't',

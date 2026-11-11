@@ -244,3 +244,7 @@
 .tgx .tc-dy .tc-way .tc-sub .tc-seg button { min-width:0; padding:0 14px; }
 .tgx .tc-dy .tc-way .tc-sub small { flex-basis:100%; }
 .tgx .tc-dy .tc-way .tc-sub small { white-space:normal; overflow-wrap:anywhere; word-break:keep-all; }
+/* 01 탭 소리 (11/11): 효과음·대기 음악을 하나로 — 제목 옆 [켜기|끄기] + 설명 한 줄 */
+.tgx .tc-set:not(.tc-dy) > .tc-inl { flex-wrap:nowrap; }
+.tgx .tc-set:not(.tc-dy) > .tc-inl .tc-h { width:auto; min-width:120px; }
+.tgx .tc-set:not(.tc-dy) > .tc-inl small { flex:1; min-width:0; }
