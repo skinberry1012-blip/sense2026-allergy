@@ -430,8 +430,6 @@ Router.screens.T49 = (app, p) => {
     $('#steps').innerHTML = PREVIEW_STEPS[view].filter(([k]) => !(d.mode === 'event' && (/^S4[78]$/.test(k) || (k === 'S46' && !evD()) || (k === 'S44' && !evC())))).map(([k, n]) => `<button data-s="${k}" class="${k === step[view] ? 'on' : ''}">${n}</button>`).join('');
     $$('.tc-seg[data-k="view"] button').forEach(x => { x.disabled = x.dataset.v === 'lab' && d.mode === 'event'; });
     $('#pv').src = pvSrc(); fitFrame();
-    $('#pvcap').textContent = view === 'lab' ? '수업용: 학생은 연구소 첫 화면에서 시작해요. 연구소를 마치면 약속 카드로 넘어가요.'
-      : d.mode === 'event' ? '행사용: 학생은 QR을 찍으면 바로 방패 만들기 화면에서 시작해요.' : '수업용: 연구소를 마친 학생이 이 약속 카드 화면으로 와요.';
   };
 
   /* QR 이미지 저장 (칠판·학습지에 붙이기) */
@@ -492,7 +490,6 @@ Router.screens.T49 = (app, p) => {
           ${seg('dev', [['tablet', '태블릿'], ['phone', '휴대폰']], dev)}</div>
         <div class="tc-steps" id="steps" aria-label="열어 볼 화면"></div>
         <div class="tc-frame" id="frame"><iframe id="pv" title="학생 화면 미리 보기"></iframe></div>
-        <p class="tc-help" id="pvcap"></p>
         <div class="tc-foot"><button class="tc-btn" id="reset">기본값으로</button><button class="tc-btn pri" id="toNext">${d.mode === 'event' ? '다음 · QR 코드와 공유 ›' : '다음 · 챌린지 다이어리 ›'}</button></div>
       </div>${d.mode === 'event' ? DEV : ''}`;
       $('#modes').addEventListener('click', e => { const b = e.target.closest('[data-m]'); if (!b) return; const was = d.mode; d.mode = b.dataset.m; Draft.set(d); view = d.mode === 'event' ? 'card' : 'lab';
@@ -559,7 +556,6 @@ Router.screens.T49 = (app, p) => {
       <div class="tc-col tc-pv">
         <div class="tc-pvhead"><h2 class="tc-h">미리 보기</h2>${seg('dstep', [...(y.photo !== false ? [['S46P', '사진 찍기']] : []), ['S46', '매일 체크'], ['S47', '성공 메달'], ['S48', '완성']], step.dy || 'S46')}</div>
         <div class="tc-frame" id="frame"><iframe id="pv" title="챌린지 다이어리 미리 보기"></iframe></div>
-        <p class="tc-help">학생은 약속 카드를 저장한 뒤 이 다이어리를 꾸미고 [챌린지 시작하기]를 눌러요.</p>
         <div class="tc-foot"><button class="tc-btn" id="reset2">기본값으로</button><button class="tc-btn pri" id="toNext2">다음 · QR 코드와 공유 ›</button></div>
       </div>`;
       { const col = $('.tc-dy'), more = $('.tc-more', col);
