@@ -419,7 +419,7 @@ Router.screens.T49 = (app, p) => {
   /* 챌린지 다이어리 설정도 학생 링크에 담아요: dy=횟수.방식.주.성공기준.사진.확인란 · 문구는 dp(약속) dm(성공 칭찬) dd(완성 칭찬) */
   const dyQuery = () => { const y = dy(); return `&dy=${y.count}.${y.mode === 'free' ? 'f' : 'r'}.${y.weeks}.${y.min}.${y.photo === false ? 0 : 1}.${y.tsign === 'n' ? 'n' : 't'}${y.start ? '.' + y.start.replace(/-/g, '') : ''}`
     + (y.promise.trim() ? '&dp=' + encodeURIComponent(y.promise.trim()) : '') + (y.praiseMin.trim() ? '&dm=' + encodeURIComponent(y.praiseMin.trim()) : '') + (y.praiseDone.trim() ? '&dd=' + encodeURIComponent(y.praiseDone.trim()) : ''); };
-  const query = () => '?mode=' + (d.mode === 'event' ? 'event&ev=' + evA()[0] : 'class') + (okBoard() ? '&board=' + encodeURIComponent(d.board) : '') + (d.sound === 'off' ? '&sound=off' : '') + dyQuery();
+  const query = () => '?mode=' + (d.mode === 'event' ? 'event&ev=' + evA()[0] : 'class') + (okBoard() ? '&board=' + encodeURIComponent(d.board) : '') + (d.sound === 'off' ? '&sound=off' : '') + dyQuery() + (TestMode.on ? '&test' : '');   // 점검 모드로 연 선생님 화면이면 학생 링크에도 점검 모드를 이어 줘요
   const urlOf = () => base + query();
   const modeName = () => d.mode === 'event' ? '행사용' : '수업용';
   /* 행사 활동 (11/11): d.ev = 'card' | 'diary' | 'both', 기본 약속 카드만 */
