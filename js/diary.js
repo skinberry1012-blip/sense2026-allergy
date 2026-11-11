@@ -65,8 +65,8 @@ function dyDiary(m, look, { print = false } = {}) {
   const PR = (c.promise || '').trim();
   /* 선생님 약속 30자 (11/11): 한 줄에 안 들어가면(17자 넘음) 메모지 안에서 두 줄로, 아래 안내 줄은 빼요 */
   const two = [...PR].length > 17;
-  const note = PR ? `<div class="tnote ${m.medal ? 'hasb' : ''}${two ? ' two' : ''}" style="left:34px;top:426px"><h5>선생님 약속</h5><p>${dyEsc(PR)}</p>${two ? '' : `<small>${n}일 모두 성공하면 받아요</small>`}</div>`
-    : `<div class="tnote ${m.medal ? 'hasb' : ''}" style="left:34px;top:426px"><h5>선생님 응원</h5><p>선생님이 매일 응원할게요!</p><small>${Config.isEvent() ? `${n}번 모두 지키면 완성!` : `${n}일 모두 성공하면 완성 메달을 받아요`}</small></div>`;   // 행사용은 메달이 없어요 (11/11)
+  const note = PR ? `<div class="tnote ${m.medal ? 'hasb' : ''}${two ? ' two' : ''}" style="left:34px;top:412px"><h5>선생님 약속</h5><p>${dyEsc(PR)}</p>${two ? '' : `<small>${n}일 모두 성공하면 받아요</small>`}</div>`
+    : `<div class="tnote ${m.medal ? 'hasb' : ''}" style="left:34px;top:412px"><h5>선생님 응원</h5><p>선생님이 매일 응원할게요!</p><small>${Config.isEvent() ? `${n}번 모두 지키면 완성!` : `${n}일 모두 성공하면 완성 메달을 받아요`}</small></div>`;   // 행사용은 메달이 없어요 (11/11)
   const ph = look.photo === 'cam' && look.pic ? `<img src="${look.pic}" alt="내 사진" style="width:100%;height:100%;object-fit:cover">` : `<img src="${DY_IMG(look.photo === 'cam' ? 'staff_hello' : look.photo)}" alt="">`;
   const md = m.medal;
   const L = `<div class="d-title">${n}일 챌린지 다이어리</div>
