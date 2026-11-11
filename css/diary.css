@@ -542,3 +542,5 @@ button.cb:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
 .a4p .dayrow.two .day{flex-basis:calc((100% - (var(--cols) - 1) * 8px) / var(--cols));padding:6px 2px 6px}
 .a4p .dayrow.two .day .sc{width:54px;height:52px}
 .a4p .dayrow.two .day .sc svg{width:50px;height:50px}
+/* 11/12: 화면의 다이어리 좌우 여백 맞춤(오른쪽 탭이 화면 끝에 붙던 것) — 화면에서만, 저장·인쇄 그림은 그대로 */
+#dz.live{transform:scale(.975);transform-origin:402px 450px}

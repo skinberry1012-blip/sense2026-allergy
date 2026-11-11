@@ -99,10 +99,10 @@ function dyDiary(m, look, { print = false } = {}) {
       : EVX ? '' : `<div class="slegend" style="top:${dtwo ? 380 : 344}px"><span><svg viewBox="-0.5 -1 16 16" width="30" height="30"><use href="#star" fill="#F5C842"/></svg> 별 받음</span><span><svg viewBox="-0.5 -1 16 16" width="30" height="30"><use href="#star" fill="#9EA3AB"/></svg> 했지만 별 없음</span></div>`}
     <div class="dayrow${dtwo}" style="--cols:${Math.ceil(n / 2)};${print ? 'top:104px' : ''}">${slots.map(day).join('')}</div>
     ${print || EVX ? '' : prog()}
-    ${print ? `<div class="pcol" style="top:${dtwo ? 330 : 290}px">` : ''}<div class="tlist${many}${print ? ' plist' : ''}" ${print ? '' : dtwo && !EVX ? 'style="top:426px"' : ''}><h5>${print ? `지킬 약속<span class="hrule">${m.need}개 이상 지키면 별 하나</span>` : `${ti >= 0 ? '오늘 실천한 약속' : '실천한 약속'}<span class="hrule">${m.need}개 이상 지키면 별 하나</span>`}</h5>
+    ${print ? `<div class="pcol" style="top:${dtwo ? 330 : 290}px">` : ''}<div class="tlist${many}${print || EVX ? ' plist' : ''}" ${print ? '' : dtwo && !EVX ? 'style="top:426px"' : ''}><h5>${print || EVX ? `지킬 약속<span class="hrule">${m.need}개 이상 지키면 별 하나</span>` : `${ti >= 0 ? '오늘 실천한 약속' : '실천한 약속'}<span class="hrule">${m.need}개 이상 지키면 별 하나</span>`}</h5>
       ${rules.map(r => {
         const v = todayD ? logOf(todayD)[r.id] : '';
-        return `<div class="ti"><span>${rp(r)}</span><span class="tt">${dyEsc(r.text)}</span>${print ? '' : `<button type="button" class="cb ${v === 'O' ? 'on' : ''} ${ti < 0 ? 'off' : ''}" data-rule="${r.id}" aria-label="${dyEsc(r.text)} 지켰어요" aria-pressed="${v === 'O'}"></button>`}</div>`;
+        return `<div class="ti"><span>${rp(r)}</span><span class="tt">${dyEsc(r.text)}</span>${print || EVX ? '' : `<button type="button" class="cb ${v === 'O' ? 'on' : ''} ${ti < 0 ? 'off' : ''}" data-rule="${r.id}" aria-label="${dyEsc(r.text)} 지켰어요" aria-pressed="${v === 'O'}"></button>`}</div>`;
       }).join('')}</div>${print ? sign + '</div>' : ''}`;
   const k = 1196 / 1440, pw = 630 * k, ph2 = 873 * k, sc = ph2 / 860, off = (pw - 560 * sc) / 2;
   const pg = (left, html, dy = 0) => `<div class="dpage art" style="left:${left}px;top:${(78 - 24) * k}px;width:${pw}px;height:${ph2}px"><div class="pg" style="left:${off}px;top:${dy}px;transform:scale(${sc})">${html}</div></div>`;
@@ -187,7 +187,7 @@ Router.screens.S46 = (app, p = {}) => {
         <div class="drawer" id="drawer"></div>
         <div class="btns">${EV ? evBtns() : classBtns(c, ended, m)}</div>
       </div>
-      <div id="dz">${dyDiary(m, look)}${look.placed.map(dyStk).join('')}</div>`;
+      <div id="dz" class="live">${dyDiary(m, look)}${look.placed.map(dyStk).join('')}</div>`;
     paintDrawer();
     root.querySelectorAll('#dz .stk').forEach(dragify);
     bind();

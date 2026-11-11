@@ -51,7 +51,7 @@ Router.screens.S40 = (app) => {
   labChar(b, 'staff_hello', 560, { left: 14, bottom: 10 });   // 좌우 여백 맞춤 (11/10)
   /* 말풍선 안에 이름 칸 (11/10 다시): 수호냥이 묻고, 말풍선 안에서 바로 써요 */
   const bub = labEl(b, 'px-bub tail-l name-bub', null, `<span class="px-name s">수호냥</span>
-    <div class="px-bub-txt">${Config.isEvent() ? '약속 카드에 들어갈<br>{{이름}}이나 별명을 써 보아요!' : '약속 카드에 들어갈<br>{{이름}}을 입력해 보아요!'}</div>
+    <div class="px-bub-txt">${Config.isEvent() ? '약속 카드에 들어갈 {{이름}}이나 별명을<br>써 보아요!' : '약속 카드에 들어갈 {{이름}}을<br>입력해 보아요!'}</div>
     <label class="name-px"><input id="name" type="text" maxlength="12" placeholder="이름 (번호도 쓸 수 있어요)" autocomplete="off" enterkeyhint="done" aria-label="이름"><span class="count" id="count">0/${NAME_MAX}</span></label>
     <i class="t1"></i><i class="t2"></i>`.replace(/\{\{(.+?)\}\}/g, '<b class="lc">$1</b>'), 'div', 'left:694px;top:300px;width:700px');
   const field = $('.name-px', bub);
