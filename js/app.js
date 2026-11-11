@@ -264,8 +264,18 @@ Router.screens.S44 = (app) => {
     onTap($('#mYes', m), () => { Modal.close(); Router.go('S39'); });
   });
 
+  /* 11/11 점검: 서명하지 않으면 저장·인쇄 전에 서명하라고 알려요 (카드는 다짐이라 서명이 들어가야 해요) */
+  const needSign = () => {
+    if (signatureImg) return false;
+    playSfx('full');
+    const m = Modal.open(`<div class="pop-head">서명을 해 주세요</div><p class="pop-body">약속 카드에 내 서명을 넣어야<br>저장하거나 인쇄할 수 있어요.</p>
+      <div class="pop-btns" style="display:flex;justify-content:center"><button class="btn pink" data-autofocus id="sgGo" style="width:50%">서명하기</button></div>`);
+    onTap($('#sgGo', m), () => { Modal.close(); openSign(); });
+    return true;
+  };
   /* 인쇄: 저장용과 같은 카드를 그려서 인쇄 전용 칸에 넣고 인쇄 창을 열어요 */
   onTap($('#print'), async () => {
+    if (needSign()) return;
     if (!Store.get('cardDate')) Store.set('cardDate', DateK.today());
     const out = document.createElement('canvas');
     await drawPromiseCard(out, { ...st, name, date: cardDay(), rules, sigImg: signatureImg, preview: false });
@@ -276,6 +286,7 @@ Router.screens.S44 = (app) => {
     if (EV) saved = true;   // 행사용: 인쇄했으면 넘길 때 '카드가 사라져요' 경고 없이 (11/11)
   });
   onTap($('#save'), async () => {
+    if (needSign()) return;
     if (!Store.get('cardNo')) {
       const t = DateK.today().replace(/-/g, '').slice(0, 6);
       Store.set('cardNo', `AL-${t}-${String(Math.floor(1000 + Math.random() * 9000))}`);
