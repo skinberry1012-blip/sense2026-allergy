@@ -511,3 +511,4 @@ button.cb:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
 .drawer.words{grid-template-columns:repeat(3,1fr)}
 .drawer.words button[data-add]{padding:6px 4px}
 .drawer.words .wd{font-size:15px;padding:2px 8px;white-space:nowrap}
+.tnote.two p{top:70px;font-size:15px;line-height:21px}   /* 선생님 약속이 길면 두 줄 (11/11) */

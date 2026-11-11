@@ -548,7 +548,7 @@ Router.screens.T49 = (app, p) => {
         <section class="tc-sec tc-inl tc-way"><h2 class="tc-h"><i>3</i>진행 방식</h2>${seg('dmode', [['row', '이어서'], ['free', '자유롭게']], y.mode)}
           <div class="tc-sub">${y.mode === 'free' ? seg('weeks', [['1', '1주'], ['2', '2주'], ['3', '3주'], ['4', '4주']], String(y.weeks)) : ''}<small>${y.mode === 'free' ? `오늘부터 ${y.weeks}주 안에 아무 날이나 ${y.count}번 (주말 포함, 하루 한 번)` : `시작한 다음 날부터 학교 가는 날 ${y.count}번 이어서`}</small></div></section>
         <section class="tc-sec tc-inl"><h2 class="tc-h"><i>4</i>사진 찍기</h2>${seg('dphoto', [['1', '켜기'], ['0', '끄기']], y.photo === false ? '0' : '1')}<small>끄면 수호냥 그림만 골라요</small></section>
-        <section class="tc-sec"><h2 class="tc-h"><i>5</i>선생님 약속 <em>선택</em></h2>${txt('promise', 20, '다 완성하면 받을 약속을 입력하세요', '다 완성하면 선생님이 간식을 쏠게요!')}</section>
+        <section class="tc-sec"><h2 class="tc-h"><i>5</i>선생님 약속 <em>선택</em></h2>${txt('promise', 30, '다 완성하면 받을 약속을 입력하세요', '다 완성하면 선생님이 간식을 쏠게요!')}</section>
         <section class="tc-sec"><h2 class="tc-h"><i>6</i>선생님 칭찬</h2>
           <div class="tc-pr"><span>${Math.min(y.min, y.count)}일 성공</span><div>${txt('praiseMin', 40, '비워 두면 예시 문구가 나와요', DY_SAMPLE.min)}</div></div>
           <div class="tc-pr"><span>완성</span><div>${txt('praiseDone', 40, '비워 두면 예시 문구가 나와요', DY_SAMPLE.done)}</div></div></section>
@@ -690,7 +690,7 @@ const TestBar = {
     /* 챌린지 다이어리 설정 (선생님 링크 dy · dp · dm · dd) */
     const dyv = (qs.get('dy') || '').split('.');
     if (dyv.length >= 6) cfg.diary = { count: Math.max(1, Math.min(10, +dyv[0] || 5)), mode: dyv[1] === 'f' ? 'free' : 'row', weeks: Math.max(1, Math.min(4, +dyv[2] || 2)), min: Math.max(1, +dyv[3] || 3), photo: dyv[4] !== '0', tsign: dyv[5] === 'n' ? 'n' : 't',
-      promise: (qs.get('dp') || '').slice(0, 20), praiseMin: (qs.get('dm') || '').slice(0, 40), praiseDone: (qs.get('dd') || '').slice(0, 40) };
+      promise: (qs.get('dp') || '').slice(0, 30), praiseMin: (qs.get('dm') || '').slice(0, 40), praiseDone: (qs.get('dd') || '').slice(0, 40) };
     if (cfg.mode === 'event' && !PREVIEW) {
       /* 행사용 QR (11/10 최종): 이 창을 닫을 때까지만 행사용 — 학생 개인 태블릿은 다시 열면 원래대로(수업 다이어리) */
       if (!configured) { try { localStorage.setItem(CFG_KEY, JSON.stringify({ mode: 'class', board: '', bgm: true })); } catch (e) {} }
