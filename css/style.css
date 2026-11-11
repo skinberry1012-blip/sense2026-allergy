@@ -1366,3 +1366,7 @@ body.tablet .s44b-side .buddies { grid-template-columns:repeat(2,1fr); }
 @media print and (orientation: portrait) {
   #printArea.print-only img { max-width:none !important; max-height:none !important; width:min(calc(100vh - 8px), calc((100vw - 8px) * 1.47)) !important; flex:none; transform:rotate(90deg); }
 }
+/* 경고 알림 (11/11: 서명 안 했을 때) — 산호색 상자가 좌우로 흔들려요 */
+#toast.warn { background:#E2563F; box-shadow:0 0 0 4px rgba(255,255,255,.85), 0 8px 20px rgba(226,86,63,.35); animation:toastshake .5s ease-in-out .05s 2; }
+@keyframes toastshake { 0%,100% { margin-left:0; } 15%,55% { margin-left:-14px; } 35%,75% { margin-left:14px; } }
+@media (prefers-reduced-motion: reduce) { #toast.warn { animation:none; } }

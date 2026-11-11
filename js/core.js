@@ -280,7 +280,7 @@ let toastTimer;
 function toast(msg, ms = 1800) {
   let t = $('#toast');
   if (!t) { t = document.createElement('div'); t.id = 'toast'; $('#layer').appendChild(t); }
-  t.innerHTML = msg; t.classList.add('show');
+  t.innerHTML = msg; t.classList.remove('warn'); t.classList.add('show');
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), ms);
 }
 

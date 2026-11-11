@@ -268,7 +268,7 @@ Router.screens.S44 = (app) => {
   let signWarned = false;
   const needSign = () => {
     if (signatureImg || signWarned) return false;
-    signWarned = true; playSfx('warn'); toast('서명을 하지 않았어요', 1800);
+    signWarned = true; playSfx('warn'); toast('✍ 서명을 하지 않았어요', 2000); replay($('#toast'), 'warn');
     return true;
   };
   /* 인쇄: 저장용과 같은 카드를 그려서 인쇄 전용 칸에 넣고 인쇄 창을 열어요 */
