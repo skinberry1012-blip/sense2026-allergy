@@ -1370,15 +1370,29 @@ body.tablet .s44b-side .buddies { grid-template-columns:repeat(2,1fr); }
 #toast.warn { background:#E2563F; box-shadow:0 0 0 4px rgba(255,255,255,.85), 0 8px 20px rgba(226,86,63,.35); animation:toastshake .5s ease-in-out .05s 2; }
 @keyframes toastshake { 0%,100% { margin-left:0; } 15%,55% { margin-left:-14px; } 35%,75% { margin-left:14px; } }
 @media (prefers-reduced-motion: reduce) { #toast.warn { animation:none; } }
-/* 서명 안 했을 때 (11/11): 흐린 화면 + 가운데 호루라기 부는 수호냥 + 흔들리는 말풍선, 잠깐 뒤 사라짐 */
-.sign-warn { position:fixed; inset:0; z-index:60; display:grid; place-items:center; background:rgba(30,42,90,.45); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); animation:swin .2s ease-out; cursor:pointer; }
+/* 서명 안 했을 때 (11/11): 흐린 화면 + 왼쪽 호루라기 부는 수호냥 · 오른쪽 말풍선('알겠어요'와 같은 둥근 픽셀 말풍선) + 경광등, 잠깐 뒤 사라짐 */
+.sign-warn { position:fixed; inset:0; z-index:60; display:grid; place-items:center; background:rgba(30,42,90,.5); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); animation:swin .2s ease-out; cursor:pointer; }
 .sign-warn.out { opacity:0; transition:opacity .3s; }
-.sign-warn .sw-in { display:flex; flex-direction:column; align-items:center; gap:4px; }
-.sign-warn img { width:420px; height:auto; animation:swhop .5s cubic-bezier(.2,1.6,.4,1) both; }
-.sign-warn .sw-say { position:relative; padding:22px 40px 18px; text-align:center; animation:swshake .45s ease-in-out .35s 2; }
-.sign-warn .sw-say .px-bub-txt { font-family:var(--font-head); font-size:38px; line-height:1.35; color:var(--navy); white-space:nowrap; }
-.sign-warn .sw-say b { font-weight:400; font-size:46px; color:#E2563F; }
+.sign-warn .sw-in { display:flex; align-items:center; gap:70px; transform:translateX(-30px); }
+.sign-warn .sw-cat { width:440px; height:auto; animation:swhop .5s cubic-bezier(.2,1.6,.4,1) both; }
+.sign-warn .sw-right { display:flex; flex-direction:column; align-items:center; gap:18px; }
+.sign-warn .sw-siren { position:relative; width:150px; height:122px; }
+.sign-warn .sw-say { position:relative; display:inline-block; background:none; padding:6px 22px 2px 26px; text-align:center;
+  border-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 15 15' shape-rendering='crispEdges'><rect x='4' y='1' width='7' height='1' fill='%23fff'/><rect x='2' y='2' width='11' height='2' fill='%23fff'/><rect x='1' y='4' width='13' height='7' fill='%23fff'/><rect x='2' y='11' width='11' height='2' fill='%23fff'/><rect x='4' y='13' width='7' height='1' fill='%23fff'/><rect x='4' y='0' width='7' height='1' fill='%231E2A5A'/><rect x='2' y='1' width='2' height='1' fill='%231E2A5A'/><rect x='11' y='1' width='2' height='1' fill='%231E2A5A'/><rect x='1' y='2' width='1' height='2' fill='%231E2A5A'/><rect x='13' y='2' width='1' height='2' fill='%231E2A5A'/><rect x='0' y='4' width='1' height='7' fill='%231E2A5A'/><rect x='14' y='4' width='1' height='7' fill='%231E2A5A'/><rect x='1' y='11' width='1' height='2' fill='%231E2A5A'/><rect x='13' y='11' width='1' height='2' fill='%231E2A5A'/><rect x='2' y='13' width='2' height='1' fill='%231E2A5A'/><rect x='11' y='13' width='2' height='1' fill='%231E2A5A'/><rect x='4' y='14' width='7' height='1' fill='%231E2A5A'/></svg>") 5 fill / 25px stretch;
+  animation:swbeat .5s ease-in-out .3s 3; }
+.sign-warn .sw-say .t1 { top:40px !important; }
+.sign-warn .sw-say .px-bub-txt { font-family:var(--font-head); font-size:40px; line-height:1.3; color:var(--navy); white-space:nowrap; }
+.sign-warn .sw-say b { font-weight:400; font-size:52px; color:#E5402B; }
+.sign-warn .sw-say::before { content:''; position:absolute; inset:-26px; border-radius:44px; box-shadow:0 0 0 8px rgba(229,64,43,.9), 0 0 36px 14px rgba(229,64,43,.55); opacity:0; pointer-events:none; animation:swring .5s ease-out .3s 3; }
 @keyframes swin { from { opacity:0; } to { opacity:1; } }
 @keyframes swhop { from { transform:scale(.6) translateY(40px); opacity:0; } to { transform:none; opacity:1; } }
-@keyframes swshake { 0%,100% { translate:0 0; } 15%,55% { translate:-16px 0; rotate:-2deg; } 35%,75% { translate:16px 0; rotate:2deg; } }
-@media (prefers-reduced-motion: reduce) { .sign-warn, .sign-warn img, .sign-warn .sw-say { animation:none; } }
+@keyframes swbeat { 0%,100% { translate:0 0; scale:1; } 20% { translate:-12px 0; scale:1.06; } 45% { translate:12px 0; scale:1.06; } 70% { translate:-6px 0; scale:1.02; } }
+@keyframes swring { 0% { opacity:.9; transform:scale(.92); } 100% { opacity:0; transform:scale(1.12); } }
+@media (prefers-reduced-motion: reduce) { .sign-warn, .sign-warn .sw-cat, .sign-warn .sw-say, .sign-warn .sw-say::before { animation:none; } }
+/* 서명 안내 (11/11): 판 안은 .sign-warn이, 판 밖(태블릿 화면 가장자리)은 body의 .sign-warn-bg가 같이 어둡게.
+   흐림은 backdrop-filter 대신 판 안 화면에 직접 blur (확대된 판에서 backdrop-filter가 가장자리를 거울처럼 비추던 것) */
+.sign-warn { backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
+.sign-warn-bg { position:fixed; inset:0; z-index:1; background:rgba(30,42,90,.5); animation:swin .2s ease-out; }
+.sign-warn-bg.out { opacity:0; transition:opacity .3s; }
+body.tablet #stage:has(.sign-warn) { z-index:2; }
+#stage:has(.sign-warn) > :not(.sign-warn) { filter:blur(3px); transition:filter .2s; }

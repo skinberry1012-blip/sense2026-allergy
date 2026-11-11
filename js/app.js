@@ -272,11 +272,13 @@ Router.screens.S44 = (app) => {
     /* 배지 화면처럼 화면이 흐려지고 가운데 수호냥이 호루라기를 불며 알려요 — 잠깐 보였다가 사라짐(누르면 바로 닫힘) */
     const sc = document.getElementById('stage') || document.body;   // 화면 전체(판 1600×900)를 흐리게
     const w = document.createElement('div'); w.className = 'sign-warn';
-    w.innerHTML = `<div class="sw-in"><div class="px-bub tail-n sw-say"><div class="px-bub-txt"><b>잠깐만!</b><br>서명을 아직 안 했어요!</div></div><img src="assets/char/staff_cheer.png" alt=""></div>`;
-    sc.appendChild(w);
+    w.innerHTML = `<div class="sw-in"><img class="sw-cat" src="assets/char/staff_cheer.png" alt=""><div class="sw-right"><div class="cope-siren sw-siren">${LAB_SIREN}</div><span class="px-bub tail-l sw-say"><span class="px-bub-txt"><b>잠깐만!</b><br>서명을 아직 안 했어요!</span><i class="t1"></i><i class="t2"></i></span></div></div>`;
+    const bg = document.createElement('div'); bg.className = 'sign-warn-bg';   // 판 밖(태블릿 화면 가장자리)까지 화면 전체를 흐리게
+    document.body.appendChild(bg); sc.appendChild(w);
     playSfx('whistle'); setTimeout(() => playSfx('warn'), 450);
-    let gone = false; const close = () => { if (gone) return; gone = true; w.classList.add('out'); setTimeout(() => w.remove(), 300); };
-    w.addEventListener('click', close); setTimeout(close, 2200);
+    let gone = false; const close = () => { if (gone) return; gone = true; w.classList.add('out'); bg.classList.add('out'); setTimeout(() => { w.remove(); bg.remove(); }, 300); };
+    bg.addEventListener('click', close);
+    w.addEventListener('click', close); setTimeout(close, 2600);
     return true;
   };
   /* 인쇄: 저장용과 같은 카드를 그려서 인쇄 전용 칸에 넣고 인쇄 창을 열어요 */
