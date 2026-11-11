@@ -275,3 +275,6 @@
 .tgx .tc-set:not(.tc-dy) #err { line-height:1.35; }
 .tgx .tc-set:not(.tc-dy) .tc-privacy { margin-top:-10px; line-height:1.35; }
 .tgx .tc-device p { line-height:1.35; padding:8px 14px; }
+/* 행사 활동 (11/11): 글자 첫머리 = 아래 '소리' 첫 글자(번호 동그라미 다음), 약속 카드 왼쪽 위치는 그대로 */
+.tgx .tc-evact { padding-left:42px; }
+.tgx .tc-evact .tc-lbl { width:78px; white-space:nowrap; }
