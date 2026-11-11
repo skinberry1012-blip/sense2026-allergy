@@ -271,3 +271,7 @@
 .tgx .tc-evact .tc-lbl { width:120px; flex:none; }
 .tgx .tc-evact .tc-checks { flex:1; gap:10px; }
 .tgx .tc-evact .tc-checks button { flex:1; justify-content:center; }
+/* 01 탭 (11/11): 게시판 설명 두 줄 · 기록 지우기 설명 줄 간격 좁히기 */
+.tgx .tc-set:not(.tc-dy) #err { line-height:1.35; }
+.tgx .tc-set:not(.tc-dy) .tc-privacy { margin-top:-10px; line-height:1.35; }
+.tgx .tc-device p { line-height:1.35; padding:8px 14px; }
