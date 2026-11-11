@@ -16,7 +16,7 @@ Router.screens.S39 = (app) => {
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-s39' });
   labPanel(b, { sub: '나만의 알레르기 방패', title: '방패 만들기' });
   labChar(b, 'staff_guide', 600, { left: 70, bottom: 10 });
-  if (Config.isEvent()) doubleTap(labEl(b, 'lab-org', null, '<b>SENSE</b><span>초등보건교육연구회</span>'), () => openTeacher('S39'));   // 행사용 첫 화면에도 연구회 이름 + 선생님 화면 입구 (11/11)
+  if (Config.isEvent()) orgDoor(b, labEl(b, 'lab-org', null, '<b>SENSE</b><span>초등보건교육연구회</span>'), 'S39');   // 행사용 첫 화면에도 연구회 이름 + 선생님 화면 입구 (11/11)
   const bub = labBubble(b, { x: 760, y: 330, w: 720, fs: 42, tail: 'l', name: '수호냥', staff: true });   // 수호냥 몸 가운데 높이에 맞춤 (11/10)
   /* 11/11: 버튼은 '방패 만들러 출발!', 말풍선은 수업용·행사용(활동과 상관없이) 모두 같은 말로 통일 */
   bub.say('알레르기로부터 지켜 줄<br>{{나만의 방패}}를 만들어 보자!');

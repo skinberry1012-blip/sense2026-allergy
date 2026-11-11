@@ -69,6 +69,20 @@ function labEl(board, cls, r, html = '', tag = 'div', style = '') {
   if (tag === 'button') e.type = 'button';
   e.innerHTML = html; board.appendChild(e); return e;
 }
+/* 선생님 화면 입구 (11/11): 연구회 이름표를 두 번 빠르게 누르면 선생님 설정.
+   선생님 설정의 미리 보기(PREVIEW)에서는 이동하지 않고 연습만 — 이름표 옆 말풍선 + 눌러 보면 알림 */
+function orgDoor(board, org, from) {
+  if (!PREVIEW) { doubleTap(org, () => openTeacher(from)); return; }
+  org.classList.add('try');
+  labEl(board, 'lab-orgtip', null, '<span class="px-bub tail-r"><span class="px-bub-txt"><b>두 번 눌러 보세요</b><small>선생님 설정 입구</small></span><i class="t1"></i><i class="t2"></i></span><i class="rs-tap" aria-hidden="true"></i>');
+  let last = 0, t = null;
+  org.style.touchAction = 'manipulation';
+  org.addEventListener('pointerup', () => {
+    const now = Date.now();
+    if (now - last <= 400) { last = 0; clearTimeout(t); playSfx('check'); toast('잘했어요! 학생 화면에서는 여기서 선생님 설정이 열려요.', 3000); }
+    else { last = now; clearTimeout(t); t = setTimeout(() => { if (org.isConnected) toast('빠르게 두 번 눌러요.', 1600); }, 450); }
+  });
+}
 /* 캐릭터: h = 그림 높이, pos = {left|right, bottom} */
 function labChar(board, key, h, pos, cls = '') {
   const w = Math.round(h * CH_AR);
@@ -130,7 +144,7 @@ Router.screens.S00 = (app) => {
   const b = labBoard(app, LAB.bg.entrance, { cls: 'lab-s00' });
   labEl(b, 'lab-sign', [378, 222, 842, 172], `<div><span class="px-tag">냥박사의</span><b><em>알레르기</em> 연구소</b></div>`);
   const org = labEl(b, 'lab-org', null, '<b>SENSE</b><span>초등보건교육연구회</span>');   // 연구회 이름 (11/11)
-  doubleTap(org, () => openTeacher('S00'));   // 선생님 화면 입구: 연구회 이름 두 번 누르기 (11/11, 홈 화면에만)
+  orgDoor(b, org, 'S00');   // 선생님 화면 입구: 연구회 이름 두 번 누르기 (11/11, 홈 화면에만)
   labChar(b, 'nyang_welcome', 560, { left: -40, bottom: 22 });
   labChar(b, 'staff_hello', 530, { right: -20, bottom: 22 });   // 머리·모자가 커서 냥박사의 약 0.95배로 맞춰요 (11/9)
   const go = labBtn(b, '입장하기 ›', 'left:50%;bottom:64px;transform:translateX(-50%);font-size:52px;padding:20px 64px 16px', 'y shine beat');

@@ -830,3 +830,15 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 
 /* 스캔 불빛을 결과 창 앞으로 (11/10): 냥박사 그림(불빛 포함)을 창보다 위에 — 몸은 창 밖이라 겹치지 않아요 */
 .lab-char.scan-front { z-index:6; pointer-events:none; }
+
+/* 선생님 미리 보기에서만 (11/11): 연구회 이름표 옆 '두 번 눌러 보세요' 말풍선 + 픽셀 손가락 톡톡(두 번) */
+.lab-org.try { cursor:pointer; animation:orgglow 1.6s ease-in-out infinite; }
+@keyframes orgglow { 0%,100% { filter:drop-shadow(0 0 0 rgba(245,200,66,0)); } 50% { filter:drop-shadow(0 0 10px rgba(245,200,66,.95)); } }
+.lab-orgtip { position:absolute; right:40px; top:70px; z-index:3; pointer-events:none; width:400px; height:110px; }
+.lab-orgtip .px-bub { position:absolute; right:96px; top:16px; padding:12px 20px 10px; }
+.lab-orgtip .px-bub-txt { display:flex; flex-direction:column; align-items:flex-start; line-height:1.25; white-space:nowrap; }
+.lab-orgtip .px-bub-txt b { font-family:var(--font-head); font-weight:400; font-size:28px; color:var(--coral-d); }
+.lab-orgtip .px-bub-txt small { font-size:20px; color:var(--navy); }
+.lab-orgtip .rs-tap { left:auto; right:40px; top:0; opacity:1; animation:orgtap 1.6s ease-in-out infinite; }
+@keyframes orgtap { 0%,60%,100% { translate:0 0; } 12% { translate:-6px -12px; } 22% { translate:0 0; } 34% { translate:-6px -12px; } 44% { translate:0 0; } }
+@media (prefers-reduced-motion: reduce) { .lab-org.try, .lab-orgtip .rs-tap { animation:none; } }
