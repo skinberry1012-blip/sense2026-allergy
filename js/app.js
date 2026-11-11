@@ -264,18 +264,20 @@ Router.screens.S44 = (app) => {
     onTap($('#mYes', m), () => { Modal.close(); Router.go('S39'); });
   });
 
-  /* 11/11 점검: 서명하지 않으면 저장·인쇄 전에 서명하라고 알려요 (카드는 다짐이라 서명이 들어가야 해요) */
-  const needSign = () => {
+  /* 11/11 점검: 서명하지 않으면 서명하라고 알려요 (카드는 다짐이라 서명이 들어가야 해요)
+     - 저장: 서명해야 저장 (이미지에는 나중에 서명할 수 없어요)
+     - 인쇄: 한 번 알려 주고, [종이에 서명할게요]를 누르면 서명 없이 인쇄 (종이에 직접 서명할 수 있어요) */
+  const needSign = (onPaper) => {
     if (signatureImg) return false;
     playSfx('full');
-    const m = Modal.open(`<div class="pop-head">서명을 해 주세요</div><p class="pop-body">약속 카드에 내 서명을 넣어야<br>저장하거나 인쇄할 수 있어요.</p>
-      <div class="pop-btns" style="display:flex;justify-content:center"><button class="btn pink" data-autofocus id="sgGo" style="width:50%">서명하기</button></div>`);
+    const m = Modal.open(`<div class="pop-head">서명을 해 주세요</div><p class="pop-body">${onPaper ? '약속 카드에 내 서명을 넣어 주세요.<br>인쇄한 종이에 직접 서명해도 돼요.' : '약속 카드에 내 서명을 넣어야<br>저장할 수 있어요.'}</p>
+      <div class="pop-btns"${onPaper ? '' : ' style="display:flex;justify-content:center"'}>${onPaper ? '<button class="btn white" id="sgPaper">종이에 서명할게요</button>' : ''}<button class="btn pink" data-autofocus id="sgGo"${onPaper ? '' : ' style="width:50%"'}>서명하기</button></div>`);
     onTap($('#sgGo', m), () => { Modal.close(); openSign(); });
+    if (onPaper) onTap($('#sgPaper', m), () => { Modal.close(); onPaper(); });
     return true;
   };
   /* 인쇄: 저장용과 같은 카드를 그려서 인쇄 전용 칸에 넣고 인쇄 창을 열어요 */
-  onTap($('#print'), async () => {
-    if (needSign()) return;
+  const doPrint = async () => {
     if (!Store.get('cardDate')) Store.set('cardDate', DateK.today());
     const out = document.createElement('canvas');
     await drawPromiseCard(out, { ...st, name, date: cardDay(), rules, sigImg: signatureImg, preview: false });
@@ -284,7 +286,8 @@ Router.screens.S44 = (app) => {
     pa.innerHTML = `<img src="${out.toDataURL('image/png')}" alt="알레르기 예방 약속 카드">`;
     playSfx('tap'); setTimeout(() => window.print(), 150);
     if (EV) saved = true;   // 행사용: 인쇄했으면 넘길 때 '카드가 사라져요' 경고 없이 (11/11)
-  });
+  };
+  onTap($('#print'), () => { if (!needSign(doPrint)) doPrint(); });
   onTap($('#save'), async () => {
     if (needSign()) return;
     if (!Store.get('cardNo')) {
