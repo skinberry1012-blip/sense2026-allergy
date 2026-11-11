@@ -265,5 +265,9 @@
 .tgx .tc-device.wide p { flex:1; width:auto; padding:10px 18px; }
 /* 01 탭 (11/11): 행사 활동(약속 카드·다이어리)을 원래 모양 그대로 행사용 상자 바로 아래에 붙여요 — 자리를 아껴 기록 지우기를 수업용처럼 위에 */
 .tgx .tc-evact { margin-top:-2px !important; flex-wrap:nowrap !important; }
-.tgx .tc-evact { justify-content:flex-end; gap:10px !important; }   /* 원래 크기 그대로 오른쪽으로 — 다이어리 오른쪽 끝 = 행사용 상자 오른쪽 끝 (11/11) */
-.tgx .tc-evact .tc-lbl { width:auto; }
+/* 행사 활동 (11/11): 약속 카드 왼쪽 = 아래 소리 [켜기] 왼쪽, 다이어리 오른쪽 = 행사용 상자 오른쪽 */
+.tgx .tc-set:not(.tc-dy) > .tc-inl .tc-h { width:120px; min-width:0; flex:none; }
+.tgx .tc-evact { justify-content:flex-start; gap:14px !important; }
+.tgx .tc-evact .tc-lbl { width:120px; flex:none; }
+.tgx .tc-evact .tc-checks { flex:1; gap:10px; }
+.tgx .tc-evact .tc-checks button { flex:1; justify-content:center; }
