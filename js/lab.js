@@ -129,14 +129,15 @@ const labGo = (to, p = {}, o = {}) => Router.go(to, p, o);
 Router.screens.S00 = (app) => {
   const b = labBoard(app, LAB.bg.entrance, { cls: 'lab-s00' });
   labEl(b, 'lab-sign', [378, 222, 842, 172], `<div><span class="px-tag">냥박사의</span><b><em>알레르기</em> 연구소</b></div>`);
-  labEl(b, 'lab-org', null, '<b>SENSE</b><span>초등보건교육연구회</span>');   // 연구회 이름 (11/11)
+  const org = labEl(b, 'lab-org', null, '<b>SENSE</b><span>초등보건교육연구회</span>');   // 연구회 이름 (11/11)
+  doubleTap(org, () => openTeacher('S00'));   // 선생님 화면 입구: 연구회 이름 두 번 누르기 (11/11, 홈 화면에만)
   labChar(b, 'nyang_welcome', 560, { left: -40, bottom: 22 });
   labChar(b, 'staff_hello', 530, { right: -20, bottom: 22 });   // 머리·모자가 커서 냥박사의 약 0.95배로 맞춰요 (11/9)
   const go = labBtn(b, '입장하기 ›', 'left:50%;bottom:64px;transform:translateX(-50%);font-size:52px;padding:20px 64px 16px', 'y shine beat');
   /* 대기 음악: 첫 터치에 작게 시작 → [입장하기] 누르면 멈춤 (선생님 설정 '대기 음악 끄기'면 안 나옴) */
   const cfg = Config.get();
   const startBgm = () => { if (cfg.bgm !== false && Sfx.on) Bgm.start(); };
-  b.addEventListener('pointerdown', e => { if (!e.target.closest('.px-btn')) startBgm(); }, { once: true });
+  b.addEventListener('pointerdown', e => { if (!e.target.closest('.px-btn, .lab-org')) startBgm(); }, { once: true });
   onTap(go, () => {
     Bgm.stop(); playSfx('start');
     replay(go, 'pop');

@@ -303,6 +303,20 @@ function secretTap(el, onUnlock) {
   });
 }
 
+/* ---------- 두 번 빠르게 누르기 (11/11 선생님 화면 입구: 홈 화면 연구회 이름표) ----------
+   0.4초 안에 두 번 누르면 실행. 한 번만 누르면 아무 일도 없음. 두 번 누르기 확대는 막음(touch-action) */
+function doubleTap(el, fn, gap = 400) {
+  if (!el) return;
+  let last = 0;
+  el.style.touchAction = 'manipulation';
+  el.addEventListener('pointerup', e => {
+    const now = Date.now();
+    if (now - last <= gap) { last = 0; e.preventDefault(); fn(e); }
+    else last = now;
+  });
+  el.addEventListener('dblclick', e => e.preventDefault());
+}
+
 /* ---------- 태블릿: 1600×900 화면을 기기에 맞춰 확대·축소 ---------- */
 const Stage = {
   W: 1600, H: 900,

@@ -16,7 +16,7 @@ Router.screens.S39 = (app) => {
   const b = labBoard(app, LAB.bg.lab, { dim: 'cream', cls: 'lab-s39' });
   labPanel(b, { sub: '나만의 알레르기 방패', title: '방패 만들기' });
   labChar(b, 'staff_guide', 600, { left: 70, bottom: 10 });
-  if (Config.isEvent()) labEl(b, 'lab-org', null, '<b>SENSE</b><span>초등보건교육연구회</span>');   // 행사용 첫 화면에도 연구회 이름 (11/11)
+  if (Config.isEvent()) doubleTap(labEl(b, 'lab-org', null, '<b>SENSE</b><span>초등보건교육연구회</span>'), () => openTeacher('S39'));   // 행사용 첫 화면에도 연구회 이름 + 선생님 화면 입구 (11/11)
   const bub = labBubble(b, { x: 760, y: 330, w: 720, fs: 42, tail: 'l', name: '수호냥', staff: true });   // 수호냥 몸 가운데 높이에 맞춤 (11/10)
   bub.say('알레르기로부터 나를 지켜 줄<br>{{나만의 방패}}를 만들어 보자!');
   const start = labBtn(b, '나만의 약속 카드 만들기 ›', 'left:780px;top:640px;font-size:38px', 'y beat');
@@ -681,7 +681,7 @@ const TestBar = {
     if (!PREVIEW) setSound(qs.get('sound') !== 'off');
     ['mode', 'board', 'sound', 'bgm', 'dy', 'dp', 'dm', 'dd'].forEach(k => qs.delete(k));
   }
-  /* 선생님 설정은 전용 주소로만: 사이트 주소 뒤 ?teacher (학생 화면에는 들어가는 길 없음) */
+  /* 선생님 설정: 사이트 주소 뒤 ?teacher, 또는 홈 화면 연구회 이름표를 두 번 빠르게 누르기 (11/11) */
   const teacher = qs.has('teacher') || location.hash === '#teacher'; qs.delete('teacher');
   if (location.hash === '#teacher') history.replaceState(null, '', location.pathname + location.search);
   /* 2) 아이폰·아이패드 홈 화면 앱 첫 실행: Safari 기록 이어 받기 */
