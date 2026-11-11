@@ -1406,3 +1406,6 @@ body.tablet #stage:has(.sign-warn) { z-index:2; }
 @keyframes swbump { 0% { transform:scale(.85); opacity:0; } 70% { transform:scale(1.04); opacity:1; } 100% { transform:none; } }
 @keyframes swsway { 0%,100% { rotate:-12deg; } 50% { rotate:12deg; } }
 @media (prefers-reduced-motion: reduce) and (min-width: 99999px) { .sign-warn .sw-siren, .sign-warn .sw-say { animation:none; } }
+/* 11/12: 확인 창도 서명 안내처럼 — 확대·축소된 판에서 backdrop-filter가 화면을 거울처럼 비추던 것(휴대폰·태블릿) → 판 안 화면에 직접 흐림 */
+.modal-dim { backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
+#stage:has(#layer .modal-dim) > :not(#layer) { filter:blur(3px); }
