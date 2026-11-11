@@ -404,7 +404,7 @@ Router.screens.T49 = (app, p) => {
   /* 행사 활동 (11/11): d.ev = 'card' | 'diary' | 'both', 기본 약속 카드만 */
   const evA = () => d.ev === 'diary' || d.ev === 'both' ? d.ev : 'card', evC = () => evA() !== 'diary', evD = () => evA() !== 'card';
   const evName = () => ({ card: '약속 카드', diary: '다이어리', both: '약속 카드 + 다이어리' })[evA()];
-  const BOARD_HELP = () => d.mode === 'event' ? `학생이 ${evA() === 'card' ? '약속 카드' : '다이어리'} 이미지를 올릴 패들렛·띵커벨 보드 주소예요. 비워 두면 학생이 인쇄하거나 이미지로 저장해요.` : '챌린지 다이어리 이미지를 올릴 패들렛·띵커벨 보드 주소예요.';
+  const BOARD_HELP = () => d.mode === 'event' ? `${evA() === 'card' ? '약속 카드' : '챌린지 다이어리'} 이미지를 올릴 패들렛·띵커벨 보드 주소예요.` : '챌린지 다이어리 이미지를 올릴 패들렛·띵커벨 보드 주소예요.';
   app.innerHTML = `<div class="sc tgx">
     <header class="tc-head">
       <h1 class="tc-title">냥박사의 알레르기 연구소 <span>선생님 설정</span></h1>
@@ -464,24 +464,24 @@ Router.screens.T49 = (app, p) => {
           <h2 class="tc-h"><i>1</i>실행 모드</h2>
           <div class="tc-modes" id="modes">
             <button data-m="class" class="${d.mode !== 'event' ? 'on' : ''}"><span class="rd"></span><span><b>수업용</b><small>연구소 학습을 마친 뒤 약속 카드를 만들어요</small></span></button>
-            <button data-m="event" class="${d.mode === 'event' ? 'on' : ''}"><span class="rd"></span><span><b>행사용</b><small>연구소를 건너뛰고 방패 만들기부터 · 함께 쓰는 태블릿용</small></span></button>
+            <button data-m="event" class="${d.mode === 'event' ? 'on' : ''}"><span class="rd"></span><span><b>행사용<em class="tc-msub">함께 쓰는 태블릿용</em></b><small>연구소를 건너뛰고 방패 만들기부터</small></span></button>
           </div>
           ${d.mode === 'event' ? `<div class="tc-row tc-evact"><span class="tc-lbl">행사 활동</span><span class="tc-checks" id="evact">
             <button data-a="card" class="${evC() ? 'on' : ''}" aria-pressed="${evC()}"><i></i>약속 카드</button><button data-a="diary" class="${evD() ? 'on' : ''}" aria-pressed="${evD()}"><i></i>다이어리</button></span>
             <small>하나 이상 골라요 · 다이어리는 꾸미고 인쇄해 가요</small></div>` : ''}
         </section>
         <section class="tc-sec tc-inl">
-          <h2 class="tc-h"><i>2</i>소리</h2>${seg('sound', [['on', '켜기'], ['off', '끄기']], d.sound === 'off' ? 'off' : 'on')}<small>효과음 · 첫 화면 대기 음악</small>
+          <h2 class="tc-h"><i>2</i>소리</h2>${seg('sound', [['on', '켜기'], ['off', '끄기']], d.sound === 'off' ? 'off' : 'on')}
         </section>
         <section class="tc-sec">
           <h2 class="tc-h"><i>3</i>결과 공유 게시판 <em>선택</em></h2>
           <label class="tc-url" id="uf"><span class="sr">게시판 주소</span><input type="url" inputmode="url" id="board" placeholder="예: https://padlet.com/…" value="${esc(d.board)}"></label>
           <p class="tc-help" id="err">${BOARD_HELP()}</p>
-          <p class="tc-help tc-privacy">게시판은 우리 학교만 볼 수 있게(비공개·비밀번호) 설정해 주세요.${d.mode === 'event' ? ' 행사용은 로그인 없이 올리기를 허용해 주세요.' : ''}</p>
+          <p class="tc-help tc-privacy">게시판은 우리 학교만 볼 수 있게(비공개·비밀번호) 설정해 주세요.</p>
         </section>
         <section class="tc-device">
           <button class="tc-btn sm danger" id="wipe">이 기기 기록 지우기</button>
-          <p>학생 기록(이름·약속·다이어리 체크·사진)은 <b>이 기기에만</b> 저장되고 서버로 보내지 않아요. 학생 태블릿을 다른 학생에게 넘길 때 지워 주세요.</p>
+          <p>학생 기록(이름·약속·다이어리·사진)은 <b>이 기기에만</b> 저장되고 서버로 보내지 않아요. 태블릿을 다른 학생에게 넘길 때 지워 주세요.</p>
         </section>
       </div>
       <div class="tc-col tc-pv">
@@ -499,7 +499,8 @@ Router.screens.T49 = (app, p) => {
         /* 행사용: 게시판 주소가 없으면 한 번 알려 줘요 — 비워 두면 학생은 카드를 인쇄하거나 이미지로 저장해요 (11/11) */
         if (d.mode === 'event' && was !== 'event' && !okBoard()) {
           const m = Modal.open(`<div class="pop-head">결과 게시판 주소를 넣어 주세요</div>
-            <p class="pop-body">게시판 주소를 넣으면 학생이 약속 카드 이미지를 게시판으로 보내요. 선생님이 게시판에서 출력해 나눠 줄 수 있어요.<br><b>비워 두면</b> 학생이 카드를 인쇄하거나 이미지로 저장해요.</p>
+            <p class="pop-body">게시판 주소를 넣으면 학생이 약속 카드 이미지를 게시판으로 보내요.<br>선생님이 게시판에서 출력해 나눠 줄 수 있어요.<br><b>비워 두면</b> 학생이 카드를 인쇄하거나 이미지로 저장해요.</p>
+            <p class="pop-small">게시판은 로그인 없이 올리기를 허용해 주세요.</p>
             <div class="pop-btns"><button class="btn white" id="bLater">비워 둘게요</button><button class="btn pink" data-autofocus id="bNow">주소 넣기</button></div>`);
           onTap($('#bLater', m), () => Modal.close());
           onTap($('#bNow', m), () => { Modal.close(); const i = $('#board'); if (i) i.focus(); });
