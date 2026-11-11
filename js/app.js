@@ -443,7 +443,7 @@ Router.screens.T49 = (app, p) => {
     g.fillStyle = '#1E2A5A'; g.textAlign = 'center';
     g.font = '64px Jua, sans-serif'; g.fillText('냥박사의 알레르기 연구소', W / 2, 130);
     g.font = '40px "Gowun Dodum", sans-serif'; g.fillStyle = '#4A5578';
-    g.fillText(`${modeName()} · 태블릿 카메라로 찍어 들어와요`, W / 2, 200);
+    g.fillText(`${modeName()} · 스캔하세요`, W / 2, 200);
     const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej;
       i.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(QR.toSVG(urlOf())); });
     g.imageSmoothingEnabled = false; g.drawImage(img, 150, 260, 700, 700);
@@ -618,7 +618,7 @@ Router.screens.T49 = (app, p) => {
     drawPrev();
   };
   const full = (title, text, warn) => {
-    const m = Modal.open(`<h3 class="${warn ? 'warn' : ''}">${title}</h3><div class="qr-big">${QR.toSVG(text)}</div><p>${warn ? '챌린지를 마친 뒤 다이어리 이미지를 올릴 때 쓰세요' : '태블릿 카메라로 찍어 주세요'}</p><button class="btn white" data-autofocus id="qc">✕ 닫기</button>`, { cls: 'qr-full', sfx: null });
+    const m = Modal.open(`<h3 class="${warn ? 'warn' : ''}">${title}</h3><div class="qr-big">${QR.toSVG(text)}</div><p>${warn ? '챌린지를 마친 뒤 다이어리 이미지를 올릴 때 쓰세요' : '스캔하세요'}</p><button class="btn white" data-autofocus id="qc">✕ 닫기</button>`, { cls: 'qr-full', sfx: null });
     onTap($('#qc', m), () => Modal.close());
   };
   $('.tc-tabs').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (!b) return; if (+b.dataset.t === 2 && d.mode === 'event') { toast('행사용은 다이어리를 쓰지 않아요.'); return; } tab = +b.dataset.t; draw(); });
