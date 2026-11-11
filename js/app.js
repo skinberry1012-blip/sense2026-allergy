@@ -486,6 +486,7 @@ Router.screens.T49 = (app, p) => {
       </div>
       <div class="tc-col tc-pv">
         <div class="tc-pvhead"><h2 class="tc-h">미리 보기</h2>
+          <p class="tc-back" title="학생 첫 화면 오른쪽 위 연구회 이름표를 두 번 빠르게 누르면 이 설정 화면으로 돌아와요"><b>선생님 설정으로 돌아오기</b><span>SENSE 초등보건교육연구회</span> 두 번 누르기</p>
           ${seg('view', [['lab', '연구소'], ['card', '약속 카드']], view)}
           ${seg('dev', [['tablet', '태블릿'], ['phone', '휴대폰']], dev)}</div>
         <div class="tc-steps" id="steps" aria-label="열어 볼 화면"></div>
@@ -598,7 +599,7 @@ Router.screens.T49 = (app, p) => {
           <div class="tc-linkrow"><div class="tc-link" id="lnk">${esc(urlOf())}</div><button class="tc-btn" id="copy">링크 복사</button></div>
           ${okBoard() ? '<button class="tc-btn sm" id="bqr">결과 게시판 QR 보기</button>' : ''}</div>
       </section>
-      <div class="tc-foot tc-foot3"><p class="tc-back"><b>선생님 설정으로 돌아오기</b> 학생 첫 화면 오른쪽 위 <span>SENSE 초등보건교육연구회</span>를 두 번 빠르게 눌러요</p><button class="tc-btn" id="prev">‹ 이전</button><button class="tc-btn pri" id="done">설정 완료 · 학생 화면 열기 ›</button></div>`;
+      <div class="tc-foot tc-foot3"><button class="tc-btn" id="prev">‹ 이전</button><button class="tc-btn pri" id="done">설정 완료 · 학생 화면 열기 ›</button></div>`;
       onTap($('#copy'), async () => { if (await copyText(urlOf(), $('#lnk'))) toast('링크를 복사했어요.', 1800); });
       onTap($('#bqr'), () => full('결과 게시판 QR (접속용 아님)', d.board, true));
       onTap($('#qr'), () => full('학생 접속 QR 코드', urlOf()));
