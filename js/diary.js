@@ -410,7 +410,8 @@ Router.screens.S46 = (app, p = {}) => {
   }
 
   paint();
-  if (!EV && p.install && !isStandalone()) setTimeout(openInstallModal, 300);
+  const phone = Math.min(screen.width, screen.height) < 600;   // 11/11: 휴대폰은 성과공유회 체험용(한 번) — 홈 화면 추가 안내 없이 바로 다이어리
+  if (!EV && !phone && p.install && !isStandalone()) setTimeout(openInstallModal, 300);
   if (p.photo && cfg.photo !== false) setTimeout(openPhoto, 300);   // 선생님 미리 보기 '사진 찍기' (11/11)
   /* 들어왔을 때 아직 못 본 축하가 있으면 */
   const c0 = live();
