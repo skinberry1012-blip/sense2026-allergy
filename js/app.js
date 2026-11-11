@@ -318,7 +318,7 @@ Router.screens.S44 = (app) => {
     const m = Modal.open(`<div class="pop-head">다음 친구에게 넘길까요?</div><p class="pop-body">${msg}</p>
       <div class="pop-btns"><button class="btn white" data-autofocus id="pNo">아직이에요</button><button class="btn pink" id="pYes">네, 넘길게요</button></div>`);
     onTap($('#pNo', m), () => Modal.close());
-    onTap($('#pYes', m), () => { Modal.close(); playSfx('delete'); Store.clearAll(); NavBtns.depth = 0; const pa = document.getElementById('printArea'); if (pa) pa.innerHTML = ''; Router.go('S39', {}, { replace: true }); toast('다음 친구 차례예요!', 2000); });
+    onTap($('#pYes', m), () => { Modal.close(); playSfx('delete'); Store.clearAll(); NavBtns.depth = 0; const pa = document.getElementById('printArea'); if (pa) pa.innerHTML = ''; Router.go('S39', {}, { replace: true }); setTimeout(() => toast('다음 친구 차례예요!', 2200), 450); });
   });
   render();
 };

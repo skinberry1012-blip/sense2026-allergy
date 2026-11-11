@@ -281,7 +281,7 @@
 /* 행사 활동 (11/11): 이름 글자 빼고 버튼 자리는 그대로 — 약속 카드 왼쪽 = 소리 [켜기] 왼쪽 */
 .tgx .tc-evact { padding-left:134px; }
 /* 02 탭 (11/11 점검): 칸이 위에 몰려 아래가 비던 것 — 1~7번을 왼쪽 칸 높이에 고르게 나눠 배치 */
-.tgx .tc-dy { justify-content:flex-start; gap:22px; }   /* 칸 사이를 알맞게 띄우기 — 높이를 억지로 채우지 않음 (11/11) */
+.tgx .tc-dy { justify-content:flex-start; gap:clamp(6px, calc((100vh - 760px) / 7), 22px); }   /* 11/11 점검: 태블릿처럼 화면이 낮으면 간격이 저절로 줄어 7번까지 보이게 */   /* 칸 사이를 알맞게 띄우기 — 높이를 억지로 채우지 않음 (11/11) */
 .tgx .tc-dy .tc-more { position:absolute; left:0; right:0; bottom:0; margin:0; }
 .tgx .tc-dy { position:relative; }
 /* 01·02 탭 (11/11): 왼쪽 첫 제목(1 실행 모드 / 1 챌린지 횟수)과 오른쪽 '미리 보기' 제목 줄 높이 맞춤 */

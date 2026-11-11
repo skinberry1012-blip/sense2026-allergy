@@ -1354,3 +1354,15 @@ body.tablet .s44-top { padding-left:0; }
    카드가 왼쪽 아래로 작아지고 수호냥 칸이 커지던 문제 — 판으로 보여 줄 때(body.tablet)는 태블릿과 같은 배치 */
 body.tablet .s44b-card { order:0; }
 body.tablet .s44b-side .buddies { grid-template-columns:repeat(2,1fr); }
+
+/* ===== 인쇄 정리 (11/11 점검): 카드·다이어리 모두 그림 한 장 — 종이 한 장에 맞춰 줄이고 가운데, 두 쪽으로 넘치지 않게 =====
+   가로 종이: 그대로 맞춤 / 세로로만 인쇄되는 기기(아이폰 등): 90° 돌려 종이를 꽉 채움 */
+@media print {
+  @page { size:A4 landscape; margin:8mm; }
+  html, body { margin:0 !important; padding:0 !important; height:auto !important; min-height:0 !important; overflow:visible !important; background:#fff !important; }
+  #printArea.print-only { position:static !important; display:flex !important; align-items:center; justify-content:center; width:100%; height:calc(100vh - 4px); overflow:hidden; break-inside:avoid; page-break-inside:avoid; break-after:avoid; page-break-after:avoid; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  #printArea.print-only img { width:auto !important; height:auto !important; max-width:100% !important; max-height:100% !important; object-fit:contain; display:block; }
+}
+@media print and (orientation: portrait) {
+  #printArea.print-only img { max-width:none !important; max-height:none !important; width:min(calc(100vh - 8px), calc((100vw - 8px) * 1.47)) !important; flex:none; transform:rotate(90deg); }
+}

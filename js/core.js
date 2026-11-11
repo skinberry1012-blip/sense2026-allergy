@@ -335,7 +335,31 @@ const Stage = {
     else st.style.removeProperty('--s');
   }
 };
-window.addEventListener('resize', () => Stage.fit());
+/* 11/11 점검: 휴대폰·태블릿에서 글자를 쓸 때 키보드가 입력 칸을 가리지 않게
+   - 키보드 때문에 높이만 줄어든 경우에는 판 크기를 다시 맞추지 않아요(판이 갑자기 작아지지 않게)
+   - 입력 칸이 키보드에 가리면 판을 그만큼 위로 올리고, 입력을 마치면 제자리 */
+const Kbd = {
+  w: window.innerWidth,
+  typing() { const a = document.activeElement; return !!a && /^(INPUT|TEXTAREA)$/.test(a.tagName) && !!a.closest('#stage'); },
+  lift() {
+    const st = document.getElementById('stage'), a = document.activeElement, vv = window.visualViewport;
+    if (!st) return;
+    if (!Kbd.typing() || !vv) { st.style.translate = ''; return; }
+    st.style.translate = '';
+    const r = a.getBoundingClientRect(), bottom = vv.offsetTop + vv.height - 12;
+    const d = r.bottom - bottom;
+    if (d > 0) st.style.translate = `0 ${-Math.ceil(d)}px`;
+  }
+};
+window.addEventListener('resize', () => {
+  if (Kbd.typing() && window.innerWidth === Kbd.w) { Kbd.lift(); return; }
+  Kbd.w = window.innerWidth; Stage.fit();
+});
+if (window.visualViewport) window.visualViewport.addEventListener('resize', () => Kbd.lift());
+document.addEventListener('focusin', () => setTimeout(Kbd.lift, 350));
+document.addEventListener('focusout', () => setTimeout(Kbd.lift, 50));
+/* 11/11 점검: 아이폰 무음(벨소리 끔) 상태에서도 효과음이 나게 — 사파리 16.4 이상 */
+try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
 
 /* ---------- 화면 방향 안내 ---------- */
 const Orient = {

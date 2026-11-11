@@ -91,8 +91,8 @@ function dyDiary(m, look, { print = false } = {}) {
     return `<div class="prog" style="top:98px"><span class="pl">별 <b>${got}</b> / ${n}</span><span class="bar">${cells}</span></div>`;
   };
   const todayD = ti >= 0 ? (slots[ti] || DateK.today()) : null;
-  const many = rules.length > 4 ? ' many' : '';
-  const signTop = 290 + 50 + Math.min(rules.length, 7) * (rules.length > 4 ? 64 : 86) + 92;
+  const many = rules.length > 3 ? ' many' : '';   // 11/11 점검: 약속 4개(나만의 약속 포함)부터 줄을 낮춰 다이어리 밖으로 안 나가게
+  const signTop = 290 + 50 + Math.min(rules.length, 7) * (rules.length > 3 ? 64 : 86) + 92;
   const Rt = `<div class="r-head"><h4>매일 체크</h4></div>
     ${print ? `<div class="psign" style="top:${signTop}px">${c.tsign === 'n' ? `<span class="nyang">확인했어요<em>냥박사</em><b class="pspot">${dyPawSeal('pseal')}</b></span>` : `<span>확인했어요<i></i><b class="pspot">${dyPawSeal('pseal ghost')}</b></span>`}</div>`
       : EVX ? '' : `<div class="slegend" style="top:344px"><span><svg viewBox="-0.5 -1 16 16" width="30" height="30"><use href="#star" fill="#F5C842"/></svg> 별 받음</span><span><svg viewBox="-0.5 -1 16 16" width="30" height="30"><use href="#star" fill="#9EA3AB"/></svg> 했지만 별 없음</span></div>`}
@@ -388,12 +388,13 @@ Router.screens.S46 = (app, p = {}) => {
     let pa = document.getElementById('printArea');
     if (!pa) { pa = document.createElement('div'); pa.id = 'printArea'; pa.className = 'print-only'; document.body.appendChild(pa); }
     pa.innerHTML = '';
-    const h = document.createElement('div'); h.className = 'dy-print'; pa.appendChild(h);
-    const r = h.attachShadow({ mode: 'open' });
-    r.innerHTML = `<link rel="stylesheet" href="./css/diary.css">${DY_STAR_DEF}<div class="a4p">${dyDiary(m, look, { print: true })}${look.placed.map(st => ({ ...st, x: st.x - 402, y: st.y - 46 })).map(dyStk).join('')}</div>`;
-    const link = r.querySelector('link');
-    const go = () => setTimeout(() => window.print(), 250);
-    if (link.sheet) go(); else link.addEventListener('load', go, { once: true });
+    toast('인쇄 준비 중…', 1500);
+    dyRender(m, look, 2, { print: true }).then(cv => {
+      pa.innerHTML = `<img class="dyp" src="${cv.toDataURL('image/png')}" alt="챌린지 다이어리 인쇄 양식">`;
+      const im = pa.querySelector('img');
+      const go = () => setTimeout(() => window.print(), 150);
+      if (im.complete) go(); else im.addEventListener('load', go, { once: true });
+    }).catch(() => toast('인쇄를 준비하지 못했어요. 다시 눌러 주세요.', 2500));
   }
 
   /* 행사용: 다음 친구에게 넘기기 (카드 꾸미기와 같은 안내) */
@@ -405,7 +406,7 @@ Router.screens.S46 = (app, p = {}) => {
     const m = Modal.open(`<div class="pop-head">다음 친구에게 넘길까요?</div><p class="pop-body">${msg}</p>
       <div class="pop-btns"><button class="btn white" data-autofocus id="pNo">아직이에요</button><button class="btn pink" id="pYes">네, 넘길게요</button></div>`);
     onTap($('#pNo', m), () => Modal.close());
-    onTap($('#pYes', m), () => { Modal.close(); playSfx('delete'); Store.clearAll(); NavBtns.depth = 0; const pa = document.getElementById('printArea'); if (pa) pa.innerHTML = ''; Router.go('S39', {}, { replace: true }); toast('다음 친구 차례예요!', 2000); });
+    onTap($('#pYes', m), () => { Modal.close(); playSfx('delete'); Store.clearAll(); NavBtns.depth = 0; const pa = document.getElementById('printArea'); if (pa) pa.innerHTML = ''; Router.go('S39', {}, { replace: true }); setTimeout(() => toast('다음 친구 차례예요!', 2200), 450); });
   }
 
   paint();
@@ -433,20 +434,22 @@ async function dyFontCSS(text) {
     return out.join('\n');
   } catch (e) { return ''; }
 }
-async function dyRender(m, look, scale = 1.5) {
-  const X = 380, Y = 0, W = 1220, H = 900;   // 왼쪽 도구 칸은 빼고 다이어리 쪽만
+async function dyRender(m, look, scale = 1.5, { print = false } = {}) {
+  /* print: 인쇄 양식(흰 바탕 1196×810)을 그림으로 — 11/11 점검: 기기마다 인쇄가 잘리거나 두 쪽으로 나뉘던 것, 그림 한 장이면 종이에 맞춰 줄어요 */
+  const X = print ? 0 : 380, Y = 0, W = print ? 1196 : 1220, H = print ? 810 : 900;   // 화면용은 왼쪽 도구 칸을 빼고 다이어리 쪽만
   let css = await (await fetch('./css/diary.css')).text();
   const abs = u => new URL(u, location.href.replace(/[^/]*$/, '') + 'css/').href;
   for (const u of [...new Set((css.match(/url\(([^)]+)\)/g) || []).map(x => x.slice(4, -1).replace(/['"]/g, '')))]) { try { css = css.split(`url(${u})`).join(`url(${await dyDataURL(abs(u))})`); } catch (e) {} }
   css = css.replace(':host{', '.dyroot{');
   const box = document.createElement('div');
-  box.innerHTML = `${DY_STAR_DEF}<div class="dyb"><div id="dz">${dyDiary(m, look)}${look.placed.map(dyStk).join('')}</div></div>`;
+  box.innerHTML = print ? `${DY_STAR_DEF}<div class="a4p">${dyDiary(m, look, { print: true })}${look.placed.map(st => ({ ...st, x: st.x - 402, y: st.y - 46 })).map(dyStk).join('')}</div>`
+    : `${DY_STAR_DEF}<div class="dyb"><div id="dz">${dyDiary(m, look)}${look.placed.map(dyStk).join('')}</div></div>`;
   box.querySelectorAll('.stk .x').forEach(x => x.remove());
   for (const im of box.querySelectorAll('img')) { const s = im.getAttribute('src'); if (s && !s.startsWith('data:')) try { im.setAttribute('src', await dyDataURL(s)); } catch (e) {} }
   for (const im of box.querySelectorAll('image')) { const s = im.getAttribute('href'); if (s && !s.startsWith('data:')) try { im.setAttribute('href', await dyDataURL(s)); } catch (e) {} }
   const font = await dyFontCSS(box.textContent);
   const root = document.createElement('div'); root.className = 'dyroot'; root.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
-  root.style.cssText = `width:1600px;height:900px;position:relative;background:#F8EFE2;transform:translate(${-X}px,${-Y}px)`;
+  root.style.cssText = print ? 'width:1196px;height:810px;position:relative;background:#fff' : `width:1600px;height:900px;position:relative;background:#F8EFE2;transform:translate(${-X}px,${-Y}px)`;
   root.innerHTML = `<style>${font}\n${css}\n.dyb{background:none}</style>` + box.innerHTML;
   const xhtml = new XMLSerializer().serializeToString(root);
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"><foreignObject x="0" y="0" width="1600" height="900">${xhtml}</foreignObject></svg>`;
@@ -455,7 +458,7 @@ async function dyRender(m, look, scale = 1.5) {
   try { await img.decode(); } catch (e) {}
   await new Promise(r => setTimeout(r, 120));   // 글꼴이 그려질 틈
   const cv = document.createElement('canvas'); cv.width = W * scale; cv.height = H * scale;
-  const g = cv.getContext('2d'); g.fillStyle = '#F8EFE2'; g.fillRect(0, 0, cv.width, cv.height);
+  const g = cv.getContext('2d'); g.fillStyle = print ? '#fff' : '#F8EFE2'; g.fillRect(0, 0, cv.width, cv.height);
   g.drawImage(img, 0, 0, cv.width, cv.height);
   g.drawImage(img, 0, 0, cv.width, cv.height);
   return cv;
