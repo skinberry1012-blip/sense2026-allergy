@@ -58,9 +58,7 @@ function dyPawSeal(cls) {
 }
 
 /* ---------- 다이어리 한 권 (시안 diary() 그대로) ---------- */
-/* 11/12: 시작 날짜 고르기 — 기간 옆 작은 달력 아이콘 (챌린지 시작 전·행사용 화면에서만, 저장·인쇄 그림에는 없음) */
-const DY_CAL = `<button class="dycal" id="dycal" type="button" aria-label="시작 날짜 정하기"><svg viewBox="0 0 16 16" shape-rendering="crispEdges"><path fill="#24305E" d="M3 1h2v2H3zM11 1h2v2h-2zM1 3h14v12H1z"/><path fill="#F26B6B" d="M2 4h12v3H2z"/><path fill="#FFFFFF" d="M2 7h12v7H2z"/><path fill="#24305E" d="M4 9h2v2H4zM7 9h2v2H7zM10 9h2v2h-2zM4 12h2v1H4zM7 12h2v1H7z"/></svg></button>`;
-function dyDiary(m, look, { print = false, cal = false } = {}) {
+function dyDiary(m, look, { print = false } = {}) {
   const { c, rules, n, slots, ti, star, got } = m;
   const EVX = Config.isEvent();   // 행사용 (11/11): 태블릿에서 체크하지 않아 '오늘'·별 범례·메달 막대 없음
   const name = Store.get('name', '') || '나';
@@ -96,7 +94,7 @@ function dyDiary(m, look, { print = false, cal = false } = {}) {
   const many = rules.length > 3 ? ' many' : '';   // 11/11 점검: 약속 4개(나만의 약속 포함)부터 줄을 낮춰 다이어리 밖으로 안 나가게
   const dtwo = n >= 7 ? ' two' : '';        // 11/11 밤: 7~10번이면 매일 체크 칸을 두 줄로(날짜가 겹치지 않게, 별 스티커 붙일 자리)
   const sign = print ? `<div class="psign">${c.tsign === 'n' ? `<span class="nyang">확인했어요<em>냥박사</em><b class="pspot">${dyPawSeal('pseal')}</b></span>` : `<span>확인했어요<i></i><b class="pspot">${dyPawSeal('pseal ghost')}</b></span>`}</div>` : '';
-  const Rt = `<div class="r-head"><h4>매일 체크${cal ? DY_CAL : ''}</h4></div>
+  const Rt = `<div class="r-head"><h4>매일 체크</h4></div>
     ${print ? ''
       : EVX ? '' : `<div class="slegend" style="top:${dtwo ? 380 : 344}px"><span><svg viewBox="-0.5 -1 16 16" width="30" height="30"><use href="#star" fill="#F5C842"/></svg> 별 받음</span><span><svg viewBox="-0.5 -1 16 16" width="30" height="30"><use href="#star" fill="#9EA3AB"/></svg> 했지만 별 없음</span></div>`}
     <div class="dayrow${dtwo}" style="--cols:${Math.ceil(n / 2)};${print ? 'top:104px' : ''}">${slots.map(day).join('')}</div>
@@ -159,9 +157,7 @@ Router.screens.S46 = (app, p = {}) => {
   const BOARD = Config.get().board || '';
   let sentReady = false;   // 이 화면에서 이미지를 저장했나 (저장해야 패들렛에서 고를 수 있어요)
   const live = () => { if (EV) return null; const c = Challenge.get(); return c && c.v ? c : null; };
-  let pickStart = null;   // 11/12: 달력으로 고른 시작 날짜 (없으면 이어서 = 다음 학교 가는 날, 자유롭게 = 오늘)
-  const planFrom = () => pickStart ? (cfg.mode === 'free' ? pickStart : DateK.add(pickStart, -1)) : DateK.real();
-  const model = () => dyModel(live() || Challenge.plan(cfg, planFrom()));
+  const model = () => dyModel(live() || Challenge.plan(cfg, EV ? DateK.real() : undefined));
   const q = s => root.querySelector(s);
 
   const boardBtn = () => `<button class="pbtn${sentReady ? ' ready' : ''}" id="toBoard" ${sentReady ? '' : 'disabled aria-disabled="true"'}>게시판에 올리기 ›</button>`;
@@ -191,7 +187,7 @@ Router.screens.S46 = (app, p = {}) => {
         <div class="drawer" id="drawer"></div>
         <div class="btns">${EV ? evBtns() : classBtns(c, ended, m)}</div>
       </div>
-      <div id="dz">${dyDiary(m, look, { cal: !c })}${look.placed.map(dyStk).join('')}</div>`;
+      <div id="dz">${dyDiary(m, look)}${look.placed.map(dyStk).join('')}</div>`;
     paintDrawer();
     root.querySelectorAll('#dz .stk').forEach(dragify);
     bind();
@@ -251,7 +247,6 @@ Router.screens.S46 = (app, p = {}) => {
   /* 판 안 클릭은 한곳에서 */
   W.addEventListener('click', e => {
     const t = e.target;
-    if (t.closest('#dycal')) return pickDate();
     const sd = t.closest('[data-side]'); if (sd) { playSfx('tab'); if (sd.dataset.side === 'photo') return openPhoto(); sideTab = sd.dataset.side; paint(); return; }
     const cv = t.closest('[data-cover]'); if (cv) { playSfx('tap'); look.art = cv.dataset.cover; save(); paint(); return; }
     const sb = t.closest('[data-st]'); if (sb) { playSfx('tab'); stkTab = sb.dataset.st; paintDrawer(); return; }
@@ -266,27 +261,11 @@ Router.screens.S46 = (app, p = {}) => {
     if (!t.closest('.stk')) root.querySelectorAll('#dz .stk.sel').forEach(o => o.classList.remove('sel'));
   });
 
-  function pickDate() {
-    playSfx('tap');
-    const m = model(), first = m.c.mode === 'free' ? m.c.start : m.c.days[0];
-    const b = q('#dycal'); if (!b) return;
-    let inp = q('#dydate');
-    if (!inp) { inp = document.createElement('input'); inp.type = 'date'; inp.id = 'dydate'; inp.className = 'dydate'; inp.tabIndex = -1; b.after(inp); }
-    inp.min = DateK.real(); inp.max = DateK.add(DateK.real(), 60); inp.value = first;
-    inp.onchange = () => {
-      if (!inp.value) return;
-      pickStart = inp.value < inp.min ? inp.min : inp.value;
-      const c = Challenge.plan(cfg, planFrom()), f = c.mode === 'free' ? c.start : c.days[0];
-      playSfx('tab'); paint();
-      toast(`${DateK.short(f)}부터 시작해요${c.mode !== 'free' && f !== pickStart ? ' (학교 가는 날부터)' : ''}`, 2600);
-    };
-    try { inp.showPicker(); } catch (e) { inp.focus(); inp.click(); }
-  }
   function start() {
     playSfx('start');
-    const c = Challenge.plan(cfg, planFrom()); Store.set('challenge', c);
-    const first = c.mode === 'free' ? (c.start === DateK.real() ? '오늘' : DateK.short(c.start)) : DateK.short(c.days[0]);
-    toast(c.mode === 'free' ? `${first}부터 ${c.weeks}주 안에 ${c.count}번 체크해요!` : `${first}부터 학교 가는 날 ${c.count}번 체크해요!`, 3000);
+    const c = Challenge.create(cfg);
+    const first = c.mode === 'free' ? '오늘' : DateK.short(c.days[0]);
+    toast(c.mode === 'free' ? `오늘부터 ${c.weeks}주 안에 ${c.count}번 체크해요!` : `${first}부터 학교 가는 날 ${c.count}번 체크해요!`, 3000);
     if (TestMode.on && typeof TestBar !== 'undefined') TestBar.update();
     paint();
   }
@@ -397,7 +376,7 @@ Router.screens.S46 = (app, p = {}) => {
     if (saving) return; saving = true; playSfx('tap');
     const btn = q('#saveImg'); if (btn) btn.textContent = '만드는 중…';
     try {
-      const cv = await dyRender(dyModel(live() || Challenge.plan(cfg, planFrom())), look);
+      const cv = await dyRender(dyModel(live() || Challenge.plan(cfg, EV ? DateK.real() : undefined)), look);
       const tm = new Date(), p2 = n => String(n).padStart(2, '0');   // 행사용은 이름 대신 시각 (함께 쓰는 태블릿)
       await saveCanvasPNG(cv, EV ? `챌린지다이어리_${DateK.today().replace(/-/g, '').slice(4)}_${p2(tm.getHours())}${p2(tm.getMinutes())}${p2(tm.getSeconds())}.png`
         : `챌린지다이어리_${(Store.get('name', '') || '나').replace(/[^\w가-힣-]/g, '')}.png`);

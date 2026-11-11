@@ -417,7 +417,7 @@ Router.screens.T49 = (app, p) => {
   const okBoard = () => d.board && isHttps(d.board);
   const dy = () => Object.assign({}, DY_DEF, d.dy || {});
   /* 챌린지 다이어리 설정도 학생 링크에 담아요: dy=횟수.방식.주.성공기준.사진.확인란 · 문구는 dp(약속) dm(성공 칭찬) dd(완성 칭찬) */
-  const dyQuery = () => { const y = dy(); return `&dy=${y.count}.${y.mode === 'free' ? 'f' : 'r'}.${y.weeks}.${y.min}.${y.photo === false ? 0 : 1}.${y.tsign === 'n' ? 'n' : 't'}`
+  const dyQuery = () => { const y = dy(); return `&dy=${y.count}.${y.mode === 'free' ? 'f' : 'r'}.${y.weeks}.${y.min}.${y.photo === false ? 0 : 1}.${y.tsign === 'n' ? 'n' : 't'}${y.start ? '.' + y.start.replace(/-/g, '') : ''}`
     + (y.promise.trim() ? '&dp=' + encodeURIComponent(y.promise.trim()) : '') + (y.praiseMin.trim() ? '&dm=' + encodeURIComponent(y.praiseMin.trim()) : '') + (y.praiseDone.trim() ? '&dd=' + encodeURIComponent(y.praiseDone.trim()) : ''); };
   const query = () => '?mode=' + (d.mode === 'event' ? 'event&ev=' + evA()[0] : 'class') + (okBoard() ? '&board=' + encodeURIComponent(d.board) : '') + (d.sound === 'off' ? '&sound=off' : '') + dyQuery();
   const urlOf = () => base + query();
@@ -560,13 +560,15 @@ Router.screens.T49 = (app, p) => {
       const step1 = (k, v, unit, min, max) => `<span class="tc-step" data-k="${k}"><button data-d="-1" ${v <= min ? 'disabled' : ''} aria-label="줄이기">−</button><b>${v}${unit}</b><button data-d="1" ${v >= max ? 'disabled' : ''} aria-label="늘리기">+</button></span>`;
       const txt = (k, max, ph, sample) => `<label class="tc-url tc-txt"><span class="sr">${ph}</span><input id="dy_${k}" maxlength="${max}" placeholder="${ph}" value="${esc(y[k])}"><span class="tc-cnt" id="cn_${k}">${[...y[k]].length}/${max}</span></label>
         ${sample ? `<button class="tc-sample" data-fill="${k}" data-text="${esc(sample)}">예: ${esc(sample)}</button>` : ''}`;
+      const stOn = /^\d{4}-\d{2}-\d{2}$/.test(y.start || '') && y.start >= DateK.real();   // 11/12: 지난 날짜는 무시
+      const T_CAL = `<span class="tc-cal"><button class="tc-calbtn${stOn ? ' on' : ''}" id="dyCal" type="button" aria-label="시작 날짜 정하기"><svg viewBox="0 0 16 16" shape-rendering="crispEdges"><path fill="#24305E" d="M3 1h2v2H3zM11 1h2v2h-2zM1 3h14v12H1z"/><path fill="#F26B6B" d="M2 4h12v3H2z"/><path fill="#FFFFFF" d="M2 7h12v7H2z"/><path fill="#24305E" d="M4 9h2v2H4zM7 9h2v2H7zM10 9h2v2h-2zM4 12h2v1H4zM7 12h2v1H7z"/></svg></button><input type="date" id="dyDate" class="tc-date" tabindex="-1" aria-hidden="true">${stOn ? '<button class="tc-calx" id="dyCalX" type="button" aria-label="시작 날짜 지우기">×</button>' : ''}</span>`;
       $('#panel').innerHTML = `
       <div class="tc-col tc-set tc-dy">
         ${EVD ? '<p class="tc-evwarn"><b>행사용 다이어리</b>는 꾸며서 인쇄해 가고, 체크는 집에서 종이에 해요. 성공 메달은 없어요.</p>' : ''}
         <section class="tc-sec tc-inl"><h2 class="tc-h"><i>${N()}</i>챌린지 횟수</h2>${step1('count', y.count, '회', 1, 10)}</section>
         ${EVD ? '' : `<section class="tc-sec tc-inl"><h2 class="tc-h"><i>${N()}</i>성공 메달</h2>${step1('min', Math.min(y.min, y.count), '일', 1, y.count)}<small>최소 목표예요<br>다 모으면 완성 메달</small></section>`}
-        <section class="tc-sec tc-inl tc-way"><h2 class="tc-h"><i>${N()}</i>진행 방식</h2>${seg('dmode', [['row', '이어서'], ['free', '자유롭게']], y.mode)}
-          <div class="tc-sub">${y.mode === 'free' ? seg('weeks', [['1', '1주'], ['2', '2주'], ['3', '3주'], ['4', '4주']], String(y.weeks)) : ''}<small>${y.mode === 'free' ? `${y.weeks}주 안에 아무 날이나 ${y.count}번 (주말 포함)` : `시작한 다음 날부터 학교 가는 날 ${y.count}번 이어서`}</small></div></section>
+        <section class="tc-sec tc-inl tc-way"><h2 class="tc-h"><i>${N()}</i>진행 방식</h2>${seg('dmode', [['row', '이어서'], ['free', '자유롭게']], y.mode)}${T_CAL}
+          <div class="tc-sub">${y.mode === 'free' ? seg('weeks', [['1', '1주'], ['2', '2주'], ['3', '3주'], ['4', '4주']], String(y.weeks)) : ''}<small>${y.mode === 'free' ? `${stOn ? DateK.short(y.start) + '부터 ' : ''}${y.weeks}주 안에 아무 날이나 ${y.count}번 (주말 포함)` : `${stOn ? DateK.short(y.start) + '부터' : '시작한 다음 날부터'} 학교 가는 날 ${y.count}번 이어서`}</small></div></section>
         <section class="tc-sec tc-inl"><h2 class="tc-h"><i>${N()}</i>사진 찍기</h2>${seg('dphoto', [['1', '켜기'], ['0', '끄기']], y.photo === false ? '0' : '1')}</section>
         <section class="tc-sec"><h2 class="tc-h"><i>${N()}</i>선생님 약속 <em>선택</em></h2>${txt('promise', 30, '예: 다 완성하면 선생님이 간식을 쏠게요!', '')}</section>
         <section class="tc-sec${EVD ? ' tc-dim' : ''}"><h2 class="tc-h"><i>${N()}</i>선생님 칭찬${EVD ? '<em>행사용은 축하 창이 없어요</em>' : ''}</h2>
@@ -594,6 +596,11 @@ Router.screens.T49 = (app, p) => {
         i.addEventListener('input', () => { $('#cn_' + k).textContent = `${[...i.value].length}/${i.maxLength}`; setY(k, i.value, false); });
         i.addEventListener('change', () => drawPrev()); });
       $$('[data-fill]').forEach(bt => onTap(bt, () => { const k = bt.dataset.fill, i = $('#dy_' + k); i.value = bt.dataset.text; setY(k, i.value, false); $('#cn_' + k).textContent = `${[...i.value].length}/${i.maxLength}`; drawPrev(); }));
+      { const cb = $('#dyCal'), di = $('#dyDate');
+        di.min = DateK.real(); di.max = DateK.add(DateK.real(), 90); di.value = stOn ? y.start : '';
+        onTap(cb, () => { playSfx('tap'); try { di.showPicker(); } catch (e) { di.focus(); di.click(); } });
+        di.addEventListener('change', () => { const v = di.value && di.value >= di.min ? di.value : ''; setY('start', v); if (v) toast(`${DateK.short(v)}부터 시작해요`); });
+        const cx = $('#dyCalX'); if (cx) onTap(cx, () => { playSfx('tap'); setY('start', ''); toast('시작 날짜를 지웠어요'); }); }
       onTap($('#reset2'), () => { d.dy = Object.assign({}, DY_DEF); Draft.set(d); draw(); toast('기본값으로 되돌렸어요'); });
       onTap($('#toNext2'), () => { tab = 3; draw(); });
     } else {
@@ -609,7 +616,7 @@ Router.screens.T49 = (app, p) => {
         <dl class="tc-facts">
           <div><dt>실행 모드</dt><dd><b>${d.mode === 'event' ? '행사용' : '수업용'}</b> · ${d.mode === 'event' ? `함께 쓰는 태블릿 · 행사 활동: <b>${evName()}</b>` : '1인 1태블릿 (챌린지 다이어리)'}</dd></div>
           <div><dt>소리</dt><dd>${d.sound === 'off' ? '끄기' : '켜기'}</dd></div>
-          <div><dt>챌린지</dt><dd>${(() => { const y = dy(); return `${y.mode === 'free' ? `${y.weeks}주 안에 자유롭게` : '학교 가는 날 이어서'} ${y.count}회 · ${Math.min(y.min, y.count)}일 성공 메달${y.promise.trim() ? ' · 선생님 약속 있음' : ''}`; })()}</dd></div>
+          <div><dt>챌린지</dt><dd>${(() => { const y = dy(); return `${y.start && y.start >= DateK.real() ? DateK.short(y.start) + '부터 · ' : ''}${y.mode === 'free' ? `${y.weeks}주 안에 자유롭게` : '학교 가는 날 이어서'} ${y.count}회 · ${Math.min(y.min, y.count)}일 성공 메달${y.promise.trim() ? ' · 선생님 약속 있음' : ''}`; })()}</dd></div>
           <div><dt>결과 게시판</dt><dd>${okBoard() ? `<span class="ok">연결됨</span> ${esc(d.board)}` : d.mode === 'event' ? '<span class="no">없음</span> 학생은 카드를 인쇄하거나 이미지로 저장해요' : '<span class="no">없음</span> 다이어리는 학생 기기에만 저장돼요'}</dd></div>
         </dl>
         <div class="tc-flowbox"><p class="tc-mode"><b>${modeName()}</b> 학생은 이렇게 해요</p>
@@ -708,7 +715,7 @@ const TestBar = {
     const cfg = { mode: qs.get('mode') === 'event' ? 'event' : 'class', ev: evq === 'd' ? 'diary' : evq === 'b' ? 'both' : 'card', board: isHttps(board) ? board : '', bgm: qs.get('bgm') !== 'off' && qs.get('sound') !== 'off' };   // 소리를 끄면 대기 음악도 꺼요 (11/11)
     /* 챌린지 다이어리 설정 (선생님 링크 dy · dp · dm · dd) */
     const dyv = (qs.get('dy') || '').split('.');
-    if (dyv.length >= 6) cfg.diary = { count: Math.max(1, Math.min(10, +dyv[0] || 5)), mode: dyv[1] === 'f' ? 'free' : 'row', weeks: Math.max(1, Math.min(4, +dyv[2] || 2)), min: Math.max(1, +dyv[3] || 3), photo: dyv[4] !== '0', tsign: dyv[5] === 'n' ? 'n' : 't',
+    if (dyv.length >= 6) cfg.diary = { count: Math.max(1, Math.min(10, +dyv[0] || 5)), mode: dyv[1] === 'f' ? 'free' : 'row', weeks: Math.max(1, Math.min(4, +dyv[2] || 2)), min: Math.max(1, +dyv[3] || 3), photo: dyv[4] !== '0', tsign: dyv[5] === 'n' ? 'n' : 't', start: /^\d{8}$/.test(dyv[6] || '') ? `${dyv[6].slice(0, 4)}-${dyv[6].slice(4, 6)}-${dyv[6].slice(6)}` : '',
       promise: (qs.get('dp') || '').slice(0, 30), praiseMin: (qs.get('dm') || '').slice(0, 40), praiseDone: (qs.get('dd') || '').slice(0, 40) };
     if (cfg.mode === 'event' && !PREVIEW) {
       /* 행사용 QR (11/10 최종): 이 창을 닫을 때까지만 행사용 — 학생 개인 태블릿은 다시 열면 원래대로(수업 다이어리) */
