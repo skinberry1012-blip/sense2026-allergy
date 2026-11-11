@@ -456,8 +456,13 @@ Router.screens.T49 = (app, p) => {
 
   const draw = () => {
     $$('.tc-tab').forEach(b => { b.classList.toggle('on', +b.dataset.t === tab); b.setAttribute('aria-selected', +b.dataset.t === tab); b.classList.toggle('off', +b.dataset.t === 2 && d.mode === 'event'); });
-    $('#panel').className = 'tc-panel t' + tab;
+    $('#panel').className = 'tc-panel t' + tab + (tab === 1 && d.mode === 'event' ? ' ev' : '');
     if (tab === 1) {
+      /* 이 기기 기록 지우기 (11/11): 수업용은 게시판 아래, 행사용은 자리가 모자라 맨 아래에 가로로 길게(미리 보기 아래까지) */
+      const DEV = `<section class="tc-device${d.mode === 'event' ? ' wide' : ''}">
+          <button class="tc-btn sm danger" id="wipe">이 기기 기록 지우기</button>
+          <p>학생 기록(이름·약속·다이어리·사진)은 <b>이 기기에만</b> 저장되고 서버로 보내지 않아요. 태블릿을 다른 학생에게 넘길 때 지워 주세요.</p>
+        </section>`;
       $('#panel').innerHTML = `
       <div class="tc-col tc-set">
         <section class="tc-sec">
@@ -479,10 +484,7 @@ Router.screens.T49 = (app, p) => {
           <p class="tc-help" id="err">${BOARD_HELP()}</p>
           <p class="tc-help tc-privacy">게시판은 우리 학교만 볼 수 있게(비공개·비밀번호) 설정해 주세요.</p>
         </section>
-        <section class="tc-device">
-          <button class="tc-btn sm danger" id="wipe">이 기기 기록 지우기</button>
-          <p>학생 기록(이름·약속·다이어리·사진)은 <b>이 기기에만</b> 저장되고 서버로 보내지 않아요. 태블릿을 다른 학생에게 넘길 때 지워 주세요.</p>
-        </section>
+        ${d.mode === 'event' ? '' : DEV}
       </div>
       <div class="tc-col tc-pv">
         <div class="tc-pvhead"><h2 class="tc-h">미리 보기</h2>
@@ -492,7 +494,7 @@ Router.screens.T49 = (app, p) => {
         <div class="tc-frame" id="frame"><iframe id="pv" title="학생 화면 미리 보기"></iframe></div>
         <p class="tc-help" id="pvcap"></p>
         <div class="tc-foot"><button class="tc-btn" id="reset">기본값으로</button><button class="tc-btn pri" id="toNext">${d.mode === 'event' ? '다음 · QR 코드와 공유 ›' : '다음 · 챌린지 다이어리 ›'}</button></div>
-      </div>`;
+      </div>${d.mode === 'event' ? DEV : ''}`;
       $('#modes').addEventListener('click', e => { const b = e.target.closest('[data-m]'); if (!b) return; const was = d.mode; d.mode = b.dataset.m; Draft.set(d); view = d.mode === 'event' ? 'card' : 'lab';
         $$('#modes button').forEach(x => x.classList.toggle('on', x === b)); drawPrev();
         draw();
