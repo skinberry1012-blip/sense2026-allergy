@@ -1341,9 +1341,10 @@ body.tablet .s44-top { padding-left:0; }
 .s44b-btns #save em { color:#1E2A5A !important; }
 
 /* ===== 행사용 (11/10 최종): 카드 꾸미기 아래 버튼 ===== */
-/* 게시판 없음 (11/11): [인쇄하기]가 지금 누를 버튼(노랑), [크게 보기]는 보조(흰색) — 한 줄에 나란히 */
+/* 게시판 없음 (11/11): [인쇄하기]가 지금 누를 버튼(노랑), [이미지 저장]은 보조(흰색) — 한 줄에 나란히 */
 .s44b-btns .ev-row #print { background:#F5C842 !important; color:#1E2A5A !important; }
 .s44b-btns .ev-row .btn { white-space:nowrap; }
+.s44b-btns .ev-row #save { background:#fff !important; }
 .s44b-btns .ev-step:disabled { opacity:.45; cursor:not-allowed; }
 .s44b-btns .ev-step.ready { background:#fff !important; animation:pxbeat 1.6s ease-in-out infinite; }
 .s44b-btns .ev-pass { margin-top:6px !important; }
