@@ -532,8 +532,8 @@ button.cb:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
 .pcol .tlist{position:relative;left:0;top:0;width:100%;box-sizing:border-box}
 .pcol .psign{position:relative;left:0;width:450px;margin-top:30px}
 /* 인쇄 양식: 약속 목록만(지킨 날에는 위 칸에 별 스티커) */
-.tlist.plist .ti{padding:16px 16px}
-.tlist.plist.many .ti{padding:10px 16px}
+.tlist.plist .ti{padding:9px 16px}
+.tlist.plist.many .ti{padding:9px 16px}
 .tlist.plist .ti .tt{font-size:19px;line-height:1.35}
 .tlist.plist .hrule{font-size:18px}
 /* 인쇄용 모눈 */
