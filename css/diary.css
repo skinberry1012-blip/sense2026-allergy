@@ -554,3 +554,10 @@ button.cb:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
 .lsign{position:absolute;left:44px;top:722px;display:flex;align-items:flex-end;gap:6px;font-family:var(--f-disp);font-size:21px;color:var(--navy);white-space:nowrap;z-index:3}
 .lsign em{font-style:normal;display:inline-block;width:118px;height:30px;border-bottom:3px solid var(--navy);font-family:'Nanum Pen Script','Gowun Dodum',cursive;font-size:30px;line-height:30px;text-align:center}
 .lsign .lseal{width:72px;height:72px;margin:0 0 -24px -16px}
+
+/* 11/12 확정: 화면 '확인했어요'를 실천 리스트 바로 아래에 (자리가 없을 때만 왼쪽 .lsign) */
+.scol{position:absolute;left:40px;width:480px;display:flex;flex-direction:column}
+.scol .tlist{position:relative;left:0;top:0;width:100%;box-sizing:border-box}
+.lsign.r{position:relative;left:auto;top:auto;align-self:flex-end;margin:18px 8px 0 0;font-size:24px}
+.lsign.r em{width:140px;height:32px;font-size:32px;line-height:32px}
+.lsign.r .lseal{width:80px;height:80px;margin:0 0 -26px -20px}

@@ -69,11 +69,15 @@ function dyDiary(m, look, { print = false } = {}) {
     : `<div class="tnote ${m.medal ? 'hasb' : ''}" style="left:34px;top:412px"><h5>선생님 응원</h5><p>선생님이 매일 응원할게요!</p><small>${Config.isEvent() ? `${n}번 모두 지키면 완성!` : `${n}일 모두 성공하면 완성 메달을 받아요`}</small></div>`;   // 행사용은 메달이 없어요 (11/11)
   const ph = look.photo === 'cam' && look.pic ? `<img src="${look.pic}" alt="내 사진" style="width:100%;height:100%;object-fit:cover">` : `<img src="${DY_IMG(look.photo === 'cam' ? 'staff_hello' : look.photo)}" alt="">`;
   const md = m.medal;
+  /* 11/12 확정: 화면·저장 그림의 '확인했어요 ___'는 인쇄물처럼 실천 리스트 바로 아래(오른쪽 쪽). 약속이 많아 자리가 없을 때(약속 5개, 또는 7번 이상에 약속 4개)만 왼쪽 쪽 아래로. 완성하면 냥박사 서명+도장 */
+  const signRight = rules.length <= 3 || (rules.length === 4 && n < 7);
+  const done = got >= n && !EVX;
+  const sgn = cls => `<div class="lsign${cls}${done ? ' on' : ''}">확인했어요<em>${done ? '냥박사' : ''}</em>${done ? dyPawSeal('lseal') : ''}</div>`;
   const L = `<div class="d-title">${n}일 챌린지 다이어리</div>
     <div class="pframe"><img class="pf" src="${DY_IMG('photo_frame')}" alt=""><div class="pwin">${ph}</div><p>나</p></div>
     <div class="me"><b>${dyEsc(name)}</b><dl><div><dt>기간</dt><dd>${m.range}</dd></div><div><dt>방식</dt><dd>${m.sub}</dd></div><div><dt>약속</dt><dd>${rules.length}개</dd></div></dl></div>
     ${note}
-    ${print ? '' : `<div class="lsign${got >= n && !EVX ? ' on' : ''}">확인했어요<em>${got >= n && !EVX ? '냥박사' : ''}</em>${got >= n && !EVX ? dyPawSeal('lseal') : ''}</div>`}
+    ${print || signRight ? '' : sgn('')}
     ${md && !print ? `<div class="award"><div class="aw-t"><small>${md.at ? DateK.md(md.at) + ' ' : ''}받은 메달</small><b>${md.gold ? `${n}일 챌린지 완성!` : `${md.k}일 챌린지 성공!`}</b></div><div class="pocket on">${dyBadge(got, n, md.gold)}</div></div>` : ''}`;
   const rp = r => `<span class="rpl p${DY_PLACE[r.place][1]}">${DY_PLACE[r.place][0]}</span>`;
   const logOf = d => (d && c.log[d]) || {};
@@ -102,11 +106,11 @@ function dyDiary(m, look, { print = false } = {}) {
       : EVX ? '' : `<div class="slegend" style="top:${dtwo ? 380 : 344}px"><span><svg viewBox="-0.5 -1 16 16" width="30" height="30"><use href="#star" fill="#F5C842"/></svg> 별 받음</span><span><svg viewBox="-0.5 -1 16 16" width="30" height="30"><use href="#star" fill="#9EA3AB"/></svg> 했지만 별 없음</span></div>`}
     <div class="dayrow${dtwo}" style="--cols:${Math.ceil(n / 2)};${print ? 'top:104px' : ''}">${slots.map(day).join('')}</div>
     ${print || EVX ? '' : prog()}
-    ${print ? `<div class="pcol" style="top:${dtwo ? 330 : 290}px">` : ''}<div class="tlist${many}${print || EVX ? ' plist' : ''}" ${print ? '' : dtwo && !EVX ? 'style="top:426px"' : ''}><h5>${print || EVX ? `지킬 약속<span class="hrule">${m.need}개 이상 지키면 별 하나</span>` : `${ti >= 0 ? '오늘 실천한 약속' : '실천한 약속'}<span class="hrule">${m.need}개 이상 지키면 별 하나</span>`}</h5>
+    ${print ? `<div class="pcol" style="top:${dtwo ? 330 : 290}px">` : signRight ? `<div class="scol" style="top:${dtwo && !EVX ? 426 : 402}px">` : ''}<div class="tlist${many}${print || EVX ? ' plist' : ''}" ${print || signRight ? '' : dtwo && !EVX ? 'style="top:426px"' : ''}><h5>${print || EVX ? `지킬 약속<span class="hrule">${m.need}개 이상 지키면 별 하나</span>` : `${ti >= 0 ? '오늘 실천한 약속' : '실천한 약속'}<span class="hrule">${m.need}개 이상 지키면 별 하나</span>`}</h5>
       ${rules.map(r => {
         const v = todayD ? logOf(todayD)[r.id] : '';
         return `<div class="ti"><span>${rp(r)}</span><span class="tt">${dyEsc(r.text)}</span>${print || EVX ? '' : `<button type="button" class="cb ${v === 'O' ? 'on' : ''} ${ti < 0 ? 'off' : ''}" data-rule="${r.id}" aria-label="${dyEsc(r.text)} 지켰어요" aria-pressed="${v === 'O'}"></button>`}</div>`;
-      }).join('')}</div>${print ? sign + '</div>' : ''}`;
+      }).join('')}</div>${print ? sign + '</div>' : signRight ? sgn(' r') + '</div>' : ''}`;
   const k = 1196 / 1440, pw = 630 * k, ph2 = 873 * k, sc = ph2 / 860, off = (pw - 560 * sc) / 2;
   const pg = (left, html, dy = 0) => `<div class="dpage art" style="left:${left}px;top:${(78 - 24) * k}px;width:${pw}px;height:${ph2}px"><div class="pg" style="left:${off}px;top:${dy}px;transform:scale(${sc})">${html}</div></div>`;
   return `<div class="diary art" style="left:${print ? 0 : 402}px;top:${print ? 0 : 46}px;width:1196px;height:${975 * k}px">
