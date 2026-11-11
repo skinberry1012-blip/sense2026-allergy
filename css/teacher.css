@@ -278,3 +278,5 @@
 /* 행사 활동 (11/11): 글자 첫머리 = 아래 '소리' 첫 글자(번호 동그라미 다음), 약속 카드 왼쪽 위치는 그대로 */
 .tgx .tc-evact { padding-left:42px; }
 .tgx .tc-evact .tc-lbl { width:78px; white-space:nowrap; }
+/* 행사 활동 (11/11): 이름 글자 빼고 버튼 자리는 그대로 — 약속 카드 왼쪽 = 소리 [켜기] 왼쪽 */
+.tgx .tc-evact { padding-left:134px; }

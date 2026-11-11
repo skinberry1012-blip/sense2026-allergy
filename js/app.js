@@ -469,7 +469,7 @@ Router.screens.T49 = (app, p) => {
             <button data-m="class" class="${d.mode !== 'event' ? 'on' : ''}"><span class="rd"></span><span><b>수업용</b><small>연구소 학습을 마친 뒤 약속 카드를 만들어요</small></span></button>
             <button data-m="event" class="${d.mode === 'event' ? 'on' : ''}"><span class="rd"></span><span><b>행사용<em class="tc-msub">함께 쓰는 태블릿용</em></b><small>연구소를 건너뛰고 방패 만들기부터</small></span></button>
           </div>
-          ${d.mode === 'event' ? `<div class="tc-row tc-evact"><span class="tc-lbl">행사 활동</span><span class="tc-checks" id="evact">
+          ${d.mode === 'event' ? `<div class="tc-row tc-evact"><span class="tc-checks" id="evact" aria-label="행사 활동">
             <button data-a="card" class="${evC() ? 'on' : ''}" aria-pressed="${evC()}"><i></i>약속 카드</button><button data-a="diary" class="${evD() ? 'on' : ''}" aria-pressed="${evD()}"><i></i>다이어리</button></span>
             </div>` : ''}
         </section>
