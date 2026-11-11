@@ -62,6 +62,7 @@ const SFX = (() => {
     uncheck: () => tone('triangle', 330, 220, 0, 0.14, v),
     open:    () => { tone('square', 523, 0, 0, 0.04, q * 0.8); tone('square', 784, 0, 0.045, 0.06, q * 0.8); },
     full:    () => { tone('triangle', 220, 0, 0, 0.08, v); tone('triangle', 220, 0, 0.12, 0.1, v); },
+    warn:    () => { tone('square', 880, 660, 0, 0.12, q); tone('square', 880, 660, 0.17, 0.16, q); },   // 경고 '삐-삐' (11/11: 서명 안 했을 때)
     save:    () => [784, 1046, 1318].forEach((f, i) => tone('square', f, 0, i * 0.06, i === 2 ? 0.16 : 0.06, q)),
     star:    () => { [1318, 1568, 2093].forEach((f, i) => tone('square', f, 0, i * 0.05, 0.07, q)); tone('triangle', 2093, 0, 0.16, 0.25, v * 0.6); },
     fanfare: () => { [[523, 0, .1], [659, .1, .1], [784, .2, .1], [1046, .3, .12], [784, .44, .08], [1046, .54, .4]].forEach(([f, s, d]) => tone('square', f, 0, s, d, q));
