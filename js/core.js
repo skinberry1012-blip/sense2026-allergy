@@ -377,10 +377,8 @@ const Orient = {
     const portrait = window.innerHeight > window.innerWidth;
     const lab = true;   // 11/10: 방패 만들기·이름 쓰기·약속 고르기·다이어리도 연구소 판(1600×900)이라 학생 화면은 모두 가로
     let msg = '';
-    if (coarse && !teacher) {
-      if (tablet && portrait) msg = '태블릿을 <b>가로로</b> 돌려 주세요';
-      if (!tablet && lab && portrait) msg = '휴대폰을 <b>가로로</b> 돌려서 봐요';
-    }
+    if (coarse && !teacher && tablet && portrait) msg = '태블릿을 <b>가로로</b> 돌려 주세요';
+    if (coarse && !tablet && lab && portrait) msg = '휴대폰을 <b>가로로</b> 돌려 주세요';   // 11/12: 휴대폰은 선생님 설정도 가로로 (세로면 옆으로 넘침)
     o.querySelector('p').innerHTML = msg;
     o.classList.toggle('show', !!msg);
   }

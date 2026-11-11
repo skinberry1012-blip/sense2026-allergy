@@ -549,3 +549,4 @@ button.cb:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
 .tlist:not(.plist) .ti .tt,.tlist.many:not(.plist) .ti .tt{font-size:19px;line-height:1.35}
 .tlist:not(.plist) .ti>button.cb{width:36px;height:36px;border-radius:7px}
 .tlist:not(.plist) .ti>button.cb.on::after{left:10px;top:2px;width:10px;height:18px;border-width:0 4px 4px 0}
+.prog .mk.up{top:auto;bottom:20px}

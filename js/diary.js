@@ -84,9 +84,10 @@ function dyDiary(m, look, { print = false } = {}) {
     return `<div class="day ${isT ? 'today' : ''} ${done || tdone ? 'done' : ''}">${isT ? '<span class="tdy">오늘</span>' : ''}<span class="sc ${done || tdone ? ((ok || tok) ? '' : 'nost') : 'empty'}"><svg viewBox="-0.5 -1 16 16"><use href="#star" fill="${fill}"/></svg></span><span class="dbadge">${lab}</span></div>`;
   };
   const prog = () => {
+    const near = (n - c.min) * 375 / n < 120;   // 11/12: 성공·완성 메달이 가까우면(예: 10번 중 8일) 성공 메달은 막대 위로
     const cells = Array.from({ length: n }, (_, i) => {
       const mk = (i === c.min - 1 && c.min < n) ? ['blue', `${c.min}일 성공`] : i === n - 1 ? ['coral', `${n}일 완성`] : null;
-      return `<i class="${i < got ? 'on' : ''}">${mk ? `<em class="mk ${got >= i + 1 ? 'got' : ''}"><img src="${DY_IMG('medal_' + mk[0])}" alt=""><small>${mk[1]}</small></em>` : ''}</i>`;
+      return `<i class="${i < got ? 'on' : ''}">${mk ? `<em class="mk ${got >= i + 1 ? 'got' : ''}${near && mk[0] === 'blue' ? ' up' : ''}"><img src="${DY_IMG('medal_' + mk[0])}" alt=""><small>${mk[1]}</small></em>` : ''}</i>`;
     }).join('');
     return `<div class="prog" style="top:98px"><span class="pl">별 <b>${got}</b> / ${n}</span><span class="bar">${cells}</span></div>`;
   };
