@@ -18,8 +18,13 @@ Router.screens.S39 = (app) => {
   labChar(b, 'staff_guide', 600, { left: 70, bottom: 10 });
   if (Config.isEvent()) doubleTap(labEl(b, 'lab-org', null, '<b>SENSE</b><span>초등보건교육연구회</span>'), () => openTeacher('S39'));   // 행사용 첫 화면에도 연구회 이름 + 선생님 화면 입구 (11/11)
   const bub = labBubble(b, { x: 760, y: 330, w: 720, fs: 42, tail: 'l', name: '수호냥', staff: true });   // 수호냥 몸 가운데 높이에 맞춤 (11/10)
-  bub.say('알레르기로부터 나를 지켜 줄<br>{{나만의 방패}}를 만들어 보자!');
-  const start = labBtn(b, '나만의 약속 카드 만들기 ›', 'left:780px;top:640px;font-size:38px', 'y beat');
+  /* 11/11: 버튼은 '방패 만들러 출발!' 하나로, 무엇을 만드는지는 수호냥 말풍선이 알려 줘요 (행사 활동에 따라) */
+  const SAY = { card: '알레르기로부터 지켜 줄<br>{{나만의 방패}}를<br>{{약속 카드}}로 만들어 보자!',
+    diary: '알레르기로부터 지켜 줄<br>{{나만의 방패}}를<br>{{챌린지 다이어리}}로 만들어 보자!',
+    both: '알레르기로부터 지켜 줄<br>{{나만의 방패}}를 {{약속 카드}}와<br>{{챌린지 다이어리}}로 만들어 보자!' };
+  bub.say(Config.isEvent() ? SAY[Config.evAct()] : '알레르기로부터 지켜 줄<br>{{나만의 방패}}를 만들어 보자!');
+  const start = labBtn(b, '방패 만들러 출발! ›', 'top:640px;width:520px;box-sizing:border-box;text-align:center;font-size:46px', 'y beat');
+  start.style.left = Math.round(bub.offsetLeft + bub.offsetWidth / 2 - 260) + 'px';   // 말풍선 가운데 아래 (글자가 짧아도 버튼 너비는 고정)
   onTap(start, () => {
     playSfx('next');
     /* 행사용 (11/10 최종): 함께 쓰는 태블릿 — 시작할 때마다 깨끗하게 (카드를 저장하기 전에 떠난 사람의 이름·약속·서명까지) */
@@ -100,7 +105,8 @@ Router.screens.RULES = (app, p) => {
   labChar(b, 'staff_guide', 500, { left: -40, bottom: 10 });
   const bub = labBubbleAt(labBubble(b, { x: 70, y: 0, w: 430, fs: 30, tail: 'bl', name: '수호냥', staff: true }), { bottom: 504, tailX: 190 });   // 11/10: 귀 끝에 겹치지 않게 조금 위로
   const box = labEl(b, 'rl-box', [560, 156, 970, 616]);   // 제목 아래 ~ 버튼 위 사이 가운데 (장소 고르기 2×2 · 약속 상자)
-  const next = labBtn(b, '카드 꾸미기로 ›', 'right:70px;top:800px;font-size:38px', 'y beat');
+  const NEXT_TXT = Config.isEvent() && !Config.evCard() ? '다이어리 꾸미기로 ›' : '카드 꾸미기로 ›';   // 행사용 '다이어리만' (11/11)
+  const next = labBtn(b, NEXT_TXT, 'right:70px;top:800px;font-size:38px', 'y beat');
 
   /* 순서대로 (11/10): 집 → 학교 → 밖 → 나만의 약속(선택) → 카드 꾸미기. 하나 고르면 다음 장소로 넘어가요 */
   let step = Math.max(0, Math.min(3, p.step != null ? p.step | 0 : (PLACES.findIndex(pl => !done(pl)) + 1 || 4) - 1));
@@ -135,7 +141,7 @@ Router.screens.RULES = (app, p) => {
     }
     /* 아래 버튼 (11/10): 장소 이동은 위 배지로만 — 집·학교·밖을 다 고르면 [카드 꾸미기로 ›] 하나만 나와요 */
     prev.hidden = true;
-    $('span', next).textContent = '카드 꾸미기로 ›';
+    $('span', next).textContent = NEXT_TXT;
     next.hidden = !allPlaces();
     say();
     /* 정리 (11/10): 상자 + 아래 버튼 줄을 한 묶음으로 제목 아래~화면 아래 사이 세로 가운데, 버튼은 오른쪽에 나란히 (끝 = 상자 끝) */
@@ -170,7 +176,7 @@ Router.screens.RULES = (app, p) => {
   onTap(prev, () => { if (step > 0) { playSfx('tap'); go(step - 1); } });
   onTap(next, () => {
     if (!allPlaces()) { playSfx('full'); replay(next, 'shake'); go(PLACES.findIndex(x => !done(x))); return toast('집 · 학교 · 밖에서 하나씩 골라 주세요.'); }
-    playSfx('next'); Router.go('S44');
+    playSfx('next'); Router.go(Config.isEvent() && !Config.evCard() ? 'S46' : 'S44');   // 행사용 '다이어리만'은 카드 꾸미기를 건너뛰어요 (11/11)
   });
   render();
 };
@@ -184,7 +190,7 @@ Router.screens.S44 = (app) => {
   if (!BUDDIES[st.buddy]) st.buddy = 'pinky_01';   // 수호 친구는 4가지만 (11/9)
   const rules = selectedRules(), name = Store.get('name', '');
   /* 행사용 (11/10 최종): 함께 쓰는 태블릿 — 카드 이미지 저장·게시판 올리기(게시판이 없으면 인쇄·이미지 저장, 11/11 — 노담·헌혈처럼 휴대폰 찍기는 v1.0에서 넣지 않음) → 다음 친구에게 넘기기. 다이어리 없음 */
-  const EV = Config.isEvent(), BOARD = EV ? (Config.get().board || '') : '';
+  const EV = Config.isEvent(), EVD = EV && Config.evDiary(), BOARD = EV && !EVD ? (Config.get().board || '') : '';   // 카드 + 다이어리면 게시판은 다이어리에서 (11/11)
   if (!rules.length) return Router.go(EV ? 'S39' : 'RULES', {}, { replace: true });   // 넘긴 뒤 뒤로 가기로 빈 카드가 열리지 않게
   let saved = false, savedImg = false;   // saved = 인쇄 또는 저장함, savedImg = 태블릿에 이미지를 저장함
   /* 배치 (11/9): 헌혈 임명장처럼 — 오른쪽 크게 약속 카드, 왼쪽에 수호 친구 고르기 · 저장 · 인쇄 · 처음으로 */
@@ -201,7 +207,7 @@ Router.screens.S44 = (app) => {
           <div class="s44b-row"><button class="btn white" id="print">인쇄하기</button><button class="btn white" id="home">처음으로</button></div>`
           : (BOARD ? `<button class="btn pink" id="save">① 카드 이미지 저장</button><button class="btn white ev-step" id="toBoard" disabled aria-disabled="true">② 게시판에 올리기</button>`
                    : `<div class="s44b-row ev-row"><button class="btn pink" id="print">인쇄하기</button><button class="btn white" id="save">이미지 저장</button></div>`)
-            + `<button class="btn white ev-pass" id="pass">다음 친구에게 넘기기 ›</button>`}
+            + (EVD ? `<button class="btn white ev-pass ev-next" id="toDiary">다이어리 꾸미기 ›</button>` : `<button class="btn white ev-pass" id="pass">다음 친구에게 넘기기 ›</button>`)}
         </div>
       </aside>
       <section class="s44b-card">
@@ -306,6 +312,7 @@ Router.screens.S44 = (app) => {
     playSfx('tap'); window.open(BOARD, '_blank', 'noopener');
     toast('게시판에 카드 이미지를 올린 뒤, 이 화면으로 돌아와 [다음 친구에게 넘기기]를 눌러요.', 5000);
   });
+  onTap($('#toDiary'), () => { playSfx('next'); Store.set('buddy', st.buddy); Router.go('S46'); });   // 행사용 카드 + 다이어리 (11/11)
   onTap($('#pass'), () => {
     const del = '함께 쓰는 태블릿이에요. <b class="red">사진첩에 저장한 내 카드 이미지는 지워 주세요.</b>';
     const msg = !BOARD ? (savedImg ? del : saved ? '내 카드와 기록이 지워지고, 다음 친구가 처음부터 시작해요.' : '<b class="red">아직 인쇄하거나 저장하지 않았어요.</b><br>넘기면 내 카드가 사라져요.')
@@ -376,6 +383,13 @@ const T_FLOW = {
   class: ['미션 · 숨은 알레르기 원인 12가지 찾기', '증상 카드 · 대처 방법 익히기', '나만의 예방 약속 카드 만들기', '챌린지 다이어리 꾸미기 → 매일 체크 → 메달'],
   event: ['나만의 예방 약속 카드 만들기', '카드 이미지를 게시판에 올리기 (게시판이 없으면 인쇄하거나 이미지로 저장하기)', '다음 친구에게 넘기기 (이 태블릿 기록 지움)']
 };
+/* 행사용 학생 흐름 (11/11): 행사 활동에 따라 */
+const T_EVFLOW = (a, board) => {
+  const keep = board ? '게시판에 올리기' : '인쇄하거나 이미지로 저장하기';
+  return a === 'diary' ? ['나만의 예방 약속 고르기', `챌린지 다이어리 꾸미기 → ${keep} (체크는 집에서 종이에)`, '다음 친구에게 넘기기 (이 태블릿 기록 지움)']
+    : a === 'both' ? ['나만의 예방 약속 카드 만들기 → 인쇄하거나 이미지로 저장하기', `챌린지 다이어리 꾸미기 → ${keep} (체크는 집에서 종이에)`, '다음 친구에게 넘기기 (이 태블릿 기록 지움)']
+    : ['나만의 예방 약속 카드 만들기', `카드 ${board ? '이미지를 게시판에 올리기' : '인쇄하거나 이미지로 저장하기'}`, '다음 친구에게 넘기기 (이 태블릿 기록 지움)'];
+};
 Router.screens.T49 = (app, p) => {
   const returnTo = p.returnTo || 'S00';
   let tab = p.tab || 1, d = Draft.get(), dev = 'tablet', view = Draft.get().mode === 'event' ? 'card' : 'lab';
@@ -387,10 +401,13 @@ Router.screens.T49 = (app, p) => {
   /* 챌린지 다이어리 설정도 학생 링크에 담아요: dy=횟수.방식.주.성공기준.사진.확인란 · 문구는 dp(약속) dm(성공 칭찬) dd(완성 칭찬) */
   const dyQuery = () => { const y = dy(); return `&dy=${y.count}.${y.mode === 'free' ? 'f' : 'r'}.${y.weeks}.${y.min}.${y.photo === false ? 0 : 1}.${y.tsign === 'n' ? 'n' : 't'}`
     + (y.promise.trim() ? '&dp=' + encodeURIComponent(y.promise.trim()) : '') + (y.praiseMin.trim() ? '&dm=' + encodeURIComponent(y.praiseMin.trim()) : '') + (y.praiseDone.trim() ? '&dd=' + encodeURIComponent(y.praiseDone.trim()) : ''); };
-  const query = () => '?mode=' + (d.mode === 'event' ? 'event' : 'class') + (okBoard() ? '&board=' + encodeURIComponent(d.board) : '') + (d.sound === 'off' ? '&sound=off' : '') + (d.bgm === 'off' ? '&bgm=off' : '') + dyQuery();
+  const query = () => '?mode=' + (d.mode === 'event' ? 'event&ev=' + evA()[0] : 'class') + (okBoard() ? '&board=' + encodeURIComponent(d.board) : '') + (d.sound === 'off' ? '&sound=off' : '') + (d.bgm === 'off' ? '&bgm=off' : '') + dyQuery();
   const urlOf = () => base + query();
   const modeName = () => d.mode === 'event' ? '행사용' : '수업용';
-  const BOARD_HELP = () => d.mode === 'event' ? '학생이 약속 카드 이미지를 올릴 패들렛·띵커벨 보드 주소예요. 비워 두면 학생이 카드를 인쇄하거나 이미지로 저장해요.' : '챌린지 다이어리 이미지를 올릴 패들렛·띵커벨 보드 주소예요.';
+  /* 행사 활동 (11/11): d.ev = 'card' | 'diary' | 'both', 기본 약속 카드만 */
+  const evA = () => d.ev === 'diary' || d.ev === 'both' ? d.ev : 'card', evC = () => evA() !== 'diary', evD = () => evA() !== 'card';
+  const evName = () => ({ card: '약속 카드', diary: '다이어리', both: '약속 카드 + 다이어리' })[evA()];
+  const BOARD_HELP = () => d.mode === 'event' ? `학생이 ${evA() === 'card' ? '약속 카드' : '다이어리'} 이미지를 올릴 패들렛·띵커벨 보드 주소예요. 비워 두면 학생이 인쇄하거나 이미지로 저장해요.` : '챌린지 다이어리 이미지를 올릴 패들렛·띵커벨 보드 주소예요.';
   app.innerHTML = `<div class="sc tgx">
     <header class="tc-head">
       <h1 class="tc-title">냥박사의 알레르기 연구소 <span>선생님 설정</span></h1>
@@ -413,11 +430,11 @@ Router.screens.T49 = (app, p) => {
     if (tab !== 1) return;
     if (d.mode === 'event' && view === 'lab') view = 'card';
     paintSeg('view', view);
-    $('#steps').innerHTML = PREVIEW_STEPS[view].filter(([k]) => !(d.mode === 'event' && /^S4[6-8]$/.test(k))).map(([k, n]) => `<button data-s="${k}" class="${k === step[view] ? 'on' : ''}">${n}</button>`).join('');
+    $('#steps').innerHTML = PREVIEW_STEPS[view].filter(([k]) => !(d.mode === 'event' && (/^S4[78]$/.test(k) || (k === 'S46' && !evD()) || (k === 'S44' && !evC())))).map(([k, n]) => `<button data-s="${k}" class="${k === step[view] ? 'on' : ''}">${n}</button>`).join('');
     $$('.tc-seg[data-k="view"] button').forEach(x => { x.disabled = x.dataset.v === 'lab' && d.mode === 'event'; });
     $('#pv').src = pvSrc(); fitFrame();
     $('#pvcap').textContent = view === 'lab' ? '수업용: 학생은 연구소 첫 화면에서 시작해요. 연구소를 마치면 약속 카드로 넘어가요.'
-      : d.mode === 'event' ? '행사용: 학생은 QR을 찍으면 바로 이 약속 카드 화면에서 시작해요.' : '수업용: 연구소를 마친 학생이 이 약속 카드 화면으로 와요.';
+      : d.mode === 'event' ? '행사용: 학생은 QR을 찍으면 바로 방패 만들기 화면에서 시작해요.' : '수업용: 연구소를 마친 학생이 이 약속 카드 화면으로 와요.';
   };
 
   /* QR 이미지 저장 (칠판·학습지에 붙이기) */
@@ -450,8 +467,11 @@ Router.screens.T49 = (app, p) => {
           <h2 class="tc-h"><i>1</i>실행 모드</h2>
           <div class="tc-modes" id="modes">
             <button data-m="class" class="${d.mode !== 'event' ? 'on' : ''}"><span class="rd"></span><span><b>수업용</b><small>연구소 학습을 마친 뒤 약속 카드를 만들어요</small></span></button>
-            <button data-m="event" class="${d.mode === 'event' ? 'on' : ''}"><span class="rd"></span><span><b>행사용</b><small>연구소를 건너뛰고 약속 카드부터 · 함께 쓰는 태블릿용(다이어리 없음)</small></span></button>
+            <button data-m="event" class="${d.mode === 'event' ? 'on' : ''}"><span class="rd"></span><span><b>행사용</b><small>연구소를 건너뛰고 방패 만들기부터 · 함께 쓰는 태블릿용</small></span></button>
           </div>
+          ${d.mode === 'event' ? `<div class="tc-row tc-evact"><span class="tc-lbl">행사 활동</span><span class="tc-checks" id="evact">
+            <button data-a="card" class="${evC() ? 'on' : ''}" aria-pressed="${evC()}"><i></i>약속 카드</button><button data-a="diary" class="${evD() ? 'on' : ''}" aria-pressed="${evD()}"><i></i>다이어리</button></span>
+            <small>하나 이상 골라요 · 다이어리는 꾸미고 인쇄해 가요</small></div>` : ''}
         </section>
         <section class="tc-sec">
           <h2 class="tc-h"><i>2</i>소리</h2>
@@ -489,6 +509,13 @@ Router.screens.T49 = (app, p) => {
           onTap($('#bLater', m), () => Modal.close());
           onTap($('#bNow', m), () => { Modal.close(); const i = $('#board'); if (i) i.focus(); });
         } });
+      const ea = $('#evact'); if (ea) ea.addEventListener('click', e => { const b = e.target.closest('[data-a]'); if (!b) return;
+        let c = evC(), y = evD(); if (b.dataset.a === 'card') c = !c; else y = !y;
+        if (!c && !y) { playSfx('full'); replay(b, 'shake'); return toast('행사 활동을 하나는 골라 주세요.'); }
+        playSfx(b.classList.contains('on') ? 'uncheck' : 'check');
+        d.ev = c && y ? 'both' : y ? 'diary' : 'card'; Draft.set(d);
+        if ((step.card === 'S44' && !c) || (step.card === 'S46' && !y)) step.card = 'S39';
+        draw(); });
       $('#board').addEventListener('change', e => { d.board = e.target.value.trim(); Draft.set(d);
         const bad = d.board && !isHttps(d.board); $('#uf').classList.toggle('bad', !!bad);
         $('#err').classList.toggle('bad', !!bad);
@@ -508,7 +535,7 @@ Router.screens.T49 = (app, p) => {
         onTap($('#wYes', m), () => { playSfx('delete'); Store.clearAll(); try { sessionStorage.clear(); } catch (e) {} Modal.close(); toast('이 기기의 기록을 모두 지웠어요.'); });
       });
       onTap($('#toNext'), () => { tab = d.mode === 'event' ? 3 : 2; draw(); });   // 행사용은 다이어리를 쓰지 않아 02 탭 건너뛰기 (11/10)
-      onTap($('#reset'), () => { d = { mode: 'class', board: '', sound: 'on', bgm: 'on', dy: d.dy }; Draft.set(d); view = 'lab'; draw(); toast('기본값으로 되돌렸어요'); });
+      onTap($('#reset'), () => { d = { mode: 'class', ev: 'card', board: '', sound: 'on', bgm: 'on', dy: d.dy }; Draft.set(d); view = 'lab'; draw(); toast('기본값으로 되돌렸어요'); });
     } else if (tab === 2) {
       /* 02 챌린지 다이어리 (11/10 시안) */
       const y = dy();
@@ -565,14 +592,14 @@ Router.screens.T49 = (app, p) => {
       <section class="tc-card3 tc-sum">
         <div class="tc-cardhead tc-sumhead"><h2 class="tc-h">설정 요약</h2><button class="tc-btn sm" id="edit">수정</button></div>
         <dl class="tc-facts">
-          <div><dt>실행 모드</dt><dd><b>${d.mode === 'event' ? '행사용' : '수업용'}</b> · ${d.mode === 'event' ? '함께 쓰는 태블릿 (다이어리 없음)' : '1인 1태블릿 (챌린지 다이어리)'}</dd></div>
+          <div><dt>실행 모드</dt><dd><b>${d.mode === 'event' ? '행사용' : '수업용'}</b> · ${d.mode === 'event' ? `함께 쓰는 태블릿 · 행사 활동: <b>${evName()}</b>` : '1인 1태블릿 (챌린지 다이어리)'}</dd></div>
           <div><dt>소리</dt><dd>효과음 ${d.sound === 'off' ? '끄기' : '켜기'} · 대기 음악 ${d.bgm === 'off' ? '끄기' : '켜기'}</dd></div>
           <div><dt>챌린지</dt><dd>${(() => { const y = dy(); return `${y.mode === 'free' ? `${y.weeks}주 안에 자유롭게` : '학교 가는 날 이어서'} ${y.count}회 · ${Math.min(y.min, y.count)}일 성공 메달${y.promise.trim() ? ' · 선생님 약속 있음' : ''}`; })()}</dd></div>
           <div><dt>결과 게시판</dt><dd>${okBoard() ? `<span class="ok">연결됨</span> ${esc(d.board)}` : d.mode === 'event' ? '<span class="no">없음</span> 학생은 카드를 인쇄하거나 이미지로 저장해요' : '<span class="no">없음</span> 다이어리는 학생 기기에만 저장돼요'}</dd></div>
         </dl>
         <div class="tc-flowbox"><p class="tc-mode"><b>${modeName()}</b> 학생은 이렇게 해요</p>
-        <ol class="tc-flow">${T_FLOW[d.mode === 'event' ? 'event' : 'class'].map(s => `<li>${s}</li>`).join('')}</ol>
-        ${d.mode === 'event' ? '<p class="tc-help tc-evnote">행사가 끝나면 태블릿 사진첩·다운로드 폴더의 카드 이미지를 지워 주세요.</p>' : ''}</div>
+        <ol class="tc-flow">${(d.mode === 'event' ? T_EVFLOW(evA(), okBoard()) : T_FLOW.class).map(s => `<li>${s}</li>`).join('')}</ol>
+        ${d.mode === 'event' ? `<p class="tc-help tc-evnote">행사가 끝나면 태블릿 사진첩·다운로드 폴더의 ${evA() === 'card' ? '카드' : evA() === 'diary' ? '다이어리' : '카드·다이어리'} 이미지를 지워 주세요.</p>` : ''}</div>
         <div class="tc-linkbox"><p class="tc-mode"><b>접속 링크</b> 설정을 바꾸면 새 QR을 다시 찍어야 해요</p>
           <div class="tc-linkrow"><div class="tc-link" id="lnk">${esc(urlOf())}</div><button class="tc-btn" id="copy">링크 복사</button></div>
           ${okBoard() ? '<button class="tc-btn sm" id="bqr">결과 게시판 QR 보기</button>' : ''}</div>
@@ -587,7 +614,7 @@ Router.screens.T49 = (app, p) => {
       onTap($('#prev'), () => { tab = d.mode === 'event' ? 1 : 2; draw(); });
       /* [설정 완료] (11/10 최종): 이 기기에도 설정을 적용해요 — 부스 태블릿처럼 선생님 설정에서 행사용을 고른 기기는 계속 행사용 */
       onTap($('#done'), () => {
-        Config.set(Object.assign(Config.get(), { mode: d.mode === 'event' ? 'event' : 'class', board: okBoard() ? d.board : '', bgm: d.bgm !== 'off' }));
+        Config.set(Object.assign(Config.get(), { mode: d.mode === 'event' ? 'event' : 'class', ev: evA(), board: okBoard() ? d.board : '', bgm: d.bgm !== 'off' }));
         setSound(d.sound !== 'off');
         Router.go(d.mode === 'event' ? 'S39' : (returnTo === 'S39' ? 'S00' : returnTo));
       });
@@ -662,7 +689,8 @@ const TestBar = {
   let configured = false; try { configured = localStorage.getItem(CFG_KEY) !== null; } catch (e) {}
   if (fromLink) {
     const board = qs.get('board') || '';
-    const cfg = { mode: qs.get('mode') === 'event' ? 'event' : 'class', board: isHttps(board) ? board : '', bgm: qs.get('bgm') !== 'off' };
+    const evq = qs.get('ev');
+    const cfg = { mode: qs.get('mode') === 'event' ? 'event' : 'class', ev: evq === 'd' ? 'diary' : evq === 'b' ? 'both' : 'card', board: isHttps(board) ? board : '', bgm: qs.get('bgm') !== 'off' };
     /* 챌린지 다이어리 설정 (선생님 링크 dy · dp · dm · dd) */
     const dyv = (qs.get('dy') || '').split('.');
     if (dyv.length >= 6) cfg.diary = { count: Math.max(1, Math.min(10, +dyv[0] || 5)), mode: dyv[1] === 'f' ? 'free' : 'row', weeks: Math.max(1, Math.min(4, +dyv[2] || 2)), min: Math.max(1, +dyv[3] || 3), photo: dyv[4] !== '0', tsign: dyv[5] === 'n' ? 'n' : 't',
@@ -673,7 +701,7 @@ const TestBar = {
       Config.setSession(cfg);
     } else Config.set(cfg);
     if (!PREVIEW) setSound(qs.get('sound') !== 'off');
-    ['mode', 'board', 'sound', 'bgm', 'dy', 'dp', 'dm', 'dd'].forEach(k => qs.delete(k));
+    ['mode', 'ev', 'board', 'sound', 'bgm', 'dy', 'dp', 'dm', 'dd'].forEach(k => qs.delete(k));
   }
   /* 선생님 설정: 사이트 주소 뒤 ?teacher, 또는 홈 화면 연구회 이름표를 두 번 빠르게 누르기 (11/11) */
   const teacher = qs.has('teacher') || location.hash === '#teacher'; qs.delete('teacher');

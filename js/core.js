@@ -52,7 +52,11 @@ const Config = {
   set(c) { try { localStorage.setItem(CFG_KEY, JSON.stringify(c)); sessionStorage.removeItem(SCFG_KEY); } catch (e) {} },
   /* 이 창에서만 (QR로 들어온 행사용) */
   setSession(c) { try { sessionStorage.setItem(SCFG_KEY, JSON.stringify(c)); } catch (e) {} },
-  isEvent() { return Config.get().mode === 'event'; }
+  isEvent() { return Config.get().mode === 'event'; },
+  /* 행사 활동 (11/11): 'card' 약속 카드만(기본) · 'diary' 다이어리만 · 'both' 둘 다 — 선생님 화면에서 체크 */
+  evAct() { const v = Config.get().ev; return v === 'diary' || v === 'both' ? v : 'card'; },
+  evCard() { return Config.evAct() !== 'diary'; },
+  evDiary() { return Config.evAct() !== 'card'; }
 };
 const Draft = {
   get() { try { return Object.assign({ mode: 'class', board: '', sound: 'on', bgm: 'on' }, JSON.parse(localStorage.getItem('teacherPanel.draft') || '{}')); } catch (e) { return { mode: 'class', board: '', sound: 'on', bgm: 'on' }; } },

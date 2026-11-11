@@ -215,3 +215,12 @@
 .tgx .tc-tab.off { opacity:.4; cursor:not-allowed; }
 .tgx .tc-dy .tc-inl .tc-h { width:auto; min-width:150px; white-space:nowrap; }
 .tgx .tc-dy .tc-inl .tc-h { min-width:168px; }   /* 버튼 시작 위치를 줄 맞춤 */
+
+/* 행사 활동 (11/11): 행사용을 고르면 실행 모드 아래 — 약속 카드 · 다이어리 체크 (하나 이상) */
+.tgx .tc-evact { margin-top:12px; flex-wrap:wrap; gap:10px 16px; }
+.tgx .tc-checks { display:inline-flex; gap:10px; flex:none; }
+.tgx .tc-checks button { display:inline-flex; align-items:center; gap:8px; height:42px; padding:0 16px 0 12px; border:2px solid var(--navy); border-radius:10px; background:#fff; color:var(--navy); font-family:var(--font-head); font-size:17px; }
+.tgx .tc-checks i { width:22px; height:22px; border:3px solid #8A93AE; border-radius:5px; background:#fff; position:relative; flex:none; }
+.tgx .tc-checks button.on { background:var(--sky-l); }
+.tgx .tc-checks button.on i { border-color:var(--navy); background:var(--navy); }
+.tgx .tc-checks button.on i::after { content:''; position:absolute; left:4px; top:0; width:6px; height:11px; border:solid #fff; border-width:0 3px 3px 0; transform:rotate(45deg); }

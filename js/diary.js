@@ -138,14 +138,25 @@ Router.screens.S46 = (app, p = {}) => {
   root.innerHTML = `<link rel="stylesheet" href="./css/diary.css">${DY_STAR_DEF}<div class="dyb"></div>`;
   const W = root.querySelector('.dyb');
   let look = DyLook.get(), sideTab = 'stk', stkTab = 's';
-  const cfg = DyCfg();
+  /* 행사용 다이어리 (11/11): 꾸미기 → 인쇄·이미지 저장(·게시판) → 다음 친구에게 넘기기.
+     태블릿에서 날마다 체크·메달·내 사진·설치 안내는 없음. 날짜 칸은 비워 두고 집에서 종이에 체크 (자유롭게 방식) */
+  const EV = Config.isEvent();
+  const cfg = EV ? Object.assign(DyCfg(), { mode: 'free', photo: false }) : DyCfg();
+  let evSaved = false, evPrinted = false;
   /* 결과 게시판 (11/10): 챌린지가 끝나면(완성 또는 기간 끝) [게시판에 올리기] — 한 사람당 마지막 결과 한 장 */
   const BOARD = Config.get().board || '';
   let sentReady = false;   // 이 화면에서 이미지를 저장했나 (저장해야 패들렛에서 고를 수 있어요)
-  const live = () => { const c = Challenge.get(); return c && c.v ? c : null; };
+  const live = () => { if (EV) return null; const c = Challenge.get(); return c && c.v ? c : null; };
   const model = () => dyModel(live() || Challenge.plan(cfg));
   const q = s => root.querySelector(s);
 
+  const boardBtn = () => `<button class="pbtn${sentReady ? ' ready' : ''}" id="toBoard" ${sentReady ? '' : 'disabled aria-disabled="true"'}>게시판에 올리기 ›</button>`;
+  const classBtns = (c, ended, m) => (!c ? '<button class="pbtn y" id="go">챌린지 시작하기 ›</button>' : ended ? '<button class="pbtn y" id="again">새로 도전하기 ›</button>' : '')
+    + `<div class="brow"><button class="pbtn${c && !ended ? ' y' : ''}" id="saveImg">이미지 저장</button><button class="pbtn" id="print">인쇄하기</button></div>`
+    + (c && BOARD && (ended || (m.medal && m.medal.gold)) ? boardBtn() : '');
+  /* 행사용 (11/11): [인쇄하기 노랑 | 이미지 저장] (게시판이 있으면 저장 뒤 [게시판에 올리기]) → [다음 친구에게 넘기기] */
+  const evBtns = () => `<div class="brow"><button class="pbtn y" id="print">인쇄하기</button><button class="pbtn" id="saveImg">이미지 저장</button></div>`
+    + (BOARD ? boardBtn() : '') + '<button class="pbtn" id="pass">다음 친구에게 넘기기 ›</button>';
   function paint() {
     const c = live(), m = model(), st = c ? Challenge.status(c) : 'none';
     const tday = DateK.today();
@@ -164,7 +175,7 @@ Router.screens.S46 = (app, p = {}) => {
         ${bub ? `<div class="sbub">${bub}</div>` : ''}
         <div class="tabs"><button data-side="cover" class="${sideTab === 'cover' ? 'on' : ''}">표지</button><button data-side="stk" class="${sideTab === 'stk' ? 'on' : ''}">스티커</button>${cfg.photo !== false ? '<button data-side="photo">내 사진</button>' : ''}</div>
         <div class="drawer" id="drawer"></div>
-        <div class="btns">${!c ? '<button class="pbtn y" id="go">챌린지 시작하기 ›</button>' : ended ? '<button class="pbtn y" id="again">새로 도전하기 ›</button>' : ''}<div class="brow"><button class="pbtn${c && !ended ? ' y' : ''}" id="saveImg">이미지 저장</button><button class="pbtn" id="print">인쇄하기</button></div>${c && BOARD && (ended || (m.medal && m.medal.gold)) ? `<button class="pbtn${sentReady ? ' ready' : ''}" id="toBoard" ${sentReady ? '' : 'disabled aria-disabled="true"'}>게시판에 올리기 ›</button>` : ''}</div>
+        <div class="btns">${EV ? evBtns() : classBtns(c, ended, m)}</div>
       </div>
       <div id="dz">${dyDiary(m, look)}${look.placed.map(dyStk).join('')}</div>`;
     paintDrawer();
@@ -214,6 +225,7 @@ Router.screens.S46 = (app, p = {}) => {
     const go = q('#go'); if (go) onTap(go, start);
     const ag = q('#again'); if (ag) onTap(ag, () => { playSfx('tap'); Router.go('S39'); });   // 지우기 확인은 S39에서 한 번만 (11/10)
     onTap(q('#print'), printDiary);
+    onTap(q('#pass'), passOn);
     onTap(q('#saveImg'), saveImage);
     onTap(q('#toBoard'), () => {
       if (!sentReady) { playSfx('full'); toast('먼저 [이미지 저장]을 눌러요.'); return; }
@@ -247,6 +259,7 @@ Router.screens.S46 = (app, p = {}) => {
     paint();
   }
   function check(id) {
+    if (EV) { playSfx('full'); toast('체크는 인쇄한 다이어리에 집에서 해요.'); return; }
     const c = live(); if (!c) { playSfx('full'); toast('먼저 [챌린지 시작하기]를 눌러 주세요.'); return; }
     const m = dyModel(c); if (m.ti < 0) { playSfx('full'); toast(Challenge.status(c) === 'rest' ? '오늘은 쉬는 날이에요.' : Challenge.status(c) === 'before' ? '아직 시작 전이에요.' : '체크할 수 있는 날이 아니에요.'); return; }
     const d = m.slots[m.ti] || DateK.today();
@@ -352,8 +365,10 @@ Router.screens.S46 = (app, p = {}) => {
     const btn = q('#saveImg'); if (btn) btn.textContent = '만드는 중…';
     try {
       const cv = await dyRender(dyModel(live() || Challenge.plan(cfg)), look);
-      await saveCanvasPNG(cv, `챌린지다이어리_${(Store.get('name', '') || '나').replace(/[^\w가-힣-]/g, '')}.png`);
-      playSfx('save');
+      const tm = new Date(), p2 = n => String(n).padStart(2, '0');   // 행사용은 이름 대신 시각 (함께 쓰는 태블릿)
+      await saveCanvasPNG(cv, EV ? `챌린지다이어리_${DateK.today().replace(/-/g, '').slice(4)}_${p2(tm.getHours())}${p2(tm.getMinutes())}${p2(tm.getSeconds())}.png`
+        : `챌린지다이어리_${(Store.get('name', '') || '나').replace(/[^\w가-힣-]/g, '')}.png`);
+      playSfx('save'); evSaved = true;
       const tb = q('#toBoard');
       if (tb) { sentReady = true; tb.disabled = false; tb.removeAttribute('aria-disabled'); tb.classList.add('ready'); toast('저장했어요! 이제 [게시판에 올리기]를 눌러요.', 2500); }
       else toast('다이어리 이미지를 저장했어요.', 1800);
@@ -363,7 +378,7 @@ Router.screens.S46 = (app, p = {}) => {
 
   /* ---------- 인쇄 (A4 가로) : 종이용 양식 — 잉크 아끼는 표지, 메달·진행 막대 없이, 맨 아래 확인란 ---------- */
   function printDiary() {
-    playSfx('tap');
+    playSfx('tap'); evPrinted = true;
     const m = model();
     let pa = document.getElementById('printArea');
     if (!pa) { pa = document.createElement('div'); pa.id = 'printArea'; pa.className = 'print-only'; document.body.appendChild(pa); }
@@ -376,8 +391,20 @@ Router.screens.S46 = (app, p = {}) => {
     if (link.sheet) go(); else link.addEventListener('load', go, { once: true });
   }
 
+  /* 행사용: 다음 친구에게 넘기기 (카드 꾸미기와 같은 안내) */
+  function passOn() {
+    const del = '함께 쓰는 태블릿이에요. <b class="red">사진첩에 저장한 내 이미지는 지워 주세요.</b>';
+    const msg = evSaved ? (BOARD ? '게시판에 올렸나요?<br>' : '') + del
+      : evPrinted ? '내 기록이 지워지고, 다음 친구가 처음부터 시작해요.'
+      : '<b class="red">아직 인쇄하거나 저장하지 않았어요.</b><br>넘기면 내 다이어리가 사라져요.';
+    const m = Modal.open(`<div class="pop-head">다음 친구에게 넘길까요?</div><p class="pop-body">${msg}</p>
+      <div class="pop-btns"><button class="btn white" data-autofocus id="pNo">아직이에요</button><button class="btn pink" id="pYes">네, 넘길게요</button></div>`);
+    onTap($('#pNo', m), () => Modal.close());
+    onTap($('#pYes', m), () => { Modal.close(); playSfx('delete'); Store.clearAll(); NavBtns.depth = 0; const pa = document.getElementById('printArea'); if (pa) pa.innerHTML = ''; Router.go('S39', {}, { replace: true }); toast('다음 친구 차례예요!', 2000); });
+  }
+
   paint();
-  if (p.install && !isStandalone()) setTimeout(openInstallModal, 300);
+  if (!EV && p.install && !isStandalone()) setTimeout(openInstallModal, 300);
   /* 들어왔을 때 아직 못 본 축하가 있으면 */
   const c0 = live();
   if (c0) { const m0 = dyModel(c0); if (m0.got >= m0.n && !c0.cele.done) { c0.cele.done = true; Store.set('challenge', c0); setTimeout(() => cele(true), 500); } else if (m0.got >= c0.min && c0.min < m0.n && !c0.cele.min) { c0.cele.min = true; Store.set('challenge', c0); setTimeout(() => cele(false), 500); } }
