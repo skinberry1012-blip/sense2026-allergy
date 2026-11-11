@@ -540,7 +540,7 @@ Router.screens.T49 = (app, p) => {
         <button class="tc-sample" data-fill="${k}" data-text="${esc(sample)}">예: ${esc(sample)}</button>`;
       $('#panel').innerHTML = `
       <div class="tc-col tc-set tc-dy${d.mode === 'event' ? ' ev-off' : ''}">
-        ${d.mode === 'event' ? '<p class="tc-evwarn"><b>행사용</b>은 다이어리를 쓰지 않아요. 아래 설정은 수업용에서만 쓰여요.</p>' : ''}
+        ${d.mode === 'event' ? `<p class="tc-evwarn"><b>행사용</b>${evD() ? ' 다이어리는 꾸미고 인쇄만 해요.' : '은 다이어리를 쓰지 않아요.'} 아래 설정은 수업용에서만 쓰여요.</p>` : ''}
         <section class="tc-sec tc-inl"><h2 class="tc-h"><i>1</i>챌린지 횟수</h2>${step1('count', y.count, '회', 1, 10)}<small>1~10회 · 기본 5회</small></section>
         <section class="tc-sec tc-inl"><h2 class="tc-h"><i>2</i>성공 메달</h2>${step1('min', Math.min(y.min, y.count), '일', 1, y.count)}<small>별을 이만큼 모으면 성공 메달</small></section>
         <section class="tc-sec tc-inl tc-way"><h2 class="tc-h"><i>3</i>진행 방식</h2>${seg('dmode', [['row', '이어서'], ['free', '자유롭게']], y.mode)}
@@ -619,7 +619,7 @@ Router.screens.T49 = (app, p) => {
     const m = Modal.open(`<h3 class="${warn ? 'warn' : ''}">${title}</h3><div class="qr-big">${QR.toSVG(text)}</div><p>${warn ? '챌린지를 마친 뒤 다이어리 이미지를 올릴 때 쓰세요' : '스캔하세요'}</p><button class="btn white" data-autofocus id="qc">✕ 닫기</button>`, { cls: 'qr-full', sfx: null });
     onTap($('#qc', m), () => Modal.close());
   };
-  $('.tc-tabs').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (!b) return; if (+b.dataset.t === 2 && d.mode === 'event') { toast('행사용은 다이어리를 쓰지 않아요.'); return; } tab = +b.dataset.t; draw(); });
+  $('.tc-tabs').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (!b) return; if (+b.dataset.t === 2 && d.mode === 'event') { toast(evD() ? '행사용 다이어리는 꾸미고 인쇄만 해요. 챌린지 설정은 수업용에서 써요.' : '행사용은 다이어리를 쓰지 않아요.', 3000); return; } tab = +b.dataset.t; draw(); });
   window.addEventListener('resize', fitFrame);
   draw();
 };
