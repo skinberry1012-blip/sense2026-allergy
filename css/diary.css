@@ -507,3 +507,7 @@ button.cb:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
 #toBoard{margin-top:2px}
 #toBoard:disabled{opacity:.45;cursor:not-allowed}
 #toBoard.ready{background:var(--yellow)}
+/* 문구 탭 (11/11): 문구 3개를 한 줄에 고르게 — 좌우 여백 같게 */
+.drawer.words{grid-template-columns:repeat(3,1fr)}
+.drawer.words button[data-add]{padding:6px 4px}
+.drawer.words .wd{font-size:15px;padding:2px 8px;white-space:nowrap}

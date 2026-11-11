@@ -17,7 +17,7 @@ const DY_STK = [
   ...[['stk_mask', 120], ['stk_soap', 110], ['stk_shield', 96], ['stk_rainbow', 120], ['stk_star', 100], ['stk_heart', 96], ['stk_dino', 104], ['stk_ball', 96], ['stk_rocket', 96], ['stk_ribbon', 110], ['stk_unicorn', 100], ['stk_crown', 110]].map(([k, w]) => ['img', k, w, 's']),
   ['word', '할 수 있어!', '', 'w'], ['word', '건강 최고', 'g', 'w'], ['word', '오늘도 지켰다', 'b', 'w']
 ];
-const DY_STK_TAB = { c: '캐릭터', s: '스티커', w: '글자' };
+const DY_STK_TAB = { c: '캐릭터', s: '스티커', w: '문구' };   // 11/11: '글자' → '문구'
 const DY_COVERS = [['mint', '민트'], ['navy', '남색 체크'], ['pink', '분홍 체크']];
 const DY_BUDDY = ['staff_hello', 'staff_heart', 'staff_guide', 'staff_thumb'];
 const DyLook = {
@@ -184,9 +184,10 @@ Router.screens.S46 = (app, p = {}) => {
   }
   function paintDrawer() {
     const dr = q('#drawer'); if (!dr) return;
+    dr.classList.toggle('words', sideTab !== 'cover' && stkTab === 'w');   // 문구 3개는 한 줄에 고르게 (11/11)
     dr.innerHTML = sideTab === 'cover'
       ? `<span class="cap" style="margin:0 0 4px;grid-column:1/-1">마음에 드는 다이어리를 골라요</span>` + DY_COVERS.map(([k, l]) => `<button class="cov ${look.art === k ? 'on' : ''}" data-cover="${k}" aria-label="${l} 다이어리"><img src="${DY_IMG('diary_' + k)}" alt=""><i class="cb ${look.art === k ? 'on' : ''}"></i></button>`).join('')
-      : `<div class="subtabs">${Object.entries(DY_STK_TAB).map(([k, l]) => `<button data-st="${k}" class="${k === stkTab ? 'on' : ''}">${l} ${DY_STK.filter(x => x[3] === k).length}</button>`).join('')}</div><p class="hint2">누르면 붙고, 끌어서 옮길 수 있어요</p>`
+      : `<div class="subtabs">${Object.entries(DY_STK_TAB).map(([k, l]) => `<button data-st="${k}" class="${k === stkTab ? 'on' : ''}">${l}</button>`).join('')}</div><p class="hint2">누르면 붙고, 끌어서 옮길 수 있어요</p>`
         + DY_STK.map(([t, v, w, g], i) => g !== stkTab ? '' : `<button data-add="${i}" aria-label="스티커 붙이기">${t === 'img' ? `<img src="${DY_IMG(v)}" alt="">` : `<span class="wd ${w}">${v}</span>`}</button>`).join('');
     fitDrawer(dr);
   }
