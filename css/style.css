@@ -1396,3 +1396,13 @@ body.tablet .s44b-side .buddies { grid-template-columns:repeat(2,1fr); }
 .sign-warn-bg.out { opacity:0; transition:opacity .3s; }
 body.tablet #stage:has(.sign-warn) { z-index:2; }
 #stage:has(.sign-warn) > :not(.sign-warn) { filter:blur(3px); transition:filter .2s; }
+
+/* 시안 (11/11 밤): 수호냥 크게(화면 높이의 약 2/3), 말풍선은 수호냥 오른쪽에 간격을 두고 꼬리가 호루라기 쪽을 가리킴, 경광등은 말풍선 위 가운데. 둘을 한 덩어리로 화면 가운데 */
+.sign-warn .sw-in { position:relative; width:1240px; height:620px; display:block; transform:none; }
+.sign-warn .sw-cat { position:absolute; left:0; top:0; width:auto; height:600px; }
+.sign-warn .sw-right { position:absolute; left:650px; top:60px; display:flex; flex-direction:column; align-items:center; gap:12px; }
+.sign-warn .sw-siren { width:150px; height:122px; }
+.sign-warn .sw-say { padding:16px 40px 10px 44px; }
+.sign-warn .sw-say .t1 { top:96px !important; }
+.sign-warn .sw-say .px-bub-txt { font-size:46px; line-height:1.35; }
+.sign-warn .sw-say b { font-size:60px; }
