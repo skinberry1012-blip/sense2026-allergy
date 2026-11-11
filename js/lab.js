@@ -70,7 +70,7 @@ function labEl(board, cls, r, html = '', tag = 'div', style = '') {
   e.innerHTML = html; board.appendChild(e); return e;
 }
 /* 선생님 화면 입구 (11/11): 연구회 이름표를 두 번 빠르게 누르면 선생님 설정.
-   선생님 설정의 미리 보기(PREVIEW)에서는 이동하지 않고 연습만 — 이름표 옆 말풍선 + 눌러 보면 알림 */
+   선생님 설정의 미리 보기(PREVIEW)에서는 이름표 옆 말풍선·손가락으로 안내하고, 두 번 누르면 미리 보기 안에서 실제로 선생님 설정 화면으로 이동 */
 function orgDoor(board, org, from) {
   if (!PREVIEW) { doubleTap(org, () => openTeacher(from)); return; }
   org.classList.add('try');
@@ -79,7 +79,7 @@ function orgDoor(board, org, from) {
   org.style.touchAction = 'manipulation';
   org.addEventListener('pointerup', () => {
     const now = Date.now();
-    if (now - last <= 400) { last = 0; clearTimeout(t); playSfx('check'); toast('선생님 설정 화면으로 이동합니다.', 2500); }
+    if (now - last <= 400) { last = 0; clearTimeout(t); playSfx('check'); toast('선생님 설정 화면으로 이동합니다.', 1800); setTimeout(() => { if (org.isConnected) openTeacher(from); }, 700); }   // 미리 보기 안에서도 실제로 이동해요 (11/11)
     else { last = now; clearTimeout(t); t = setTimeout(() => { if (org.isConnected) toast('빠르게 두 번 눌러요.', 1600); }, 450); }
   });
 }
