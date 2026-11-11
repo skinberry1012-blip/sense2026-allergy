@@ -92,22 +92,29 @@ function dyDiary(m, look, { print = false } = {}) {
   };
   const todayD = ti >= 0 ? (slots[ti] || DateK.today()) : null;
   const many = rules.length > 3 ? ' many' : '';   // 11/11 점검: 약속 4개(나만의 약속 포함)부터 줄을 낮춰 다이어리 밖으로 안 나가게
-  const signTop = 290 + 50 + Math.min(rules.length, 7) * (rules.length > 3 ? 64 : 86) + 92;
+  const dtwo = n >= 7 ? ' two' : '';        // 11/11 밤: 7~10번이면 매일 체크 칸을 두 줄로(날짜가 겹치지 않게, 별 스티커 붙일 자리)
+  const sign = print ? `<div class="psign">${c.tsign === 'n' ? `<span class="nyang">확인했어요<em>냥박사</em><b class="pspot">${dyPawSeal('pseal')}</b></span>` : `<span>확인했어요<i></i><b class="pspot">${dyPawSeal('pseal ghost')}</b></span>`}</div>` : '';
   const Rt = `<div class="r-head"><h4>매일 체크</h4></div>
-    ${print ? `<div class="psign" style="top:${signTop}px">${c.tsign === 'n' ? `<span class="nyang">확인했어요<em>냥박사</em><b class="pspot">${dyPawSeal('pseal')}</b></span>` : `<span>확인했어요<i></i><b class="pspot">${dyPawSeal('pseal ghost')}</b></span>`}</div>`
-      : EVX ? '' : `<div class="slegend" style="top:344px"><span><svg viewBox="-0.5 -1 16 16" width="30" height="30"><use href="#star" fill="#F5C842"/></svg> 별 받음</span><span><svg viewBox="-0.5 -1 16 16" width="30" height="30"><use href="#star" fill="#9EA3AB"/></svg> 했지만 별 없음</span></div>`}
-    <div class="dayrow" ${print ? 'style="top:104px"' : ''}>${slots.map(day).join('')}</div>
+    ${print ? ''
+      : EVX ? '' : `<div class="slegend" style="top:${dtwo ? 380 : 344}px"><span><svg viewBox="-0.5 -1 16 16" width="30" height="30"><use href="#star" fill="#F5C842"/></svg> 별 받음</span><span><svg viewBox="-0.5 -1 16 16" width="30" height="30"><use href="#star" fill="#9EA3AB"/></svg> 했지만 별 없음</span></div>`}
+    <div class="dayrow${dtwo}" style="--cols:${Math.ceil(n / 2)};${print ? 'top:104px' : ''}">${slots.map(day).join('')}</div>
     ${print || EVX ? '' : prog()}
-    <div class="tlist${many}" ${print ? 'style="top:290px"' : ''}><h5>${print ? `실천한 날에 체크해요<span class="pdates">${slots.map(d => `<b>${c.mode === 'free' || !d ? '__' : DateK.md(d).split('/')[1]}</b>`).join('')}</span>` : `${ti >= 0 ? '오늘 실천한 약속' : '실천한 약속'}<span class="hrule">${m.need}개 이상 지키면 별 하나</span>`}</h5>
+    ${print ? `<div class="pcol" style="top:${dtwo ? 330 : 290}px">` : ''}<div class="tlist${many}${print ? ' plist' : ''}" ${print ? '' : dtwo && !EVX ? 'style="top:426px"' : ''}><h5>${print ? `지킬 약속<span class="hrule">${m.need}개 이상 지키면 별 하나</span>` : `${ti >= 0 ? '오늘 실천한 약속' : '실천한 약속'}<span class="hrule">${m.need}개 이상 지키면 별 하나</span>`}</h5>
       ${rules.map(r => {
         const v = todayD ? logOf(todayD)[r.id] : '';
-        return `<div class="ti"><span>${rp(r)}</span><span class="tt">${dyEsc(r.text)}</span>${print ? `<span class="pboxes">${slots.map(() => '<i class="cb pb"></i>').join('')}</span>` : `<button type="button" class="cb ${v === 'O' ? 'on' : ''} ${ti < 0 ? 'off' : ''}" data-rule="${r.id}" aria-label="${dyEsc(r.text)} 지켰어요" aria-pressed="${v === 'O'}"></button>`}</div>`;
-      }).join('')}</div>`;
+        return `<div class="ti"><span>${rp(r)}</span><span class="tt">${dyEsc(r.text)}</span>${print ? '' : `<button type="button" class="cb ${v === 'O' ? 'on' : ''} ${ti < 0 ? 'off' : ''}" data-rule="${r.id}" aria-label="${dyEsc(r.text)} 지켰어요" aria-pressed="${v === 'O'}"></button>`}</div>`;
+      }).join('')}</div>${print ? sign + '</div>' : ''}`;
   const k = 1196 / 1440, pw = 630 * k, ph2 = 873 * k, sc = ph2 / 860, off = (pw - 560 * sc) / 2;
   const pg = (left, html, dy = 0) => `<div class="dpage art" style="left:${left}px;top:${(78 - 24) * k}px;width:${pw}px;height:${ph2}px"><div class="pg" style="left:${off}px;top:${dy}px;transform:scale(${sc})">${html}</div></div>`;
   return `<div class="diary art" style="left:${print ? 0 : 402}px;top:${print ? 0 : 46}px;width:1196px;height:${975 * k}px">
-    <img class="dart" src="${DY_IMG('diary_' + look.art + (print ? '_ink' : ''))}" alt="" style="left:${-48 * k}px;top:${-24 * k}px;width:${1536 * k}px">
-    ${pg((93 - 48) * k, L, 34)}${pg((775 - 48) * k, Rt)}</div>`;
+    <img class="dart" src="${DY_IMG('diary_' + look.art + (print ? '_ink' : ''))}" alt="" style="left:${-48 * k}px;top:${-24 * k}px;width:${1536 * k}px${print ? ';image-rendering:pixelated' : ''}">
+    ${print ? dyGrid() : ''}${pg((93 - 48) * k, L, 34)}${pg((775 - 48) * k, Rt)}</div>`;
+}
+/* 11/11 밤: 인쇄용 그림의 모눈이 끊겨 보여 그림에서 지우고 선으로 다시 그려요 (원본 1300px 그림 좌표 → 다이어리 좌표) */
+function dyGrid() {
+  const f = 1536 / 1300 * (1196 / 1440), ox = -48 * (1196 / 1440), oy = -24 * (1196 / 1440);
+  const box = (x1, x2) => `<i class="pgrid" style="left:${ox + x1 * f}px;top:${oy + 62 * f}px;width:${(x2 - x1) * f}px;height:${(809 - 62) * f}px"></i>`;
+  return box(72, 592) + box(677, 1192);
 }
 const dyFixNote = h => h;   // 선생님 쪽지는 왼쪽 쪽 그대로
 
@@ -389,7 +396,7 @@ Router.screens.S46 = (app, p = {}) => {
     if (!pa) { pa = document.createElement('div'); pa.id = 'printArea'; pa.className = 'print-only'; document.body.appendChild(pa); }
     pa.innerHTML = '';
     toast('인쇄 준비 중…', 1500);
-    dyRender(m, look, 2, { print: true }).then(cv => {
+    dyRender(m, look, 3, { print: true }).then(cv => {
       pa.innerHTML = `<img class="dyp" src="${cv.toDataURL('image/png')}" alt="챌린지 다이어리 인쇄 양식">`;
       const im = pa.querySelector('img');
       const go = () => setTimeout(() => window.print(), 150);
