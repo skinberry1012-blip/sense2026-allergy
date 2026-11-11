@@ -73,6 +73,7 @@ function dyDiary(m, look, { print = false } = {}) {
     <div class="pframe"><img class="pf" src="${DY_IMG('photo_frame')}" alt=""><div class="pwin">${ph}</div><p>나</p></div>
     <div class="me"><b>${dyEsc(name)}</b><dl><div><dt>기간</dt><dd>${m.range}</dd></div><div><dt>방식</dt><dd>${m.sub}</dd></div><div><dt>약속</dt><dd>${rules.length}개</dd></div></dl></div>
     ${note}
+    ${print ? '' : `<div class="lsign${got >= n && !EVX ? ' on' : ''}">확인했어요<em>${got >= n && !EVX ? '냥박사' : ''}</em>${got >= n && !EVX ? dyPawSeal('lseal') : ''}</div>`}
     ${md && !print ? `<div class="award"><div class="aw-t"><small>${md.at ? DateK.md(md.at) + ' ' : ''}받은 메달</small><b>${md.gold ? `${n}일 챌린지 완성!` : `${md.k}일 챌린지 성공!`}</b></div><div class="pocket on">${dyBadge(got, n, md.gold)}</div></div>` : ''}`;
   const rp = r => `<span class="rpl p${DY_PLACE[r.place][1]}">${DY_PLACE[r.place][0]}</span>`;
   const logOf = d => (d && c.log[d]) || {};
@@ -94,7 +95,8 @@ function dyDiary(m, look, { print = false } = {}) {
   const todayD = ti >= 0 ? (slots[ti] || DateK.today()) : null;
   const many = rules.length > 3 ? ' many' : '';   // 11/11 점검: 약속 4개(나만의 약속 포함)부터 줄을 낮춰 다이어리 밖으로 안 나가게
   const dtwo = n >= 7 ? ' two' : '';        // 11/11 밤: 7~10번이면 매일 체크 칸을 두 줄로(날짜가 겹치지 않게, 별 스티커 붙일 자리)
-  const sign = print ? `<div class="psign">${c.tsign === 'n' ? `<span class="nyang">확인했어요<em>냥박사</em><b class="pspot">${dyPawSeal('pseal')}</b></span>` : `<span>확인했어요<i></i><b class="pspot">${dyPawSeal('pseal ghost')}</b></span>`}</div>` : '';
+  /* 11/12: 확인은 모두 냥박사 — 인쇄물은 늘 냥박사 서명+도장, 화면·저장 그림은 왼쪽 쪽 메달 옆에 '확인했어요 ___', 완성하면 서명+도장 */
+  const sign = print ? `<div class="psign"><span class="nyang">확인했어요<em>냥박사</em><b class="pspot">${dyPawSeal('pseal')}</b></span></div>` : '';
   const Rt = `<div class="r-head"><h4>매일 체크</h4></div>
     ${print ? ''
       : EVX ? '' : `<div class="slegend" style="top:${dtwo ? 380 : 344}px"><span><svg viewBox="-0.5 -1 16 16" width="30" height="30"><use href="#star" fill="#F5C842"/></svg> 별 받음</span><span><svg viewBox="-0.5 -1 16 16" width="30" height="30"><use href="#star" fill="#9EA3AB"/></svg> 했지만 별 없음</span></div>`}

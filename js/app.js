@@ -568,13 +568,12 @@ Router.screens.T49 = (app, p) => {
         <section class="tc-sec tc-inl"><h2 class="tc-h"><i>${N()}</i>챌린지 횟수</h2>${step1('count', y.count, '회', 1, 10)}</section>
         ${EVD ? '' : `<section class="tc-sec tc-inl"><h2 class="tc-h"><i>${N()}</i>성공 메달</h2>${step1('min', Math.min(y.min, y.count), '일', 1, y.count)}<small>최소 목표예요<br>다 모으면 완성 메달</small></section>`}
         <section class="tc-sec tc-inl tc-way"><h2 class="tc-h"><i>${N()}</i>진행 방식</h2>${seg('dmode', [['row', '이어서'], ['free', '자유롭게']], y.mode)}${T_CAL}
-          <div class="tc-sub">${y.mode === 'free' ? seg('weeks', [['1', '1주'], ['2', '2주'], ['3', '3주'], ['4', '4주']], String(y.weeks)) : ''}<small>${y.mode === 'free' ? `${stOn ? DateK.short(y.start) + '부터 ' : ''}${y.weeks}주 안에 아무 날이나 ${y.count}번 (주말 포함)` : `${stOn ? DateK.short(y.start) + '부터' : '시작한 다음 날부터'} 학교 가는 날 ${y.count}번 이어서`}</small></div></section>
+          <div class="tc-sub">${y.mode === 'free' ? seg('weeks', [['1', '1주'], ['2', '2주'], ['3', '3주'], ['4', '4주']], String(y.weeks)) : ''}<small>${y.mode === 'free' ? `${stOn ? DateK.short(y.start) : '시작한 날'}부터 ${y.weeks}주 안에 아무 날이나 ${y.count}번 (주말 포함)` : `${stOn ? DateK.short(y.start) + '부터' : '시작한 다음 날부터'} 학교 가는 날 ${y.count}번 이어서`}</small></div></section>
         <section class="tc-sec tc-inl"><h2 class="tc-h"><i>${N()}</i>사진 찍기</h2>${seg('dphoto', [['1', '켜기'], ['0', '끄기']], y.photo === false ? '0' : '1')}</section>
         <section class="tc-sec"><h2 class="tc-h"><i>${N()}</i>선생님 약속 <em>선택</em></h2>${txt('promise', 30, '예: 다 완성하면 선생님이 간식을 쏠게요!', '')}</section>
         <section class="tc-sec${EVD ? ' tc-dim' : ''}"><h2 class="tc-h"><i>${N()}</i>선생님 칭찬${EVD ? '<em>행사용은 축하 창이 없어요</em>' : ''}</h2>
           <div class="tc-pr"><span>${Math.min(y.min, y.count)}일 성공</span><div>${txt('praiseMin', 40, '비워 두면 예시 문구가 나와요', DY_SAMPLE.min)}</div></div>
           <div class="tc-pr"><span>완성</span><div>${txt('praiseDone', 40, '비워 두면 예시 문구가 나와요', DY_SAMPLE.done)}</div></div></section>
-        <section class="tc-sec tc-inl tc-way"><h2 class="tc-h"><i>${N()}</i>완성 확인</h2>${seg('dsign', [['t', '선생님 서명'], ['n', '냥박사 도장']], y.tsign === 'n' ? 'n' : 't')}</section>
         <div class="tc-more" aria-hidden="true">▾ 아래로 내리면 더 있어요</div>
       </div>
       <div class="tc-col tc-pv">
@@ -715,7 +714,7 @@ const TestBar = {
     const cfg = { mode: qs.get('mode') === 'event' ? 'event' : 'class', ev: evq === 'd' ? 'diary' : evq === 'b' ? 'both' : 'card', board: isHttps(board) ? board : '', bgm: qs.get('bgm') !== 'off' && qs.get('sound') !== 'off' };   // 소리를 끄면 대기 음악도 꺼요 (11/11)
     /* 챌린지 다이어리 설정 (선생님 링크 dy · dp · dm · dd) */
     const dyv = (qs.get('dy') || '').split('.');
-    if (dyv.length >= 6) cfg.diary = { count: Math.max(1, Math.min(10, +dyv[0] || 5)), mode: dyv[1] === 'f' ? 'free' : 'row', weeks: Math.max(1, Math.min(4, +dyv[2] || 2)), min: Math.max(1, +dyv[3] || 3), photo: dyv[4] !== '0', tsign: dyv[5] === 'n' ? 'n' : 't', start: /^\d{8}$/.test(dyv[6] || '') ? `${dyv[6].slice(0, 4)}-${dyv[6].slice(4, 6)}-${dyv[6].slice(6)}` : '',
+    if (dyv.length >= 6) cfg.diary = { count: Math.max(1, Math.min(10, +dyv[0] || 5)), mode: dyv[1] === 'f' ? 'free' : 'row', weeks: Math.max(1, Math.min(4, +dyv[2] || 2)), min: Math.max(1, +dyv[3] || 3), photo: dyv[4] !== '0', tsign: 'n', start: /^\d{8}$/.test(dyv[6] || '') ? `${dyv[6].slice(0, 4)}-${dyv[6].slice(4, 6)}-${dyv[6].slice(6)}` : '',
       promise: (qs.get('dp') || '').slice(0, 30), praiseMin: (qs.get('dm') || '').slice(0, 40), praiseDone: (qs.get('dd') || '').slice(0, 40) };
     if (cfg.mode === 'event' && !PREVIEW) {
       /* 행사용 QR (11/10 최종): 이 창을 닫을 때까지만 행사용 — 학생 개인 태블릿은 다시 열면 원래대로(수업 다이어리) */

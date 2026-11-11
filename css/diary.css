@@ -550,3 +550,7 @@ button.cb:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
 .tlist:not(.plist) .ti>button.cb{width:36px;height:36px;border-radius:7px}
 .tlist:not(.plist) .ti>button.cb.on::after{left:10px;top:2px;width:10px;height:18px;border-width:0 4px 4px 0}
 .prog .mk.up{top:auto;bottom:20px}
+/* 11/12: 화면·저장 그림의 확인란 — 왼쪽 쪽 아래, 메달 옆 */
+.lsign{position:absolute;left:44px;top:722px;display:flex;align-items:flex-end;gap:6px;font-family:var(--f-disp);font-size:21px;color:var(--navy);white-space:nowrap;z-index:3}
+.lsign em{font-style:normal;display:inline-block;width:118px;height:30px;border-bottom:3px solid var(--navy);font-family:'Nanum Pen Script','Gowun Dodum',cursive;font-size:30px;line-height:30px;text-align:center}
+.lsign .lseal{width:72px;height:72px;margin:0 0 -24px -16px}

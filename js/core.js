@@ -117,15 +117,15 @@ const needCount = n => Math.max(1, n - 1);   // 하나까지는 못 지켜도 �
    선생님 설정(Config.diary)에서 횟수 1~10 · 진행 방식 · 성공 메달 기준을 정하고, 시작할 때 그 값을 챌린지에 복사해 둬요.
    row(이어서) = 시작 다음 날부터 학교 가는 날 count번 / free(자유롭게) = 오늘부터 weeks주 안에 아무 날 count번(하루 한 번)
    log[날짜][수칙 id] = 'O' | 'X' — 하루에 하나라도 체크하면 그날은 '한 날', 지킨 수가 needCount 이상이면 별 */
-const DY_DEF = { count: 5, mode: 'row', weeks: 2, min: 3, promise: '', praiseMin: '', praiseDone: '', photo: true, tsign: 't', start: '' };   // start: 선생님이 정한 시작 날짜 (11/12, 비우면 다음 학교 가는 날·오늘)
+const DY_DEF = { count: 5, mode: 'row', weeks: 2, min: 3, promise: '', praiseMin: '', praiseDone: '', photo: true, tsign: 'n', start: '' };   // start: 선생님이 정한 시작 날짜 (11/12, 비우면 다음 학교 가는 날·오늘)
 const DyCfg = () => Object.assign({}, DY_DEF, Config.get().diary || {});
 const Challenge = {
   get() { return Store.get('challenge', null); },
   plan(cfg = DyCfg(), from = DateK.today()) {
     const n = Math.max(1, Math.min(10, cfg.count | 0)), c = { v: 2, mode: cfg.mode === 'free' ? 'free' : 'row', count: n, min: Math.max(1, Math.min(n, cfg.min | 0)),
       weeks: Math.max(1, Math.min(4, cfg.weeks | 0)), promise: cfg.promise || '', praiseMin: cfg.praiseMin || '', praiseDone: cfg.praiseDone || '', tsign: cfg.tsign || 't', log: {}, stars: [], cele: {} };
-    /* 선생님이 정한 시작 날짜가 아직 오지 않았으면 그날부터 (지났으면 평소처럼) */
-    const st = /^\d{4}-\d{2}-\d{2}$/.test(cfg.start || '') && cfg.start > from ? cfg.start : '';
+    /* 선생님이 정한 시작 날짜가 오늘이거나 아직 오지 않았으면 그날부터 (지났으면 평소처럼) */
+    const st = /^\d{4}-\d{2}-\d{2}$/.test(cfg.start || '') && cfg.start >= from ? cfg.start : '';   // 11/12: 오늘을 고르면 오늘부터
     if (c.mode === 'row') c.days = DateK.nextSchoolDays(st ? DateK.add(st, -1) : from, n);
     else { c.start = st || from; c.end = DateK.add(c.start, c.weeks * 7 - 1); c.days = []; }
     return c;
