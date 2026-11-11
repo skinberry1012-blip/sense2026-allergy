@@ -224,3 +224,23 @@
 .tgx .tc-checks button.on { background:var(--sky-l); }
 .tgx .tc-checks button.on i { border-color:var(--navy); background:var(--navy); }
 .tgx .tc-checks button.on i::after { content:''; position:absolute; left:4px; top:0; width:6px; height:11px; border:solid #fff; border-width:0 3px 3px 0; transform:rotate(45deg); }
+
+/* 02 탭 (11/11 점검): 진행 방식도 버튼을 제목 옆에 — 주(1~4주)·설명은 버튼 시작선에 맞춰 다음 줄 */
+.tgx .tc-dy .tc-way { flex-wrap:wrap; row-gap:6px !important; }
+.tgx .tc-dy .tc-way .tc-sub { flex-basis:100%; display:flex; align-items:center; gap:12px; padding-left:180px; }
+.tgx .tc-dy .tc-way .tc-sub small { flex:1; min-width:0; }
+/* 02 탭 (11/11 점검): 칸 세로 높이 줄이기 — 자리가 모자라 아래 설정이 가려지던 것 */
+.tgx .tc-dy { gap:8px; }
+.tgx .tc-dy .tc-sec { gap:4px; }
+.tgx .tc-dy .tc-url input { height:38px; font-size:16px; }
+.tgx .tc-dy .tc-seg button { height:34px; font-size:16px; }
+.tgx .tc-dy .tc-step button, .tgx .tc-dy .tc-step b { height:34px; }
+.tgx .tc-dy .tc-step b { font-size:18px; }
+.tgx .tc-dy .tc-sample { padding:2px 10px; font-size:13px; }
+.tgx .tc-dy .tc-pr { gap:6px; }
+.tgx .tc-dy .tc-pr > span { padding-top:8px; }
+.tgx .tc-dy .tc-pr > div { gap:4px; }
+.tgx .tc-dy .tc-way .tc-sub { flex-wrap:wrap; row-gap:4px; }
+.tgx .tc-dy .tc-way .tc-sub .tc-seg button { min-width:0; padding:0 14px; }
+.tgx .tc-dy .tc-way .tc-sub small { flex-basis:100%; }
+.tgx .tc-dy .tc-way .tc-sub small { white-space:normal; overflow-wrap:anywhere; word-break:keep-all; }

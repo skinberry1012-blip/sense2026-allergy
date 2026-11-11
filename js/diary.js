@@ -319,6 +319,7 @@ Router.screens.S46 = (app, p = {}) => {
     const close = () => { stop(); box.remove(); };
     const camOn = () => {
       shot = null; img.hidden = true;
+      if (PREVIEW) { tip.textContent = '미리 보기: 학생 태블릿에서는 여기에 카메라 화면이 나와요'; return; }   // 선생님 화면 미리 보기에서는 카메라를 켜지 않아요 (11/11)
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { tip.textContent = '이 기기에서는 카메라를 쓸 수 없어요. 수호냥을 골라요.'; return; }
       navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 960 } }, audio: false })
         .then(s => { if (!box.isConnected) { s.getTracks().forEach(t => t.stop()); return; } stream = s; v.srcObject = s; v.play().catch(() => {}); tip.textContent = '준비되면 노란 셔터를 눌러요'; })
@@ -405,11 +406,13 @@ Router.screens.S46 = (app, p = {}) => {
 
   paint();
   if (!EV && p.install && !isStandalone()) setTimeout(openInstallModal, 300);
+  if (p.photo && cfg.photo !== false) setTimeout(openPhoto, 300);   // 선생님 미리 보기 '사진 찍기' (11/11)
   /* 들어왔을 때 아직 못 본 축하가 있으면 */
   const c0 = live();
   if (c0) { const m0 = dyModel(c0); if (m0.got >= m0.n && !c0.cele.done) { c0.cele.done = true; Store.set('challenge', c0); setTimeout(() => cele(true), 500); } else if (m0.got >= c0.min && c0.min < m0.n && !c0.cele.min) { c0.cele.min = true; Store.set('challenge', c0); setTimeout(() => cele(false), 500); } }
 };
 Router.screens.S47 = Router.screens.S46;
+Router.screens.S46P = (app, p = {}) => Router.screens.S46(app, { ...p, photo: true });   // 미리 보기: 사진 찍기 창을 연 모습
 
 /* ---------- 다이어리를 canvas로 (이미지 저장) ---------- */
 const dyDataURL = (() => { const memo = {}; return url => memo[url] || (memo[url] = fetch(url).then(r => { if (!r.ok) throw new Error(url); return r.blob(); })

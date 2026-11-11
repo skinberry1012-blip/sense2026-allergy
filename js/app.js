@@ -545,19 +545,18 @@ Router.screens.T49 = (app, p) => {
         ${d.mode === 'event' ? '<p class="tc-evwarn"><b>행사용</b>은 다이어리를 쓰지 않아요. 아래 설정은 수업용에서만 쓰여요.</p>' : ''}
         <section class="tc-sec tc-inl"><h2 class="tc-h"><i>1</i>챌린지 횟수</h2>${step1('count', y.count, '회', 1, 10)}<small>1~10회 · 기본 5회</small></section>
         <section class="tc-sec tc-inl"><h2 class="tc-h"><i>2</i>성공 메달</h2>${step1('min', Math.min(y.min, y.count), '일', 1, y.count)}<small>별을 이만큼 모으면 성공 메달</small></section>
-        <section class="tc-sec"><h2 class="tc-h"><i>3</i>진행 방식</h2>
-          <div class="tc-row">${seg('dmode', [['row', '이어서'], ['free', '자유롭게']], y.mode)}${y.mode === 'free' ? seg('weeks', [['1', '1주'], ['2', '2주'], ['3', '3주'], ['4', '4주']], String(y.weeks)) : ''}</div>
-          <p class="tc-help">${y.mode === 'free' ? `오늘부터 ${y.weeks}주 안에 아무 날이나 ${y.count}번 (주말도 돼요, 하루 한 번)` : `시작한 다음 날부터 학교 가는 날 ${y.count}번 이어서`}</p></section>
+        <section class="tc-sec tc-inl tc-way"><h2 class="tc-h"><i>3</i>진행 방식</h2>${seg('dmode', [['row', '이어서'], ['free', '자유롭게']], y.mode)}
+          <div class="tc-sub">${y.mode === 'free' ? seg('weeks', [['1', '1주'], ['2', '2주'], ['3', '3주'], ['4', '4주']], String(y.weeks)) : ''}<small>${y.mode === 'free' ? `오늘부터 ${y.weeks}주 안에 아무 날이나 ${y.count}번 (주말 포함, 하루 한 번)` : `시작한 다음 날부터 학교 가는 날 ${y.count}번 이어서`}</small></div></section>
         <section class="tc-sec tc-inl"><h2 class="tc-h"><i>4</i>사진 찍기</h2>${seg('dphoto', [['1', '켜기'], ['0', '끄기']], y.photo === false ? '0' : '1')}<small>끄면 수호냥 그림만 골라요</small></section>
         <section class="tc-sec"><h2 class="tc-h"><i>5</i>선생님 약속 <em>선택</em></h2>${txt('promise', 20, '다 완성하면 받을 약속을 입력하세요', '다 완성하면 선생님이 간식을 쏠게요!')}</section>
         <section class="tc-sec"><h2 class="tc-h"><i>6</i>선생님 칭찬</h2>
           <div class="tc-pr"><span>${Math.min(y.min, y.count)}일 성공</span><div>${txt('praiseMin', 40, '비워 두면 예시 문구가 나와요', DY_SAMPLE.min)}</div></div>
           <div class="tc-pr"><span>완성</span><div>${txt('praiseDone', 40, '비워 두면 예시 문구가 나와요', DY_SAMPLE.done)}</div></div></section>
-        <section class="tc-sec tc-inl"><h2 class="tc-h"><i>7</i>인쇄 확인란</h2>${seg('dsign', [['t', '선생님 서명'], ['n', '냥박사 도장']], y.tsign === 'n' ? 'n' : 't')}</section>
+        <section class="tc-sec tc-inl tc-way"><h2 class="tc-h"><i>7</i>완성 확인</h2>${seg('dsign', [['t', '선생님 서명'], ['n', '냥박사 도장']], y.tsign === 'n' ? 'n' : 't')}<div class="tc-sub"><small>인쇄한 다이어리 맨 아래 칸 · 챌린지를 마치면 확인해 줘요</small></div></section>
         <div class="tc-more" aria-hidden="true">▾ 아래로 내리면 더 있어요</div>
       </div>
       <div class="tc-col tc-pv">
-        <div class="tc-pvhead"><h2 class="tc-h">미리 보기</h2>${seg('dstep', [['S46', '매일 체크'], ['S47', '성공 메달'], ['S48', '완성']], step.dy || 'S46')}</div>
+        <div class="tc-pvhead"><h2 class="tc-h">미리 보기</h2>${seg('dstep', [...(y.photo !== false ? [['S46P', '사진 찍기']] : []), ['S46', '매일 체크'], ['S47', '성공 메달'], ['S48', '완성']], step.dy || 'S46')}</div>
         <div class="tc-frame" id="frame"><iframe id="pv" title="챌린지 다이어리 미리 보기"></iframe></div>
         <p class="tc-help">학생은 약속 카드를 저장한 뒤 이 다이어리를 꾸미고 [챌린지 시작하기]를 눌러요.</p>
         <div class="tc-foot"><button class="tc-btn" id="reset2">기본값으로</button><button class="tc-btn pri" id="toNext2">다음 · QR 코드와 공유 ›</button></div>
@@ -570,7 +569,7 @@ Router.screens.T49 = (app, p) => {
       $$('.tc-seg').forEach(g => g.addEventListener('click', e => {
         const x = e.target.closest('[data-v]'); if (!x) return; const k = g.dataset.k, v = x.dataset.v;
         if (k === 'dstep') { step.dy = v; paintSeg('dstep', v); drawPrev(); return; }
-        if (k === 'dmode') setY('mode', v); else if (k === 'weeks') setY('weeks', +v); else if (k === 'dphoto') setY('photo', v === '1'); else if (k === 'dsign') setY('tsign', v);
+        if (k === 'dmode') setY('mode', v); else if (k === 'weeks') setY('weeks', +v); else if (k === 'dphoto') { if (v === '0' && step.dy === 'S46P') step.dy = 'S46'; setY('photo', v === '1'); } else if (k === 'dsign') setY('tsign', v);
       }));
       ['promise', 'praiseMin', 'praiseDone'].forEach(k => { const i = $('#dy_' + k);
         i.addEventListener('input', () => { $('#cn_' + k).textContent = `${[...i.value].length}/${i.maxLength}`; setY(k, i.value, false); });
@@ -640,7 +639,7 @@ function seedPreview(view) {
     if (view !== 'S36-3') LabState.cardsSeen = LAB.cards.list.map(c => c.id);
     if (view === 'S38A') LabState.copeSeen = { light: true, severe: true };
   }
-  if (view === 'S46' || view === 'S47' || view === 'S48') {
+  if (view === 'S46' || view === 'S46P' || view === 'S47' || view === 'S48') {
     /* 다이어리 미리 보기: S46 = 2일 한 뒤 3일째 · S47 = 성공 메달까지 · S48 = 완성 (축하 창은 이미 본 것으로) */
     DateK.override = '2026-11-04';
     const cc = Challenge.create(), ids = selectedRules().map(r => r.id);
