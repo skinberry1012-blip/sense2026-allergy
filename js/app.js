@@ -461,7 +461,7 @@ Router.screens.T49 = (app, p) => {
       /* 이 기기 기록 지우기 (11/11): 수업용은 게시판 아래, 행사용은 자리가 모자라 맨 아래에 가로로 길게(미리 보기 아래까지) */
       const DEV = `<section class="tc-device${d.mode === 'event' ? ' wide' : ''}">
           <button class="tc-btn sm danger" id="wipe">이 기기 기록 지우기</button>
-          <p>학생 기록(이름·약속·다이어리·사진)은 <b>이 기기에만</b> 저장되고 서버로 보내지 않아요. 태블릿을 다른 학생에게 넘길 때 지워 주세요.</p>
+          <p>학생 기록(이름·약속·다이어리·사진)은 <b>이 기기에만</b> 저장되고 서버로 보내지 않아요. 한 번에 저장된 학생 기록을 지울 수 있어요.</p>
         </section>`;
       $('#panel').innerHTML = `
       <div class="tc-col tc-set">
