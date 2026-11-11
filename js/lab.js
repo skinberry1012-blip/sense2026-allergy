@@ -79,7 +79,7 @@ function orgDoor(board, org, from) {
   org.style.touchAction = 'manipulation';
   org.addEventListener('pointerup', () => {
     const now = Date.now();
-    if (now - last <= 400) { last = 0; clearTimeout(t); playSfx('check'); toast('잘했어요! 학생 화면에서는 여기서 선생님 설정이 열려요.', 3000); }
+    if (now - last <= 400) { last = 0; clearTimeout(t); playSfx('check'); toast('선생님 설정 화면으로 이동합니다.', 2500); }
     else { last = now; clearTimeout(t); t = setTimeout(() => { if (org.isConnected) toast('빠르게 두 번 눌러요.', 1600); }, 450); }
   });
 }
