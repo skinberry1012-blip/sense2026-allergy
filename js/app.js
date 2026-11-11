@@ -542,7 +542,7 @@ Router.screens.T49 = (app, p) => {
       <div class="tc-col tc-set tc-dy${d.mode === 'event' ? ' ev-off' : ''}">
         ${d.mode === 'event' ? `<p class="tc-evwarn"><b>행사용</b>${evD() ? ' 다이어리는 꾸미고 인쇄만 해요.' : '은 다이어리를 쓰지 않아요.'} 아래 설정은 수업용에서만 쓰여요.</p>` : ''}
         <section class="tc-sec tc-inl"><h2 class="tc-h"><i>1</i>챌린지 횟수</h2>${step1('count', y.count, '회', 1, 10)}</section>
-        <section class="tc-sec tc-inl"><h2 class="tc-h"><i>2</i>성공 메달</h2>${step1('min', Math.min(y.min, y.count), '일', 1, y.count)}<small>별을 이만큼 모으면 받아요</small></section>
+        <section class="tc-sec tc-inl"><h2 class="tc-h"><i>2</i>성공 메달</h2>${step1('min', Math.min(y.min, y.count), '일', 1, y.count)}<small>최소 목표예요<br>다 모으면 완성 메달</small></section>
         <section class="tc-sec tc-inl tc-way"><h2 class="tc-h"><i>3</i>진행 방식</h2>${seg('dmode', [['row', '이어서'], ['free', '자유롭게']], y.mode)}
           <div class="tc-sub">${y.mode === 'free' ? seg('weeks', [['1', '1주'], ['2', '2주'], ['3', '3주'], ['4', '4주']], String(y.weeks)) : ''}<small>${y.mode === 'free' ? `오늘부터 ${y.weeks}주 안에 아무 날이나 ${y.count}번 (주말 포함, 하루 한 번)` : `시작한 다음 날부터 학교 가는 날 ${y.count}번 이어서`}</small></div></section>
         <section class="tc-sec tc-inl"><h2 class="tc-h"><i>4</i>사진 찍기</h2>${seg('dphoto', [['1', '켜기'], ['0', '끄기']], y.photo === false ? '0' : '1')}</section>
