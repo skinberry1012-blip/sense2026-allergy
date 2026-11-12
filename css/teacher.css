@@ -304,3 +304,6 @@
 @media (hover:hover) { .tgx .tc-calbtn:hover::after, .tgx .tc-calbtn:hover::before { opacity:1; } }
 .tgx .tc-date { position:absolute; left:0; top:100%; width:1px; height:1px; opacity:0; border:0; padding:0; pointer-events:none; }
 .tgx .tc-calx { width:22px; height:22px; border:0; border-radius:50%; background:#E6E9F2; color:var(--navy); font-size:16px; line-height:22px; padding:0; cursor:pointer; }
+/* 11/12: 자유롭게 설명을 1주·2주 버튼 옆으로 (두 줄까지) */
+.tgx .tc-dy .tc-way .tc-sub { flex-wrap:nowrap; align-items:center; }
+.tgx .tc-dy .tc-way .tc-sub small { flex:1 1 auto; flex-basis:auto; line-height:1.3; }

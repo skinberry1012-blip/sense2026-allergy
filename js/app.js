@@ -568,7 +568,7 @@ Router.screens.T49 = (app, p) => {
         <section class="tc-sec tc-inl"><h2 class="tc-h"><i>${N()}</i>챌린지 횟수</h2>${step1('count', y.count, '회', 1, 10)}</section>
         ${EVD ? '' : `<section class="tc-sec tc-inl"><h2 class="tc-h"><i>${N()}</i>성공 메달</h2>${step1('min', Math.min(y.min, y.count), '일', 1, y.count)}<small>최소 목표예요<br>다 모으면 완성 메달</small></section>`}
         <section class="tc-sec tc-inl tc-way"><h2 class="tc-h"><i>${N()}</i>진행 방식</h2>${seg('dmode', [['row', '이어서'], ['free', '자유롭게']], y.mode)}${T_CAL}
-          <div class="tc-sub">${y.mode === 'free' ? seg('weeks', [['1', '1주'], ['2', '2주']], String(y.weeks))   /* 11/11 결정: 최대 10번 · 2주 */ : ''}<small>${y.mode === 'free' ? `${stOn ? DateK.short(y.start) : '시작한 날'}부터 ${y.weeks}주 안에 아무 날이나 ${y.count}번 (주말 포함)` : `${stOn ? DateK.short(y.start) + '부터' : '시작한 다음 날부터'} 학교 가는 날 ${y.count}번 이어서`}</small></div></section>
+          <div class="tc-sub">${y.mode === 'free' ? seg('weeks', [['1', '1주'], ['2', '2주']], String(y.weeks))   /* 11/11 결정: 최대 10번 · 2주 */ : ''}<small>${y.mode === 'free' ? `${stOn ? DateK.short(y.start) : '시작한 날'}부터 ${y.weeks}주 안에<br>아무 날이나 ${y.count}번 (주말 포함)` : `${stOn ? DateK.short(y.start) + '부터' : '시작한 다음 날부터'} 학교 가는 날 ${y.count}번 이어서`}</small></div></section>
         <section class="tc-sec tc-inl"><h2 class="tc-h"><i>${N()}</i>사진 찍기</h2>${seg('dphoto', [['1', '켜기'], ['0', '끄기']], y.photo === false ? '0' : '1')}</section>
         <section class="tc-sec"><h2 class="tc-h"><i>${N()}</i>선생님 약속 <em>선택</em></h2>${txt('promise', 30, '예: 다 완성하면 선생님이 간식을 쏠게요!', '')}</section>
         <section class="tc-sec${EVD ? ' tc-dim' : ''}"><h2 class="tc-h"><i>${N()}</i>선생님 칭찬${EVD ? '<em>행사용은 축하 창이 없어요</em>' : ''}</h2>
