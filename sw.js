@@ -2,7 +2,7 @@
    ※ 파일을 고쳐서 다시 올릴 때는 아래 VERSION 숫자를 하나 올려 주세요. (예: v1 → v2)
    ※ 11/12부터: 같은 버전 글자를 index.html(APP_V와 ?v=)과 js/core.js(JS_V)에도 똑같이 바꿔요.
    ※ 학생 기록은 여기 저장되지 않아요 (기록은 각 기기의 LocalStorage에만). */
-const VERSION = 'v197-sign-right';
+const VERSION = 'v198-two-weeks';
 const CACHE = 'allergy-shield-' + VERSION;
 const FILES = [
   './',

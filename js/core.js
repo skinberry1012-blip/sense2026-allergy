@@ -1,5 +1,5 @@
 /* 화면 파일 버전 — index.html의 APP_V, sw.js의 VERSION과 늘 같게 (11/12: 예전 저장본 화면 막기) */
-window.JS_V = 'v197-sign-right';
+window.JS_V = 'v198-two-weeks';
 /* =========================================================
    core.js — 저장, 날짜, 챌린지 계산, 화면 이동, 팝업, 공통 도구
    ========================================================= */
@@ -125,7 +125,7 @@ const Challenge = {
   get() { return Store.get('challenge', null); },
   plan(cfg = DyCfg(), from = DateK.today()) {
     const n = Math.max(1, Math.min(10, cfg.count | 0)), c = { v: 2, mode: cfg.mode === 'free' ? 'free' : 'row', count: n, min: Math.max(1, Math.min(n, cfg.min | 0)),
-      weeks: Math.max(1, Math.min(4, cfg.weeks | 0)), promise: cfg.promise || '', praiseMin: cfg.praiseMin || '', praiseDone: cfg.praiseDone || '', tsign: cfg.tsign || 't', log: {}, stars: [], cele: {} };
+      weeks: Math.max(1, Math.min(2, cfg.weeks | 0)), promise: cfg.promise || '', praiseMin: cfg.praiseMin || '', praiseDone: cfg.praiseDone || '', tsign: cfg.tsign || 't', log: {}, stars: [], cele: {} };
     /* 선생님이 정한 시작 날짜가 오늘이거나 아직 오지 않았으면 그날부터 (지났으면 평소처럼) */
     const st = /^\d{4}-\d{2}-\d{2}$/.test(cfg.start || '') && cfg.start >= from ? cfg.start : '';   // 11/12: 오늘을 고르면 오늘부터
     if (c.mode === 'row') c.days = DateK.nextSchoolDays(st ? DateK.add(st, -1) : from, n);
