@@ -391,7 +391,7 @@ function openInstallModal() {
    버튼은 세 가지만: .tc-btn.pri(주 버튼, 화면에 하나) · .tc-btn(보조) · .tc-seg(고르기)
    스타일은 css/teacher.css */
 const isHttps = s => /^https:\/\/\S+$/i.test(s);
-const DEMO_BASE = 'https://skinberry1012-blip.github.io/sense2026-allergy/';   // 내 컴퓨터에서 열 때 보여 줄 예시 주소
+const DEMO_BASE = 'https://sense2026-allergy.pages.dev/';   // 내 컴퓨터에서 열 때 보여 줄 예시 주소
 /* 미리 보기에서 열어 볼 화면 (연구소 · 약속 카드) */
 const PREVIEW_STEPS = {
   lab:  [['S00', '처음'], ['S01', '이야기'], ['S05', '미션 고르기'], ['S06', '집'], ['S15', '급식실'], ['S24', '운동장'], ['S36-3', '증상 카드'], ['S37', '대처 방법'], ['S38A', '기억 체크']],
