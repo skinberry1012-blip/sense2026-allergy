@@ -636,7 +636,10 @@ Router.screens.T49 = (app, p) => {
       onTap($('#prev'), () => { tab = d.mode === 'event' && !evD() ? 1 : 2; draw(); });
       /* [설정 완료] (11/10 최종): 이 기기에도 설정을 적용해요 — 부스 태블릿처럼 선생님 설정에서 행사용을 고른 기기는 계속 행사용 */
       onTap($('#done'), () => {
-        Config.set(Object.assign(Config.get(), { mode: d.mode === 'event' ? 'event' : 'class', ev: evA(), board: okBoard() ? d.board : '', bgm: d.sound !== 'off' }));   // 소리 하나로 (11/11): 효과음·대기 음악 함께
+        /* 11/17: 다이어리 설정(02 탭)도 이 기기에 함께 저장해요 — 예전에는 QR 링크로만 전달돼서, 설정한 태블릿에서 바로 열면 기본값으로 나왔어요 */
+        const y = dy(), diary = { count: y.count, mode: y.mode, weeks: y.weeks, min: y.min, photo: y.photo !== false, tsign: 'n', start: y.start || '',
+          promise: (y.promise || '').trim().slice(0, 30), praiseMin: (y.praiseMin || '').trim().slice(0, 40), praiseDone: (y.praiseDone || '').trim().slice(0, 40) };
+        Config.set(Object.assign(Config.get(), { mode: d.mode === 'event' ? 'event' : 'class', ev: evA(), board: okBoard() ? d.board : '', bgm: d.sound !== 'off', diary }));   // 소리 하나로 (11/11): 효과음·대기 음악 함께
         setSound(d.sound !== 'off');
         Router.go(d.mode === 'event' ? 'S39' : (returnTo === 'S39' ? 'S00' : returnTo));
       });
