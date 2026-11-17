@@ -1417,3 +1417,8 @@ body.tablet #stage:has(.sign-warn) { z-index:2; }
 /* 11/12: 확인 창도 서명 안내처럼 — 확대·축소된 판에서 backdrop-filter가 화면을 거울처럼 비추던 것(휴대폰·태블릿) → 판 안 화면에 직접 흐림 */
 .modal-dim { backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
 #stage:has(#layer .modal-dim) > :not(#layer) { filter:blur(3px); }
+
+/* 11/17 휴대폰 가로 선생님 화면: 가로 폭에 꽉 차게, 위아래로 넘겨 보기 (Stage.fit의 tscroll) */
+body.tablet.tscroll { overflow-y:auto; overflow-x:hidden; }
+html:has(body.tscroll) { height:auto; overflow-y:auto; }
+body.tablet.tscroll #stage { position:absolute; left:0; top:0; transform:scale(var(--s,1)); transform-origin:0 0; box-shadow:none; }

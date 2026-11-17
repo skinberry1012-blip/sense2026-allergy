@@ -1,5 +1,5 @@
 /* 화면 파일 버전 — index.html의 APP_V, sw.js의 VERSION과 늘 같게 (11/12: 예전 저장본 화면 막기) */
-window.JS_V = 'v201-orient';
+window.JS_V = 'v202-tscroll';
 /* =========================================================
    core.js — 저장, 날짜, 챌린지 계산, 화면 이동, 팝업, 공통 도구
    ========================================================= */
@@ -339,7 +339,12 @@ const Stage = {
     document.body.classList.toggle('phone', !tablet);
     const st = document.getElementById('stage');
     if (!st) return;
-    if (tablet) { const s = Math.min(w / Stage.W, h / Stage.H); st.style.setProperty('--s', s); }
+    /* 11/17: 휴대폰 가로로 연 선생님 화면은 노담처럼 가로 폭에 꽉 차게 + 위아래로 넘겨 보기 (글자 약 1.2~1.4배). PC·태블릿 선생님 화면은 그대로 */
+    const tscroll = tablet && h < w * Stage.H / Stage.W && Math.min(screen.width, screen.height) < 600 && window.matchMedia('(pointer: coarse)').matches
+      && !!Router.current && /^T/.test(Router.current.s);
+    document.body.classList.toggle('tscroll', tscroll);
+    document.body.style.height = tscroll ? Math.ceil(Stage.H * w / Stage.W) + 'px' : '';
+    if (tablet) { const s = tscroll ? w / Stage.W : Math.min(w / Stage.W, h / Stage.H); st.style.setProperty('--s', s); }
     else st.style.removeProperty('--s');
   }
 };
