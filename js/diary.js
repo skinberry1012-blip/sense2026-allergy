@@ -177,10 +177,10 @@ Router.screens.S46 = (app, p = {}) => {
 
   const boardBtn = () => `<button class="pbtn${sentReady ? ' ready' : ''}" id="toBoard" ${sentReady ? '' : 'disabled aria-disabled="true"'}>게시판에 올리기 ›</button>`;
   const classBtns = (c, ended, m) => (!c ? '<button class="pbtn y" id="go">챌린지 시작하기 ›</button>' : ended ? '<button class="pbtn y" id="again">새로 도전하기 ›</button>' : '')
-    + `<div class="brow"><button class="pbtn${c && !ended ? ' y' : ''}" id="saveImg">이미지 저장</button><button class="pbtn" id="print">인쇄하기</button></div>`
+    + `<div class="brow"><button class="pbtn${c && !ended ? ' y' : ''}" id="saveImg">이미지 저장</button>${CAN_PRINT() ? '<button class="pbtn" id="print">인쇄하기</button>' : ''}</div>`   // 11/17: 인쇄는 PC에서만
     + (c && BOARD && (ended || (m.medal && m.medal.gold)) ? boardBtn() : '');
   /* 행사용 (11/11): [인쇄하기 노랑 | 이미지 저장] (게시판이 있으면 저장 뒤 [게시판에 올리기]) → [다음 친구에게 넘기기] */
-  const evBtns = () => `<div class="brow"><button class="pbtn y" id="print">인쇄하기</button><button class="pbtn" id="saveImg">이미지 저장</button></div>`
+  const evBtns = () => `<div class="brow">${CAN_PRINT() ? '<button class="pbtn y" id="print">인쇄하기</button><button class="pbtn" id="saveImg">이미지 저장</button>' : '<button class="pbtn y" id="saveImg">이미지 저장</button>'}</div>`   // 11/17: 태블릿·휴대폰은 저장만
     + (BOARD ? boardBtn() : '') + '<button class="pbtn" id="pass">다음 친구에게 넘기기 ›</button>';
   function paint() {
     const c = live(), m = model(), st = c ? Challenge.status(c) : 'none';
@@ -424,7 +424,7 @@ Router.screens.S46 = (app, p = {}) => {
     const del = '함께 쓰는 태블릿이에요. <b class="red">사진첩에 저장한 내 이미지는 지워 주세요.</b>';
     const msg = evSaved ? (BOARD ? '게시판에 올렸나요?<br>' : '') + del
       : evPrinted ? '내 기록이 지워지고, 다음 친구가 처음부터 시작해요.'
-      : '<b class="red">아직 인쇄하거나 저장하지 않았어요.</b><br>넘기면 내 다이어리가 사라져요.';
+      : `<b class="red">아직 ${CAN_PRINT() ? '인쇄하거나 ' : ''}저장하지 않았어요.</b><br>넘기면 내 다이어리가 사라져요.`;
     const m = Modal.open(`<div class="pop-head">다음 친구에게 넘길까요?</div><p class="pop-body">${msg}</p>
       <div class="pop-btns"><button class="btn white" data-autofocus id="pNo">아직이에요</button><button class="btn pink" id="pYes">네, 넘길게요</button></div>`);
     onTap($('#pNo', m), () => Modal.close());

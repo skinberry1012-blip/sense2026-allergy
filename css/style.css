@@ -1422,3 +1422,7 @@ body.tablet #stage:has(.sign-warn) { z-index:2; }
 body.tablet.tscroll { overflow-y:auto; overflow-x:hidden; }
 html:has(body.tscroll) { height:auto; overflow-y:auto; }
 body.tablet.tscroll #stage { position:absolute; left:0; top:0; transform:scale(var(--s,1)); transform-origin:0 0; box-shadow:none; }
+
+/* 11/17: 태블릿·휴대폰은 인쇄 버튼이 없어 한 칸 — 저장 버튼을 노랑으로 */
+.s44b-row.one { grid-template-columns:1fr; }
+.s44b-btns .ev-row.one #save { background:#F5C842 !important; color:#1E2A5A !important; }

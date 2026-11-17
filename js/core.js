@@ -1,5 +1,5 @@
 /* 화면 파일 버전 — index.html의 APP_V, sw.js의 VERSION과 늘 같게 (11/12: 예전 저장본 화면 막기) */
-window.JS_V = 'v209-jext2';
+window.JS_V = 'v210-pconly-print';
 /* =========================================================
    core.js — 저장, 날짜, 챌린지 계산, 화면 이동, 팝업, 공통 도구
    ========================================================= */
@@ -373,6 +373,11 @@ document.addEventListener('focusin', () => setTimeout(Kbd.lift, 350));
 document.addEventListener('focusout', () => setTimeout(Kbd.lift, 50));
 /* 11/11 점검: 아이폰 무음(벨소리 끔) 상태에서도 효과음이 나게 — 사파리 16.4 이상 */
 try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+
+/* ---------- 인쇄 버튼은 PC에서만 (11/17 팀 점검) ----------
+   태블릿·휴대폰은 인쇄 미리 보기가 깨져(쪽이 나뉘고 위만 보임) [이미지 저장]만 둬요. 인쇄는 PC에서, 또는 저장한 이미지를 PC로 받아 출력해요.
+   마우스로 쓰는 기기(터치되는 노트북 포함)를 PC로 봐요 */
+const CAN_PRINT = () => window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 /* ---------- [전체 화면] 버튼 (11/17 교차 점검 공통 2 · 노담과 같은 방식) ----------
    글자 없이 아이콘만 있는 동그란 버튼, 첫 화면 왼쪽 아래. 손가락 기기(휴대폰·태블릿)에서 전체 화면을 지원할 때만 보여요

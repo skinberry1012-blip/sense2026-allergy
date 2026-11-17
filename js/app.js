@@ -202,9 +202,9 @@ Router.screens.S44 = (app) => {
         <section class="s44-box"><h3 class="box-tag">나의 수호 친구 고르기</h3><div class="buddies" id="buddies"></div></section>
         <div class="s44b-btns">
           ${!EV ? `<button class="btn pink" id="save">약속 카드 저장하기</button>
-          <div class="s44b-row"><button class="btn white" id="print">인쇄하기</button><button class="btn white" id="home">처음으로</button></div>`
+          <div class="s44b-row${CAN_PRINT() ? '' : ' one'}">${CAN_PRINT() ? '<button class="btn white" id="print">인쇄하기</button>' : ''}<button class="btn white" id="home">처음으로</button></div>`   /* 11/17: 인쇄는 PC에서만 */
           : (BOARD ? `<button class="btn pink" id="save">① 카드 이미지 저장</button><button class="btn white ev-step" id="toBoard" disabled aria-disabled="true">② 게시판에 올리기</button>`
-                   : `<div class="s44b-row ev-row"><button class="btn pink" id="print">인쇄하기</button><button class="btn white" id="save">이미지 저장</button></div>`)
+                   : `<div class="s44b-row ev-row${CAN_PRINT() ? '' : ' one'}">${CAN_PRINT() ? '<button class="btn pink" id="print">인쇄하기</button>' : ''}<button class="btn white" id="save">이미지 저장</button></div>`)
             + (EVD ? `<button class="btn white ev-pass ev-next" id="toDiary">다이어리 꾸미기 ›</button>` : `<button class="btn white ev-pass" id="pass">다음 친구에게 넘기기 ›</button>`)}
         </div>
       </aside>
@@ -334,7 +334,7 @@ Router.screens.S44 = (app) => {
   onTap($('#toDiary'), () => { playSfx('next'); Store.set('buddy', st.buddy); Router.go('S46'); });   // 행사용 카드 + 다이어리 (11/11)
   onTap($('#pass'), () => {
     const del = '함께 쓰는 태블릿이에요. <b class="red">사진첩에 저장한 내 카드 이미지는 지워 주세요.</b>';
-    const msg = !BOARD ? (savedImg ? del : saved ? '내 카드와 기록이 지워지고, 다음 친구가 처음부터 시작해요.' : '<b class="red">아직 인쇄하거나 저장하지 않았어요.</b><br>넘기면 내 카드가 사라져요.')
+    const msg = !BOARD ? (savedImg ? del : saved ? '내 카드와 기록이 지워지고, 다음 친구가 처음부터 시작해요.' : `<b class="red">아직 ${CAN_PRINT() ? '인쇄하거나 ' : ''}저장하지 않았어요.</b><br>넘기면 내 카드가 사라져요.`)
       : saved ? '게시판에 올렸나요?<br>' + del
       : '<b class="red">아직 카드를 저장하지 않았어요.</b><br>넘기면 내 카드가 사라져요.';
     const m = Modal.open(`<div class="pop-head">다음 친구에게 넘길까요?</div><p class="pop-body">${msg}</p>
@@ -400,14 +400,14 @@ const PREVIEW_STEPS = {
 };
 const T_FLOW = {
   class: ['미션 · 숨은 알레르기 원인 12가지 찾기', '증상 카드 · 대처 방법 익히기', '나만의 예방 약속 카드 만들기', '챌린지 다이어리 꾸미기 → 매일 체크 → 메달'],
-  event: ['나만의 예방 약속 카드 만들기', '카드 이미지를 게시판에 올리기 (게시판이 없으면 인쇄하거나 이미지로 저장하기)', '다음 친구에게 넘기기 (이 태블릿 기록 지움)']
+  event: ['나만의 예방 약속 카드 만들기', '카드 이미지를 게시판에 올리기 (게시판이 없으면 이미지로 저장하기 · PC는 인쇄도)', '다음 친구에게 넘기기 (이 태블릿 기록 지움)']
 };
 /* 행사용 학생 흐름 (11/11): 행사 활동에 따라 */
 const T_EVFLOW = (a, board) => {
-  const keep = board ? '게시판에 올리기' : '인쇄하거나 이미지로 저장하기';
+  const keep = board ? '게시판에 올리기' : '이미지로 저장하기 · PC는 인쇄도';   // 11/17: 태블릿·휴대폰은 인쇄 없음
   return a === 'diary' ? ['나만의 예방 약속 고르기', `챌린지 다이어리 꾸미기 → ${keep} (체크는 집에서 종이에)`, '다음 친구에게 넘기기 (이 태블릿 기록 지움)']
-    : a === 'both' ? ['나만의 예방 약속 카드 만들기 → 인쇄하거나 이미지로 저장하기', `챌린지 다이어리 꾸미기 → ${keep} (체크는 집에서 종이에)`, '다음 친구에게 넘기기 (이 태블릿 기록 지움)']
-    : ['나만의 예방 약속 카드 만들기', `카드 ${board ? '이미지를 게시판에 올리기' : '인쇄하거나 이미지로 저장하기'}`, '다음 친구에게 넘기기 (이 태블릿 기록 지움)'];
+    : a === 'both' ? ['나만의 예방 약속 카드 만들기 → 이미지로 저장하기 · PC는 인쇄도', `챌린지 다이어리 꾸미기 → ${keep} (체크는 집에서 종이에)`, '다음 친구에게 넘기기 (이 태블릿 기록 지움)']
+    : ['나만의 예방 약속 카드 만들기', `카드 ${board ? '이미지를 게시판에 올리기' : '이미지로 저장하기 · PC는 인쇄도'}`, '다음 친구에게 넘기기 (이 태블릿 기록 지움)'];
 };
 Router.screens.T49 = (app, p) => {
   const returnTo = p.returnTo || 'S00';
@@ -520,7 +520,7 @@ Router.screens.T49 = (app, p) => {
         /* 행사용: 게시판 주소가 없으면 한 번 알려 줘요 — 비워 두면 학생은 카드를 인쇄하거나 이미지로 저장해요 (11/11) */
         if (d.mode === 'event' && was !== 'event' && !okBoard()) {
           const m = Modal.open(`<div class="pop-head">결과 게시판 주소를 넣어 주세요</div>
-            <p class="pop-body">게시판 주소를 넣으면 학생이 약속 카드 이미지를 게시판으로 보내요.<br>선생님이 게시판에서 출력해 나눠 줄 수 있어요.<br><b>비워 두면</b> 학생이 카드를 인쇄하거나 이미지로 저장해요.</p>
+            <p class="pop-body">게시판 주소를 넣으면 학생이 약속 카드 이미지를 게시판으로 보내요.<br>선생님이 게시판에서 출력해 나눠 줄 수 있어요.<br><b>비워 두면</b> 학생이 카드를 이미지로 저장해요(PC에서는 인쇄도).</p>
             <p class="pop-small">게시판은 로그인 없이 올리기를 허용해 주세요.</p>
             <div class="pop-btns"><button class="btn white" id="bLater">비워 둘게요</button><button class="btn pink" data-autofocus id="bNow">주소 넣기</button></div>`);
           onTap($('#bLater', m), () => Modal.close());
@@ -565,7 +565,7 @@ Router.screens.T49 = (app, p) => {
       const T_CAL = `<span class="tc-cal"><button class="tc-calbtn${stOn ? ' on' : ''}" id="dyCal" type="button" aria-label="시작 날짜 정하기"><svg viewBox="0 0 16 16" shape-rendering="crispEdges"><path fill="#24305E" d="M3 1h2v2H3zM11 1h2v2h-2zM1 3h14v12H1z"/><path fill="#F26B6B" d="M2 4h12v3H2z"/><path fill="#FFFFFF" d="M2 7h12v7H2z"/><path fill="#24305E" d="M4 9h2v2H4zM7 9h2v2H7zM10 9h2v2h-2zM4 12h2v1H4zM7 12h2v1H7z"/></svg></button><input type="date" id="dyDate" class="tc-date" tabindex="-1" aria-hidden="true">${stOn ? '<button class="tc-calx" id="dyCalX" type="button" aria-label="시작 날짜 지우기">×</button>' : ''}</span>`;
       $('#panel').innerHTML = `
       <div class="tc-col tc-set tc-dy">
-        ${EVD ? '<p class="tc-evwarn"><b>행사용 다이어리</b>는 꾸며서 인쇄해 가고, 체크는 집에서 종이에 해요. 성공 메달은 없어요.</p>' : ''}
+        ${EVD ? '<p class="tc-evwarn"><b>행사용 다이어리</b>는 꾸며서 이미지로 저장하고(PC는 인쇄도), 체크는 집에서 종이에 해요. 성공 메달은 없어요.</p>' : ''}
         <section class="tc-sec tc-inl"><h2 class="tc-h"><i>${N()}</i>챌린지 횟수</h2>${step1('count', y.count, '회', 1, DY_MAX)}</section>
         ${EVD ? '' : `<section class="tc-sec tc-inl"><h2 class="tc-h"><i>${N()}</i>성공 메달</h2>${step1('min', Math.min(y.min, y.count), '일', 1, Math.min(y.count, DY_MIN_MAX))}<small>최소 목표예요<br>다 모으면 완성 메달</small></section>`}
         <section class="tc-sec tc-inl tc-way"><h2 class="tc-h"><i>${N()}</i>진행 방식</h2>${seg('dmode', [['row', '이어서'], ['free', '자유롭게']], y.mode)}${T_CAL}
@@ -617,7 +617,7 @@ Router.screens.T49 = (app, p) => {
           <div><dt>실행 모드</dt><dd><b>${d.mode === 'event' ? '행사용' : '수업용'}</b> · ${d.mode === 'event' ? `함께 쓰는 태블릿 · 행사 활동: <b>${evName()}</b>` : '1인 1태블릿 (챌린지 다이어리)'}</dd></div>
           <div><dt>소리</dt><dd>${d.sound === 'off' ? '끄기' : '켜기'}</dd></div>
           <div><dt>챌린지</dt><dd>${(() => { const y = dy(); return `${y.start && y.start >= DateK.real() ? DateK.short(y.start) + '부터 · ' : ''}${y.mode === 'free' ? `${y.weeks}주 안에 자유롭게` : '학교 가는 날 이어서'} ${y.count}회 · ${Math.min(y.min, y.count)}일 성공 메달${y.promise.trim() ? ' · 선생님 약속 있음' : ''}`; })()}</dd></div>
-          <div><dt>결과 게시판</dt><dd>${okBoard() ? `<span class="ok">연결됨</span> ${esc(d.board)}` : d.mode === 'event' ? '<span class="no">없음</span> 학생은 카드를 인쇄하거나 이미지로 저장해요' : '<span class="no">없음</span> 다이어리는 학생 기기에만 저장돼요'}</dd></div>
+          <div><dt>결과 게시판</dt><dd>${okBoard() ? `<span class="ok">연결됨</span> ${esc(d.board)}` : d.mode === 'event' ? '<span class="no">없음</span> 학생은 카드를 이미지로 저장해요(PC는 인쇄도)' : '<span class="no">없음</span> 다이어리는 학생 기기에만 저장돼요'}</dd></div>
         </dl>
         <div class="tc-flowbox"><p class="tc-mode"><b>${modeName()}</b> 학생은 이렇게 해요</p>
         <ol class="tc-flow">${(d.mode === 'event' ? T_EVFLOW(evA(), okBoard()) : T_FLOW.class).map(s => `<li>${s}</li>`).join('')}</ol>
