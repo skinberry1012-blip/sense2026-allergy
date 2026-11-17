@@ -842,3 +842,12 @@ b.lc { color:var(--coral-d); font-weight:400; font-family:var(--font-head); }
 .lab-orgtip .rs-tap { left:auto; right:40px; top:0; opacity:1; animation:orgtap 1.6s ease-in-out infinite; }
 @keyframes orgtap { 0%,60%,100% { translate:0 0; } 12% { translate:-6px -12px; } 22% { translate:0 0; } 34% { translate:-6px -12px; } 44% { translate:0 0; } }
 @media (prefers-reduced-motion: reduce) and (min-width: 99999px) { .lab-org.try, .lab-orgtip .rs-tap { animation:none; } }
+
+/* 11/17 [전체 화면] 버튼: 판 왼쪽 아래, 판이 줄어도 화면에서 약 44px (아이콘만, 동그란 버튼) */
+.fs-btn { position:absolute; left:calc(14px / var(--k,1)); bottom:calc(14px / var(--k,1)); width:calc(44px / var(--k,1)); height:calc(44px / var(--k,1)); min-width:56px; min-height:56px; z-index:6; border-radius:50%;
+  border:calc(2px / var(--k,1)) solid #fff; background:rgba(30,42,90,.82); display:flex; align-items:center; justify-content:center; padding:0; box-shadow:0 calc(3px / var(--k,1)) 0 rgba(30,42,90,.3); -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+.fs-btn svg { width:56%; height:56%; fill:none; stroke:#fff; stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; }
+.fs-btn[hidden] { display:none; }
+.fs-btn.hint { animation:fshint 1.3s ease-in-out 3; }
+@keyframes fshint { 0%,100% { transform:scale(1); } 50% { transform:scale(1.18); } }
+@media (prefers-reduced-motion: reduce) { .fs-btn.hint { animation:none; } }

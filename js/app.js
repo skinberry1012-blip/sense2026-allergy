@@ -17,6 +17,7 @@ Router.screens.S39 = (app) => {
   labPanel(b, { sub: '나만의 알레르기 방패', title: '방패 만들기' });
   labChar(b, 'staff_guide', 600, { left: 70, bottom: 10 });
   if (Config.isEvent()) orgDoor(b, labEl(b, 'lab-org', null, '<b>SENSE</b><span>초등보건교육연구회</span>'), 'S39');   // 행사용 첫 화면에도 연구회 이름 + 선생님 화면 입구 (11/11)
+  FsBtn.mount(b);   // 11/17: [전체 화면] (행사용 첫 화면 · 수업용 방패 만들기 시작)
   const bub = labBubble(b, { x: 760, y: 330, w: 720, fs: 42, tail: 'l', name: '수호냥', staff: true });   // 수호냥 몸 가운데 높이에 맞춤 (11/10)
   /* 11/11: 버튼은 '방패 만들러 출발!', 말풍선은 수업용·행사용(활동과 상관없이) 모두 같은 말로 통일 */
   bub.say('알레르기로부터 지켜 줄<br>{{나만의 방패}}를 만들어 보자!');
@@ -415,7 +416,7 @@ Router.screens.T49 = (app, p) => {
   const local = location.protocol === 'file:' || ['localhost', '127.0.0.1', ''].includes(location.hostname);
   const base = local ? DEMO_BASE : location.origin + location.pathname;
   const okBoard = () => d.board && isHttps(d.board);
-  const dy = () => { const y = Object.assign({}, DY_DEF, d.dy || {}); y.weeks = Math.max(1, Math.min(2, y.weeks | 0 || 2)); return y; };   // 예전에 3·4주로 저장한 설정도 2주로
+  const dy = () => { const y = Object.assign({}, DY_DEF, d.dy || {}); y.weeks = Math.max(1, Math.min(2, y.weeks | 0 || 2)); y.count = Math.max(1, Math.min(DY_MAX, y.count | 0 || 5)); y.min = Math.max(1, Math.min(y.count, DY_MIN_MAX, y.min | 0 || 3)); return y; };   // 11/17: 예전 10회·8일 설정도 5회·3일로   // 예전에 3·4주로 저장한 설정도 2주로
   /* 챌린지 다이어리 설정도 학생 링크에 담아요: dy=횟수.방식.주.성공기준.사진.확인란 · 문구는 dp(약속) dm(성공 칭찬) dd(완성 칭찬) */
   const dyQuery = () => { const y = dy(); return `&dy=${y.count}.${y.mode === 'free' ? 'f' : 'r'}.${y.weeks}.${y.min}.${y.photo === false ? 0 : 1}.${y.tsign === 'n' ? 'n' : 't'}${y.start ? '.' + y.start.replace(/-/g, '') : ''}`
     + (y.promise.trim() ? '&dp=' + encodeURIComponent(y.promise.trim()) : '') + (y.praiseMin.trim() ? '&dm=' + encodeURIComponent(y.praiseMin.trim()) : '') + (y.praiseDone.trim() ? '&dd=' + encodeURIComponent(y.praiseDone.trim()) : ''); };
@@ -565,10 +566,10 @@ Router.screens.T49 = (app, p) => {
       $('#panel').innerHTML = `
       <div class="tc-col tc-set tc-dy">
         ${EVD ? '<p class="tc-evwarn"><b>행사용 다이어리</b>는 꾸며서 인쇄해 가고, 체크는 집에서 종이에 해요. 성공 메달은 없어요.</p>' : ''}
-        <section class="tc-sec tc-inl"><h2 class="tc-h"><i>${N()}</i>챌린지 횟수</h2>${step1('count', y.count, '회', 1, 10)}</section>
-        ${EVD ? '' : `<section class="tc-sec tc-inl"><h2 class="tc-h"><i>${N()}</i>성공 메달</h2>${step1('min', Math.min(y.min, y.count), '일', 1, y.count)}<small>최소 목표예요<br>다 모으면 완성 메달</small></section>`}
+        <section class="tc-sec tc-inl"><h2 class="tc-h"><i>${N()}</i>챌린지 횟수</h2>${step1('count', y.count, '회', 1, DY_MAX)}</section>
+        ${EVD ? '' : `<section class="tc-sec tc-inl"><h2 class="tc-h"><i>${N()}</i>성공 메달</h2>${step1('min', Math.min(y.min, y.count), '일', 1, Math.min(y.count, DY_MIN_MAX))}<small>최소 목표예요<br>다 모으면 완성 메달</small></section>`}
         <section class="tc-sec tc-inl tc-way"><h2 class="tc-h"><i>${N()}</i>진행 방식</h2>${seg('dmode', [['row', '이어서'], ['free', '자유롭게']], y.mode)}${T_CAL}
-          <div class="tc-sub">${y.mode === 'free' ? seg('weeks', [['1', '1주'], ['2', '2주']], String(y.weeks))   /* 11/11 결정: 최대 10번 · 2주 */ : ''}<small>${y.mode === 'free' ? `${stOn ? DateK.short(y.start) : '시작한 날'}부터 ${y.weeks}주 안에<br>아무 날이나 ${y.count}번 (주말 포함)` : `${stOn ? DateK.short(y.start) + '부터' : '시작한 다음 날부터'} 학교 가는 날 ${y.count}번 이어서`}</small></div></section>
+          <div class="tc-sub">${y.mode === 'free' ? seg('weeks', [['1', '1주'], ['2', '2주']], String(y.weeks))   /* 11/17 결정: 최대 5번 · 2주 */ : ''}<small>${y.mode === 'free' ? `${stOn ? DateK.short(y.start) : '시작한 날'}부터 ${y.weeks}주 안에<br>아무 날이나 ${y.count}번 (주말 포함)` : `${stOn ? DateK.short(y.start) + '부터' : '시작한 다음 날부터'} 학교 가는 날 ${y.count}번 이어서`}</small></div></section>
         <section class="tc-sec tc-inl"><h2 class="tc-h"><i>${N()}</i>사진 찍기</h2>${seg('dphoto', [['1', '켜기'], ['0', '끄기']], y.photo === false ? '0' : '1')}</section>
         <section class="tc-sec"><h2 class="tc-h"><i>${N()}</i>선생님 약속 <em>선택</em></h2>${txt('promise', 30, '예: 다 완성하면 선생님이 간식을 쏠게요!', '')}</section>
         <section class="tc-sec${EVD ? ' tc-dim' : ''}"><h2 class="tc-h"><i>${N()}</i>선생님 칭찬${EVD ? '<em>행사용은 축하 창이 없어요</em>' : ''}</h2>
@@ -585,7 +586,7 @@ Router.screens.T49 = (app, p) => {
         const upd = () => more.classList.toggle('gone', col.scrollTop + col.clientHeight >= col.scrollHeight - 6);
         col.scrollTop = keepTop; col.addEventListener('scroll', upd, { passive: true }); requestAnimationFrame(upd); }
       const setY = (k, v, redraw = true) => { d.dy = Object.assign(dy(), { [k]: v }); if (d.dy.mode === 'free' && d.dy.count > d.dy.weeks * 7) { if (k === 'weeks') d.dy.count = d.dy.weeks * 7; else d.dy.weeks = 2; } if (d.dy.min > d.dy.count) d.dy.min = d.dy.count; Draft.set(d); if (redraw) draw(); };
-      $$('.tc-step').forEach(g => g.addEventListener('click', e => { const x = e.target.closest('[data-d]'); if (!x || x.disabled) return; const k = g.dataset.k; setY(k, Math.max(1, Math.min(k === 'min' ? dy().count : 10, dy()[k] + +x.dataset.d))); }));
+      $$('.tc-step').forEach(g => g.addEventListener('click', e => { const x = e.target.closest('[data-d]'); if (!x || x.disabled) return; const k = g.dataset.k; setY(k, Math.max(1, Math.min(k === 'min' ? Math.min(dy().count, DY_MIN_MAX) : DY_MAX, dy()[k] + +x.dataset.d))); }));
       $$('.tc-seg').forEach(g => g.addEventListener('click', e => {
         const x = e.target.closest('[data-v]'); if (!x) return; const k = g.dataset.k, v = x.dataset.v;
         if (k === 'dstep') { step.dy = v; paintSeg('dstep', v); drawPrev(); return; }
@@ -666,13 +667,14 @@ function seedPreview(view) {
   }
   if (view === 'S46' || view === 'S46P' || view === 'S47' || view === 'S48') {
     /* 다이어리 미리 보기: S46 = 2일 한 뒤 3일째 · S47 = 성공 메달까지 · S48 = 완성 (축하 창은 이미 본 것으로) */
-    DateK.override = '2026-11-04';
+    /* 11/17 교차 점검: 매일 체크 미리 보기는 선생님이 고른 시작 날짜(없으면 실제 오늘 기준 첫날)를 '오늘'로 — 예전에는 이틀 한 뒤 3번째 날을 보여 줘 날짜가 다르게 보였어요 */
+    DateK.override = DateK.real();
     const cc = Challenge.create(), ids = selectedRules().map(r => r.id);
-    const upto = view === 'S48' ? cc.count : view === 'S47' ? cc.min : 2;
+    const upto = view === 'S48' ? cc.count : view === 'S47' ? cc.min : 0;
     const dates = cc.mode === 'free' ? Array.from({ length: cc.count }, (_, i) => DateK.add(cc.start, i * 2)) : cc.days;   // 자유롭게: 이틀에 한 번 한 것처럼
     dates.slice(0, upto).forEach((d, i) => { cc.log[d] = {}; ids.forEach((id, j) => cc.log[d][id] = (view === 'S46' && i === 1 && j === 1) ? 'X' : 'O'); });
     cc.cele = { min: true, done: true }; Store.set('challenge', cc);
-    DateK.override = view === 'S48' ? dates[cc.count - 1] : dates[Math.min(upto, cc.count - 1)];
+    DateK.override = view === 'S48' ? dates[cc.count - 1] : view === 'S47' ? dates[Math.min(upto, cc.count - 1)] : (cc.mode === 'free' ? cc.start : cc.days[0]);
   }
 }
 
@@ -719,7 +721,7 @@ const TestBar = {
     const cfg = { mode: qs.get('mode') === 'event' ? 'event' : 'class', ev: evq === 'd' ? 'diary' : evq === 'b' ? 'both' : 'card', board: isHttps(board) ? board : '', bgm: qs.get('bgm') !== 'off' && qs.get('sound') !== 'off' };   // 소리를 끄면 대기 음악도 꺼요 (11/11)
     /* 챌린지 다이어리 설정 (선생님 링크 dy · dp · dm · dd) */
     const dyv = (qs.get('dy') || '').split('.');
-    if (dyv.length >= 6) cfg.diary = { count: Math.max(1, Math.min(10, +dyv[0] || 5)), mode: dyv[1] === 'f' ? 'free' : 'row', weeks: Math.max(1, Math.min(2, +dyv[2] || 2)), min: Math.max(1, +dyv[3] || 3), photo: dyv[4] !== '0', tsign: 'n', start: /^\d{8}$/.test(dyv[6] || '') ? `${dyv[6].slice(0, 4)}-${dyv[6].slice(4, 6)}-${dyv[6].slice(6)}` : '',
+    if (dyv.length >= 6) cfg.diary = { count: Math.max(1, Math.min(DY_MAX, +dyv[0] || 5)), mode: dyv[1] === 'f' ? 'free' : 'row', weeks: Math.max(1, Math.min(2, +dyv[2] || 2)), min: Math.max(1, Math.min(DY_MIN_MAX, +dyv[3] || 3)), photo: dyv[4] !== '0', tsign: 'n', start: /^\d{8}$/.test(dyv[6] || '') ? `${dyv[6].slice(0, 4)}-${dyv[6].slice(4, 6)}-${dyv[6].slice(6)}` : '',
       promise: (qs.get('dp') || '').slice(0, 30), praiseMin: (qs.get('dm') || '').slice(0, 40), praiseDone: (qs.get('dd') || '').slice(0, 40) };
     if (cfg.mode === 'event' && !PREVIEW) {
       /* 행사용 QR (11/10 최종): 이 창을 닫을 때까지만 행사용 — 학생 개인 태블릿은 다시 열면 원래대로(수업 다이어리) */

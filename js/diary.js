@@ -62,10 +62,18 @@ function dyDiary(m, look, { print = false } = {}) {
   const { c, rules, n, slots, ti, star, got } = m;
   const EVX = Config.isEvent();   // 행사용 (11/11): 태블릿에서 체크하지 않아 '오늘'·별 범례·메달 막대 없음
   const name = Store.get('name', '') || '나';
-  const PR = (c.promise || '').trim();
-  /* 선생님 약속 30자 (11/11): 한 줄에 안 들어가면(17자 넘음) 메모지 안에서 두 줄로, 아래 안내 줄은 빼요 */
-  const two = [...PR].length > 17;
-  const note = PR ? `<div class="tnote ${m.medal ? 'hasb' : ''}${two ? ' two' : ''}" style="left:34px;top:412px"><h5>선생님 약속</h5><p>${dyEsc(PR)}</p>${two ? '' : `<small>${n}일 모두 성공하면 받아요</small>`}</div>`
+  /* 11/17 교차 점검: 선생님이 지금 정한 약속을 먼저 (챌린지를 시작한 뒤 약속을 바꿔도 새 약속이 나오게) */
+  const PR = ((typeof DyCfg === 'function' && DyCfg().promise) || c.promise || '').trim();
+  /* 선생님 약속 30자: 한 줄에 안 들어가면(14자 넘음) 메모지 안에서 두 줄로, 아래 안내 줄은 빼요.
+     11/17 교차 점검: 인쇄 그림에서 한 줄로 이어져 메모지 밖으로 넘치던 것 — 줄을 직접 나눠(가운데에 가까운 띄어쓰기) 어느 기기에서나 두 줄, 길면 글자를 조금 줄여요 */
+  const prc = [...PR], two = prc.length > 14, long = prc.length > 24;
+  const prHTML = !two ? dyEsc(PR) : (() => {
+    const mid = prc.length / 2; let cut = -1;
+    prc.forEach((ch, i) => { if (ch === ' ' && (cut < 0 || Math.abs(i - mid) < Math.abs(cut - mid))) cut = i; });
+    if (cut < 0 || Math.abs(cut - mid) > prc.length / 4) cut = Math.ceil(mid);   // 띄어쓰기가 없거나 한쪽으로 치우치면 가운데에서
+    return `<span class="ln">${dyEsc(prc.slice(0, cut).join('').trim())}</span><span class="ln">${dyEsc(prc.slice(cut).join('').trim())}</span>`;
+  })();
+  const note = PR ? `<div class="tnote ${m.medal ? 'hasb' : ''}${two ? ' two' : ''}${long ? ' long' : ''}" style="left:34px;top:412px"><h5>선생님 약속</h5><p>${prHTML}</p>${two ? '' : `<small>${n}일 모두 성공하면 받아요</small>`}</div>`
     : `<div class="tnote ${m.medal ? 'hasb' : ''}" style="left:34px;top:412px"><h5>선생님 응원</h5><p>선생님이 매일 응원할게요!</p><small>${Config.isEvent() ? `${n}번 모두 지키면 완성!` : `${n}일 모두 성공하면 완성 메달을 받아요`}</small></div>`;   // 행사용은 메달이 없어요 (11/11)
   const ph = look.photo === 'cam' && look.pic ? `<img src="${look.pic}" alt="내 사진" style="width:100%;height:100%;object-fit:cover">` : `<img src="${DY_IMG(look.photo === 'cam' ? 'staff_hello' : look.photo)}" alt="">`;
   const md = m.medal;
@@ -114,7 +122,7 @@ function dyDiary(m, look, { print = false } = {}) {
   const k = 1196 / 1440, pw = 630 * k, ph2 = 873 * k, sc = ph2 / 860, off = (pw - 560 * sc) / 2;
   const pg = (left, html, dy = 0) => `<div class="dpage art" style="left:${left}px;top:${(78 - 24) * k}px;width:${pw}px;height:${ph2}px"><div class="pg" style="left:${off}px;top:${dy}px;transform:scale(${sc})">${html}</div></div>`;
   return `<div class="diary art" style="left:${print ? 0 : 402}px;top:${print ? 0 : 46}px;width:1196px;height:${975 * k}px">
-    <img class="dart" src="${DY_IMG('diary_' + look.art + (print ? '_ink' : ''))}" alt="" style="left:${-48 * k}px;top:${-24 * k}px;width:${1536 * k}px${print ? ';image-rendering:pixelated' : ''}">
+    <img class="dart" src="${DY_IMG('diary_' + look.art)}" alt="" style="left:${-48 * k}px;top:${-24 * k}px;width:${1536 * k}px${print ? ';image-rendering:pixelated' : ''}">
     ${print ? dyGrid() : ''}${pg((93 - 48) * k, L, 34)}${pg((775 - 48) * k, Rt)}</div>`;
 }
 /* 11/11 밤: 인쇄용 그림의 모눈이 끊겨 보여 그림에서 지우고 선으로 다시 그려요 (원본 1300px 그림 좌표 → 다이어리 좌표) */
@@ -395,7 +403,7 @@ Router.screens.S46 = (app, p = {}) => {
     saving = false; const b2 = q('#saveImg'); if (b2) b2.textContent = '이미지 저장';
   }
 
-  /* ---------- 인쇄 (A4 가로) : 종이용 양식 — 잉크 아끼는 표지, 메달·진행 막대 없이, 맨 아래 확인란 ---------- */
+  /* ---------- 인쇄 (A4 가로) : 종이용 양식 — 11/17 교차 점검: 고른 표지(3종) 그대로 인쇄, 메달·진행 막대 없이, 맨 아래 확인란 ---------- */
   function printDiary() {
     playSfx('tap'); evPrinted = true;
     const m = model();

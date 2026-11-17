@@ -1,5 +1,5 @@
 /* 화면 파일 버전 — index.html의 APP_V, sw.js의 VERSION과 늘 같게 (11/12: 예전 저장본 화면 막기) */
-window.JS_V = 'v199-pages-dev';
+window.JS_V = 'v200-crosscheck';
 /* =========================================================
    core.js — 저장, 날짜, 챌린지 계산, 화면 이동, 팝업, 공통 도구
    ========================================================= */
@@ -116,15 +116,17 @@ const needCount = n => Math.max(1, n - 1);   // 하나까지는 못 지켜도 �
 
 /* ---------- 챌린지 계산 ---------- */
 /* ---------- 챌린지 다이어리 (11/10) ----------
-   선생님 설정(Config.diary)에서 횟수 1~10 · 진행 방식 · 성공 메달 기준을 정하고, 시작할 때 그 값을 챌린지에 복사해 둬요.
+   선생님 설정(Config.diary)에서 횟수 1~5(11/17) · 진행 방식 · 성공 메달 기준을 정하고, 시작할 때 그 값을 챌린지에 복사해 둬요.
    row(이어서) = 시작 다음 날부터 학교 가는 날 count번 / free(자유롭게) = 오늘부터 weeks주 안에 아무 날 count번(하루 한 번)
    log[날짜][수칙 id] = 'O' | 'X' — 하루에 하나라도 체크하면 그날은 '한 날', 지킨 수가 needCount 이상이면 별 */
+/* 11/17 교차 점검(알레르기 팀 의견): 챌린지 횟수 최대 5회, 성공 메달 최대 3일 (예전 설정·링크의 큰 값도 여기로 줄여요) */
+const DY_MAX = 5, DY_MIN_MAX = 3;
 const DY_DEF = { count: 5, mode: 'row', weeks: 2, min: 3, promise: '', praiseMin: '', praiseDone: '', photo: true, tsign: 'n', start: '' };   // start: 선생님이 정한 시작 날짜 (11/12, 비우면 다음 학교 가는 날·오늘)
 const DyCfg = () => Object.assign({}, DY_DEF, Config.get().diary || {});
 const Challenge = {
   get() { return Store.get('challenge', null); },
   plan(cfg = DyCfg(), from = DateK.today()) {
-    const n = Math.max(1, Math.min(10, cfg.count | 0)), c = { v: 2, mode: cfg.mode === 'free' ? 'free' : 'row', count: n, min: Math.max(1, Math.min(n, cfg.min | 0)),
+    const n = Math.max(1, Math.min(DY_MAX, cfg.count | 0)), c = { v: 2, mode: cfg.mode === 'free' ? 'free' : 'row', count: n, min: Math.max(1, Math.min(n, DY_MIN_MAX, cfg.min | 0)),
       weeks: Math.max(1, Math.min(2, cfg.weeks | 0)), promise: cfg.promise || '', praiseMin: cfg.praiseMin || '', praiseDone: cfg.praiseDone || '', tsign: cfg.tsign || 't', log: {}, stars: [], cele: {} };
     /* 선생님이 정한 시작 날짜가 오늘이거나 아직 오지 않았으면 그날부터 (지났으면 평소처럼) */
     const st = /^\d{4}-\d{2}-\d{2}$/.test(cfg.start || '') && cfg.start >= from ? cfg.start : '';   // 11/12: 오늘을 고르면 오늘부터
@@ -367,6 +369,30 @@ document.addEventListener('focusout', () => setTimeout(Kbd.lift, 50));
 /* 11/11 점검: 아이폰 무음(벨소리 끔) 상태에서도 효과음이 나게 — 사파리 16.4 이상 */
 try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
 
+/* ---------- [전체 화면] 버튼 (11/17 교차 점검 공통 2 · 노담과 같은 방식) ----------
+   글자 없이 아이콘만 있는 동그란 버튼, 첫 화면 왼쪽 아래. 손가락 기기(휴대폰·태블릿)에서 전체 화면을 지원할 때만 보여요
+   → 아이폰 사파리·마우스 PC·미리 보기에서는 안 보임. 전체 화면이 되면 숨김. 처음 보일 때만 약 4초 살짝 커졌다 작아져요 */
+const FsBtn = {
+  el() { const d = document.documentElement; return d.requestFullscreen || d.webkitRequestFullscreen; },
+  on() { return !!(document.fullscreenElement || document.webkitFullscreenElement); },
+  ok() { return !PREVIEW && !!FsBtn.el() && window.matchMedia('(pointer: coarse)').matches; },
+  mount(board) {
+    if (!FsBtn.ok() || FsBtn.on()) return;
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'fs-btn'; b.setAttribute('aria-label', '전체 화면');
+    b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg>';
+    let seen = false; try { seen = sessionStorage.getItem('fsSeen') === '1'; sessionStorage.setItem('fsSeen', '1'); } catch (e) {}
+    if (!seen) b.classList.add('hint');
+    b.addEventListener('click', e => {
+      e.stopPropagation(); playSfx('tap');
+      const d = document.documentElement, f = d.requestFullscreen || d.webkitRequestFullscreen;
+      try { const r = f.call(d, { navigationUI: 'hide' }); if (r && r.catch) r.catch(() => toast('이 브라우저에서는 전체 화면을 쓸 수 없어요.', 2200)); } catch (er) {}
+    });
+    board.appendChild(b);
+  }
+};
+['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, () => document.querySelectorAll('.fs-btn').forEach(b => { b.hidden = FsBtn.on(); })));
+
 /* ---------- 화면 방향 안내 ---------- */
 const Orient = {
   check() {
@@ -383,6 +409,9 @@ const Orient = {
     if (coarse && !tablet && lab && portrait) msg = '휴대폰을 <b>가로로</b> 돌려 주세요';   // 11/12: 휴대폰은 선생님 설정도 가로로 (세로면 옆으로 넘침)
     o.querySelector('p').innerHTML = msg;
     o.classList.toggle('show', !!msg);
+    /* 11/17 점검: 세로 휴대폰에서 안내가 빈 화면처럼 보이던 문제 — 넓은 판(1600px)이 페이지 폭을 늘려 안내 글자가 화면 밖 가운데에 찍혔어요.
+       안내가 뜨는 동안에는 판을 숨겨 페이지 폭을 기기 화면에 맞춰요 */
+    document.documentElement.classList.toggle('rot-on', !!msg);
   }
 };
 window.addEventListener('resize', () => Orient.check());

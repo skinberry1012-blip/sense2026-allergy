@@ -59,6 +59,7 @@ function labBoard(app, bg, { dim = '', cls = '' } = {}) {
     const w = root.clientWidth, h = root.clientHeight; if (!w || !h) return;
     const k = Math.min(w / 1600, h / 900);
     board.style.transform = `translate(${(w - 1600 * k) / 2}px, ${(h - 900 * k) / 2}px) scale(${k})`;
+    board.style.setProperty('--k', k);   // 11/17: 판이 줄어도 [전체 화면] 버튼은 손가락 크기 그대로
   };
   fit();
   if (window.ResizeObserver) new ResizeObserver(fit).observe(root); else window.addEventListener('resize', fit);
@@ -147,13 +148,14 @@ Router.screens.S00 = (app) => {
   labEl(b, 'lab-sign', [378, 222, 842, 172], `<div><span class="px-tag">냥박사의</span><b><em>알레르기</em> 연구소</b></div>`);
   const org = labEl(b, 'lab-org', null, '<b>SENSE</b><span>초등보건교육연구회</span>');   // 연구회 이름 (11/11)
   orgDoor(b, org, 'S00');   // 선생님 화면 입구: 연구회 이름 두 번 누르기 (11/11, 홈 화면에만)
+  FsBtn.mount(b);   // 11/17 교차 점검: 휴대폰·태블릿 [전체 화면] (왼쪽 아래, 노담과 같게)
   labChar(b, 'nyang_welcome', 560, { left: -40, bottom: 22 });
   labChar(b, 'staff_hello', 530, { right: -20, bottom: 22 });   // 머리·모자가 커서 냥박사의 약 0.95배로 맞춰요 (11/9)
   const go = labBtn(b, '입장하기 ›', 'left:50%;bottom:64px;transform:translateX(-50%);font-size:52px;padding:20px 64px 16px', 'y shine beat');
   /* 대기 음악: 첫 터치에 작게 시작 → [입장하기] 누르면 멈춤 (선생님 설정 '대기 음악 끄기'면 안 나옴) */
   const cfg = Config.get();
   const startBgm = () => { if (cfg.bgm !== false && Sfx.on) Bgm.start(); };
-  b.addEventListener('pointerdown', e => { if (!e.target.closest('.px-btn, .lab-org')) startBgm(); }, { once: true });
+  b.addEventListener('pointerdown', e => { if (!e.target.closest('.px-btn, .lab-org, .fs-btn')) startBgm(); }, { once: true });
   onTap(go, () => {
     Bgm.stop(); playSfx('start');
     replay(go, 'pop');
