@@ -17,13 +17,13 @@ if (/github\.io$/i.test(location.hostname)) location.replace('https://sense2026-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap">
-<link rel="stylesheet" href="./css/style.css?v=v200-crosscheck">
-<link rel="stylesheet" href="./css/lab.css?v=v200-crosscheck">
-<link rel="stylesheet" href="./css/theme.css?v=v200-crosscheck">
-<link rel="stylesheet" href="./css/teacher.css?v=v200-crosscheck">
+<link rel="stylesheet" href="./css/style.css?v=v201-orient">
+<link rel="stylesheet" href="./css/lab.css?v=v201-orient">
+<link rel="stylesheet" href="./css/theme.css?v=v201-orient">
+<link rel="stylesheet" href="./css/teacher.css?v=v201-orient">
 <script>
 /* 11/12: 이 기기에 예전 화면 파일이 저장돼 있으면(버전이 다르면) 저장본을 지우고 한 번만 새로 열어요 */
-window.APP_V = 'v200-crosscheck';
+window.APP_V = 'v201-orient';
 window.addEventListener('load', function () {
   if (window.JS_V === window.APP_V) return;
   try { if (sessionStorage.getItem('appVfix') === window.APP_V) return; sessionStorage.setItem('appVfix', window.APP_V); } catch (e) { return; }
@@ -37,21 +37,21 @@ window.addEventListener('load', function () {
 <body>
   <div id="stage"><main id="app" class="screen"></main><div id="layer"></div></div>
 
-  <!-- 화면 방향 안내 (태블릿은 가로, 휴대폰은 세로) -->
-  <div id="orient"><div><span class="rot">📱↻</span><p></p></div></div>
+  <!-- 화면 방향 안내 (11/17: 노담과 같은 틀 — 캐릭터 + 「화면을 가로로 돌려 주세요」 + 설명 한 줄) -->
+  <div id="orient"><img src="./assets/char/nyang_hello_t.png" alt=""><p class="o-main"></p><p class="o-sub"></p></div>
 
   <noscript>이 교육도구는 자바스크립트가 필요해요. 브라우저 설정을 확인해 주세요.</noscript>
 
-  <script src="./data/rules.js?v=v200-crosscheck"></script>
-  <script src="./data/holidays.js?v=v200-crosscheck"></script>
-  <script src="./data/lab-items.js?v=v200-crosscheck"></script>
-  <script src="./js/qr.js?v=v200-crosscheck"></script>
-  <script src="./js/sfx.js?v=v200-crosscheck"></script>
-  <script src="./js/core.js?v=v200-crosscheck"></script>
-  <script src="./js/card.js?v=v200-crosscheck"></script>
-  <script src="./js/anim.js?v=v200-crosscheck"></script>
-  <script src="./js/lab.js?v=v200-crosscheck"></script>
-  <script src="./js/diary.js?v=v200-crosscheck"></script>
-  <script src="./js/app.js?v=v200-crosscheck"></script>
+  <script src="./data/rules.js?v=v201-orient"></script>
+  <script src="./data/holidays.js?v=v201-orient"></script>
+  <script src="./data/lab-items.js?v=v201-orient"></script>
+  <script src="./js/qr.js?v=v201-orient"></script>
+  <script src="./js/sfx.js?v=v201-orient"></script>
+  <script src="./js/core.js?v=v201-orient"></script>
+  <script src="./js/card.js?v=v201-orient"></script>
+  <script src="./js/anim.js?v=v201-orient"></script>
+  <script src="./js/lab.js?v=v201-orient"></script>
+  <script src="./js/diary.js?v=v201-orient"></script>
+  <script src="./js/app.js?v=v201-orient"></script>
 </body>
 </html>

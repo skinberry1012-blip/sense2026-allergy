@@ -1,5 +1,5 @@
 /* 화면 파일 버전 — index.html의 APP_V, sw.js의 VERSION과 늘 같게 (11/12: 예전 저장본 화면 막기) */
-window.JS_V = 'v200-crosscheck';
+window.JS_V = 'v201-orient';
 /* =========================================================
    core.js — 저장, 날짜, 챌린지 계산, 화면 이동, 팝업, 공통 도구
    ========================================================= */
@@ -404,10 +404,11 @@ const Orient = {
     const tablet = short >= 600;
     const portrait = window.innerHeight > window.innerWidth;
     const lab = true;   // 11/10: 방패 만들기·이름 쓰기·약속 고르기·다이어리도 연구소 판(1600×900)이라 학생 화면은 모두 가로
-    let msg = '';
-    if (coarse && !teacher && tablet && portrait) msg = '태블릿을 <b>가로로</b> 돌려 주세요';
-    if (coarse && !tablet && lab && portrait) msg = '휴대폰을 <b>가로로</b> 돌려 주세요';   // 11/12: 휴대폰은 선생님 설정도 가로로 (세로면 옆으로 넘침)
-    o.querySelector('p').innerHTML = msg;
+    /* 11/17: 문구를 노담과 같게 — 큰 글 「화면을 가로로 돌려 주세요」 + 기기·화면에 맞는 설명 한 줄 */
+    let msg = '', sub = '';
+    if (coarse && !teacher && tablet && portrait) { msg = '화면을 가로로 돌려 주세요'; sub = '태블릿에서는 가로 화면으로 탐사해요.'; }
+    if (coarse && !tablet && lab && portrait) { msg = '화면을 가로로 돌려 주세요'; sub = teacher ? '선생님 화면은 가로 화면으로 열려요.' : '휴대폰에서는 가로 화면으로 탐사해요.'; }   // 11/12: 휴대폰은 선생님 설정도 가로로 (세로면 옆으로 넘침)
+    o.querySelector('.o-main').textContent = msg; o.querySelector('.o-sub').textContent = sub;
     o.classList.toggle('show', !!msg);
     /* 11/17 점검: 세로 휴대폰에서 안내가 빈 화면처럼 보이던 문제 — 넓은 판(1600px)이 페이지 폭을 늘려 안내 글자가 화면 밖 가운데에 찍혔어요.
        안내가 뜨는 동안에는 판을 숨겨 페이지 폭을 기기 화면에 맞춰요 */
