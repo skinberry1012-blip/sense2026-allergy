@@ -211,8 +211,8 @@ Object.entries(LAB.places).forEach(([place, d]) => {
       const done = found.includes(pt.item);
       const inner = pt.mite
         ? `<span class="mites">${Array.from({ length: 16 }, (_, k) => `<i style="left:${8 + (k * 37) % 84}%;top:${12 + (k * 53) % 76}%;animation-delay:${(k % 5) * .18}s"></i>`).join('')}<em></em><em></em><em></em></span>`
-        : pt.mold   /* 11/17: 화분 곰팡이 — 진드기처럼 장면에는 화분만 그리고, 흙·가장자리에 몽글거리는 곰팡이와 떠오르는 포자를 코드로 얹어요 */
-        ? `<img src="${IMG.item(pt.img || pt.item)}" alt=""><span class="molds">${[[26,52,12],[40,51,10],[54,52,13],[68,51,10],[78,55,9],[20,58,8],[33,55,7],[61,56,7]].map(([x, y, s], k) => `<i style="left:${x}%;top:${y}%;width:${s}px;height:${s}px;animation-delay:${(k % 4) * .25}s"></i>`).join('')}${[[22,36],[50,30],[76,36],[36,24]].map(([x, y], k) => `<b style="left:${x}%;top:${y}%;animation-delay:${k * .45}s"></b>`).join('')}</span>`
+        : pt.mold   /* 11/17: 화분 곰팡이 — 진드기처럼 장면에는 화분만 그리고, 흙 둘레에 작은 포자 점이 살짝 보이게 코드로 얹어요(침대 진드기와 같은 느낌) */
+        ? `<img src="${IMG.item(pt.img || pt.item)}" alt=""><span class="molds">${Array.from({ length: 12 }, (_, k) => `<i style="left:${6 + (k * 37) % 88}%;top:${8 + (k * 53) % 84}%;animation-delay:${(k % 5) * .22}s"></i>`).join('')}</span>`
         : `<img src="${IMG.item(pt.img || pt.item)}" alt="">`;
       const s = labEl(b, 'lab-spot' + (done ? ' done' : ' pulse') + (pt.mite ? ' mite' : ''), pt.r,
         `${inner}${corners()}${done ? '<span class="stamp">발견</span>' : ''}`, 'button');
